@@ -1,52 +1,52 @@
-# Gebäude-Tool（SIA 2024）计算模型教科书
+# Gebäude-Tool (SIA 2024) Calculation Model Textbook
 
-> 完整计算教科书 · 基于 `.analysis` 提取物编写
+> Complete calculation textbook · written from the `.analysis` extracts
 >
-> 对象：`data/raw/2024_Gebaeude-Tool_dfi_V221.xlsm`（13 个工作表，≈51 300 个非空单元格，≈16 900 个公式单元格）
-> 姊妹数据集：`2024_Raumdatenblätter_dfi_V221.xlsm`（房间数据源，45 种房间用途）
+> Subject: `data/raw/2024_Gebaeude-Tool_dfi_V221.xlsm` (13 worksheets, ≈51 300 non-empty cells, ≈16 900 formula cells)
+> Companion dataset: `2024_Raumdatenblätter_dfi_V221.xlsm` (room data source, 45 room use types)
 >
-> 语言约定：正文以中文撰写；专业术语保留德语原文（首次出现附中文与英文）；公式引用原样保留 Excel/VBA 语法。
+> Language convention: the body text is written in Chinese; technical terms keep the German original (with Chinese and English glosses at first occurrence); formula references retain the Excel/VBA syntax verbatim.
 
 ---
 
-## 0.1 文档地图
+## 0.1 Document Map
 
-| 章节 | 文件 | 内容 |
+| Section | File | Content |
 |---|---|---|
-| 导读（本文件） | `README.md` | 工具定位、数据来源、单元格引用约定、计算流程总览、工作表清单、单位制、已知怪癖 |
-| 第 1 章 | `ch01-湿空气物理-Glück多项式与UDF.md` | 湿空气物理：Glück 饱和压力多项式、焓/含湿量/相对湿度/露点等 8 个 UDF 的推导、单位、假设、适用范围与全部调用点 |
-| 第 2 章 | `ch02-房间KPI派生.md` | 房间 KPI 派生：`KZ_Raum_2024` 矩阵、`Res` 命名区域、`Gebäude` 房间行 VLOOKUP 链、EBF/GF/面积加权、Allg. Gebäudetechnik |
-| 第 3 章 | `ch03-通风全负荷小时.md` | 通风全负荷小时：`Std` 表（Raumdaten `Volll_Lüft` 副本）、按 Regelung 选取的机制、AHU 引擎中的使用 |
-| 第 4 章 | `ch04-AHU温度区间法.md` | AHU 温度区间法（`Berechnung LU`）：气象区间（bin）焓湿链、风机三档 P∝V^2.5、WRG/KRG、四种控制工况（Fall 1–4）、能耗汇总 |
-| 第 5 章 | `ch05-产热与Resultate汇总.md` | 产热与 Resultate 汇总：`Nutzungsgrad` 目录、`Erzeugung` 三组产热器、Endenergie/Energieträger 分配、`Resultate` 加权（NEGF/PEne/THGE） |
-| 第 6 章 | `ch06-气候数据.md` | 气候数据：`Klimadaten` 40 站点、气压（气压高度公式）、HDD、设计温度、温度区间小时数与湿度序列、`Qhc_Klimastat` |
-| 附录 A | `analysis_Berechnung_LU.md` | `Berechnung LU` 全表逐列分析底稿（第 4 章的推导依据；含行 168 完整数值示例） |
+| Introduction (this file) | `README.md` | Tool positioning, data sources, cell-reference conventions, calculation-flow overview, worksheet list, unit system, known quirks |
+| Chapter 1 | `ch01-湿空气物理-Glück多项式与UDF.md` | Moist-air physics: derivation, units, assumptions, scope of validity and all call sites of the 8 UDFs — Glück saturation-pressure polynomial, enthalpy/humidity ratio/relative humidity/dew point, etc. |
+| Chapter 2 | `ch02-房间KPI派生.md` | Room KPI derivation: `KZ_Raum_2024` matrix, `Res` named range, `Gebäude` room-row VLOOKUP chain, EBF/GF (energy reference area / floor area) weighting, Allg. Gebäudetechnik |
+| Chapter 3 | `ch03-通风全负荷小时.md` | Ventilation full-load hours: `Std` table (copy of Raumdaten `Volll_Lüft`), mechanism of selection by Regelung (control mode), use in the AHU engine |
+| Chapter 4 | `ch04-AHU温度区间法.md` | AHU temperature-bin method (`Berechnung LU`): meteorological bin h-x chain, three fan stages P∝V^2.5, WRG/KRG (heat/cold recovery), four control cases (Fall 1–4), energy summary |
+| Chapter 5 | `ch05-产热与Resultate汇总.md` | Heat generation and Resultate summary: `Nutzungsgrad` catalogue, the three heat-generator groups in `Erzeugung`, Endenergie/Energieträger allocation, `Resultate` weighting (NEGF/PEne/THGE) |
+| Chapter 6 | `ch06-气候数据.md` | Climate data: `Klimadaten` 40 stations, air pressure (barometric-height formula), HDD, design temperatures, temperature-bin hours and humidity sequences, `Qhc_Klimastat` |
+| Appendix A | `analysis_Berechnung_LU.md` | Column-by-column analysis worksheet of the entire `Berechnung LU` table (basis for the Chapter 4 derivations; includes a complete numerical example for row 168) |
 
-## 0.2 数据来源与可复现性
+## 0.2 Data Sources and Reproducibility
 
-本教科书的一切公式、常量与单元格引用均取自以下 `.analysis` 提取物（工作簿 OOXML 解包 + VBA 源码提取 + 逐单元格转储）：
+All formulas, constants and cell references in this textbook are taken from the following `.analysis` extracts (workbook OOXML unpacking + VBA source extraction + per-cell dump):
 
-- 逐单元格转储（地址 / 公式 / 缓存结果）：`.analysis/dumps/gebaeude/sheet_*.tsv`
-- 工作表清单与行列统计：`.analysis/dumps/gebaeude/sheets.json`
-- 命名区域：`.analysis/dumps/gebaeude/definedNames.json`
-- VBA 源码（UDF 与宏）：`.analysis/vba/gebaeude/*.bas`、`*.cls`
-- 解包 OOXML：`.analysis/unpacked/gebaeude/`
-- 源文件哈希可复现：`data/raw/2024_Gebaeude-Tool_dfi_V221.xlsm`（897 991 字节）
+- Per-cell dump (address / formula / cached result): `.analysis/dumps/gebaeude/sheet_*.tsv`
+- Worksheet list and row/column statistics: `.analysis/dumps/gebaeude/sheets.json`
+- Named ranges: `.analysis/dumps/gebaeude/definedNames.json`
+- VBA source (UDFs and macros): `.analysis/vba/gebaeude/*.bas`, `*.cls`
+- Unpacked OOXML: `.analysis/unpacked/gebaeude/`
+- Reproducible source-file hash: `data/raw/2024_Gebaeude-Tool_dfi_V221.xlsm` (897 991 bytes)
 
-> ⚠️ 转储中的 `R:` 值为该文件保存时的**缓存计算结果**（例如示例建筑 = Zürich-MeteoSchweiz 站、Standard 值域）；本文中的数值示例均标注其输入前提。
+> ⚠️ The `R:` values in the dumps are the **cached calculation results** from the time the file was saved (e.g. the example building = Zürich-MeteoSchweiz station, Standard value range); every numerical example in this text states its input premises.
 
-## 0.3 单元格引用约定
+## 0.3 Cell-Reference Conventions
 
-- 本教科书使用德语工作表原名（文件内存储名，不随语言切换改名）：
-  `Gebäude`、`Lüftung`、`Erzeugung`、`Resultate`、`Nutzungsgrad`、`Berechnung LU`、
-  `Klimadaten`、`KZ_Raum_2024`、`Qhc_Klimastat`、`Std`、`Begriffe`、`Anleitung`、`Lizenzieren`。
-- 单元格记号：`工作表!列行`，如 `Gebäude!F12`；范围如 `KZ_Raum_2024!$B$7:$AV$51`。
-- 公式原文用等宽字体（`` ` ``）引用，例如 `` `VLOOKUP($B12,Res,F$9,FALSE)` ``；其中 `Res` 为命名区域。
-- **行变量约定**：凡公式沿行重复，用行号 `n` 表示一般行，并给出一个具体示例行（如 `n=121`）。
-  例如 `Berechnung LU` 的温度区间行写作 `X{n}`（IST 块 `n=121…181`、SOLL 块 `n=189…249`，t_A = −25…+35 °C）。
-- 跨表引用（外部链接）按转储记号 `[3]` 等标注（见 0.7 节）。
+- This textbook uses the original German worksheet names (the names stored in the file; they do not change with the UI language):
+  `Gebäude`, `Lüftung`, `Erzeugung`, `Resultate`, `Nutzungsgrad`, `Berechnung LU`,
+  `Klimadaten`, `KZ_Raum_2024`, `Qhc_Klimastat`, `Std`, `Begriffe`, `Anleitung`, `Lizenzieren`.
+- Cell notation: `工作表!列行` (worksheet!column-row), e.g. `Gebäude!F12`; ranges e.g. `KZ_Raum_2024!$B$7:$AV$51`.
+- Formula originals are quoted in a monospace font (`` ` ``), e.g. `` `VLOOKUP($B12,Res,F$9,FALSE)` ``; `Res` is the named range.
+- **Row-variable convention**: whenever a formula repeats along rows, the row number `n` denotes a generic row, and a concrete example row is given (e.g. `n=121`).
+   For example, the temperature-bin rows of `Berechnung LU` are written as `X{n}` (IST (actual) block `n=121…181`, SOLL (target) block `n=189…249`, t_A = −25…+35 °C).
+- Cross-workbook references (external links) are marked with the dump notation `[3]` etc. (see Section 0.7).
 
-## 0.4 计算流程总览
+## 0.4 Calculation-Flow Overview
 
 ```
 项目输入 (Gebäude!B2..J2, Klimastation via Gebäude!D2)
@@ -111,61 +111,61 @@
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-依赖方向：`Gebäude` → `Lüftung`/`Berechnung LU` → `Erzeugung` → `Resultate`；
-数据表：`Klimadaten`（气候）、`Std`（全负荷小时与通风/热水参数）、`KZ_Raum_2024`（KPI 矩阵，即命名区域 `Res`）、`Qhc_Klimastat`（冷热负荷强度）、`Nutzungsgrad`（产热器目录）、`Begriffe`（三语词典/标签）。
+Dependency direction: `Gebäude` → `Lüftung`/`Berechnung LU` → `Erzeugung` → `Resultate`;
+Data tables: `Klimadaten` (climate), `Std` (full-load hours and ventilation/hot-water parameters), `KZ_Raum_2024` (KPI matrix, i.e. the named range `Res`), `Qhc_Klimastat` (cooling/heating load intensities), `Nutzungsgrad` (heat-generator catalogue), `Begriffe` (trilingual dictionary/labels).
 
-## 0.5 工作表清单（Gebäude-Tool V221）
+## 0.5 Worksheet List (Gebäude-Tool V221)
 
-| 工作表 | 可见性 | 行×列 | 公式单元 | 角色 |
+| Worksheet | Visibility | Rows×Cols | Formula cells | Role |
 |---|---|---|---|---|
-| Lizenzieren | veryHidden | 2:40 | 0 | 旧许可 UI（V221 已停用） |
-| Anleitung | visible | 1:30 | 26 | 三语说明；建筑工作表增删宏 |
-| Begriffe | veryHidden | 1:301 | 295 | 三语词典；45 个房间用途名（下拉源 `B13:F57`）；标签 F 列 |
-| **Gebäude** | visible | 1:87 | 555 | 建筑输入表：21 房间行 + Total/Rechenwert + GF/EBF + Allg. Gebäudetechnik |
-| **Lüftung** | visible | 1:32 | 135 | 16 个通风系统（LA01–LA16），风机/冷却/加热/加湿/除湿结果 |
-| **Erzeugung** | visible | 1:37 | 159 | 3 组产热（Kälte/Wärme/WW）+ 电力产热（PV/WKK） |
-| **Resultate** | visible | 1:71 | 248 | Energieträger×用途 Endenergie 表 + NEGF/PEne/THGE 加权 + 单位面积指标 |
-| Nutzungsgrad | veryHidden | 2:41 | 85 | 产热器目录（KE01–06、WE01–16、W01–13）：Nutzungsgrad、Energieträger、Hilfsenergie |
-| **Berechnung LU** | veryHidden | 1:328 | 13 466 | AHU 物理引擎：温度区间焓湿法（核心） |
-| **Klimadaten** | veryHidden | 1:65 | 485 | 40 站点：设计温度、HDD、气压、温度区间小时数、湿度序列 |
-| KZ_Raum_2024 | veryHidden | 2:51 | 631 | 房间 KPI 矩阵（命名区域 `Res` = `$B$7:$AV$51`） |
-| Qhc_Klimastat | veryHidden | 1:51 | 727 | 40 站点 × 45 房间用途冷/热负荷强度（Raumdaten 副本） |
-| Std | veryHidden | 1:50 | 119 | Raumdaten `Volll_Lüft` 副本 + 通风/热水参数（来源注释 `Std!L2`） |
+| Lizenzieren | veryHidden | 2:40 | 0 | Legacy licensing UI (deactivated in V221) |
+| Anleitung | visible | 1:30 | 26 | Trilingual instructions; macro for adding/removing building worksheets |
+| Begriffe | veryHidden | 1:301 | 295 | Trilingual dictionary; 45 room-use names (dropdown source `B13:F57`); label column F |
+| **Gebäude** | visible | 1:87 | 555 | Building input sheet: 21 room rows + Total/Rechenwert + GF/EBF + Allg. Gebäudetechnik |
+| **Lüftung** | visible | 1:32 | 135 | 16 ventilation systems (LA01–LA16); fan/cooling/heating/humidification/dehumidification results |
+| **Erzeugung** | visible | 1:37 | 159 | 3 heat-generation groups (Kälte/Wärme/WW) + electricity generation (PV/WKK) |
+| **Resultate** | visible | 1:71 | 248 | Energieträger × use Endenergie table + NEGF/PEne/THGE weighting + per-area indicators |
+| Nutzungsgrad | veryHidden | 2:41 | 85 | Heat-generator catalogue (KE01–06, WE01–16, W01–13): Nutzungsgrad, Energieträger, Hilfsenergie |
+| **Berechnung LU** | veryHidden | 1:328 | 13 466 | AHU physics engine: temperature-bin h-x method (core) |
+| **Klimadaten** | veryHidden | 1:65 | 485 | 40 stations: design temperatures, HDD, air pressure, temperature-bin hours, humidity sequences |
+| KZ_Raum_2024 | veryHidden | 2:51 | 631 | Room KPI matrix (named range `Res` = `$B$7:$AV$51`) |
+| Qhc_Klimastat | veryHidden | 1:51 | 727 | Cooling/heating load intensities for 40 stations × 45 room uses (Raumdaten copy) |
+| Std | veryHidden | 1:50 | 119 | Copy of Raumdaten `Volll_Lüft` + ventilation/hot-water parameters (source note `Std!L2`) |
 
-## 0.6 单位制与命名惯例
+## 0.6 Unit System and Naming Conventions
 
-- 能量：`MWh`（工作表内部）/ `kWh/m²`（单位面积指标）；功率：`kW`；风量：`m³/h`。
-- 湿空气：温度 `T [°C]`；含湿量 `x [g/kg]`（UDF 内部 `EnthalpieA` 以 g/kg 计，换算 `/1000`）；相对湿度 `rF [%]`（UDF 调用处多用 0–1 小数，见第 1 章 1.9 节）；气压 `p [mbar]`；焓 `h [kJ/kg]`。
-- 物性常量（`Berechnung LU!N19:N25`）：`p`（站点气压）、`cpl=1.006 kJ/kgK`、`cpw=1.86 kJ/kgK`、`cw=4.19 kJ/kgK`、`ρ=1.15 kg/m³`、`r0=2501.6 kJ/kg (0°C)`、`r100=2256 kJ/kg (100°C)`。
-- 德语量符号：`t_A` 室外温度、`t_ZUL` 送风温度、`t_Raum` 房间温度、`x` 含湿量、`φ/rF` 相对湿度、`h` 焓、`η_WRG` 热回收效率、`SFP` 比风机功率 `[W/(m³/h)]`。
+- Energy: `MWh` (internal to the worksheets) / `kWh/m²` (per-area indicators); power: `kW`; airflow: `m³/h`.
+- Moist air: temperature `T [°C]`; humidity ratio `x [g/kg]` (internally the UDF `EnthalpieA` works in g/kg, converted by `/1000`); relative humidity `rF [%]` (mostly used as a 0–1 fraction at UDF call sites, see Chapter 1, §1.9); air pressure `p [mbar]`; enthalpy `h [kJ/kg]`.
+- Physical constants (`Berechnung LU!N19:N25`): `p` (station air pressure), `cpl=1.006 kJ/kgK`, `cpw=1.86 kJ/kgK`, `cw=4.19 kJ/kgK`, `ρ=1.15 kg/m³`, `r0=2501.6 kJ/kg (0°C)`, `r100=2256 kJ/kg (100°C)`.
+- German quantity symbols: `t_A` outdoor temperature, `t_ZUL` supply-air temperature, `t_Raum` room temperature, `x` humidity ratio, `φ/rF` relative humidity, `h` enthalpy, `η_WRG` heat-recovery efficiency, `SFP` specific fan power `[W/(m³/h)]`.
 
-## 0.7 已知怪癖与注意点（观察所得，非评价）
+## 0.7 Known Quirks and Caveats (Observations, Not Judgments)
 
-1. **`TaupunktA` UDF 已注释掉**（`FeuchteLuft_Formeln.bas` 行 90–99），但 `Berechnung LU` 列 AQ/AS 仍调用它 → 缓存结果 `#NAME?` / `#VALUE!`。该列链（ZUL 露点控制）在当前版本**不参与**结果（列 AS 的下游未使用）。
-2. **相对湿度单位不一致**：`Klimadaten` 表头标 `[%]`，但数值为 0–1 小数（如 0.88）；UDF `AbsFeuchte/RelFeuchte` 期望 0–1 小数，`EnthalpieR` 注释称 `%` 但其算式对小数才自洽（见 1.9 节）。
-3. **`Gebäude!N9/O9`（Lüftung 的 Res 列选择器）对 Zielwert/Bestand 值域的偏移量疑似偏小**（+6/+12 与 +7/+14）：Zielwert 将查得 `AL`（Beleuchtung 功率）而非 `AM`（Lüftung 功率），Bestand 将查得 `AR`/`T` 而非 `AT`/`V`。Standard 值域正确（已用缓存值验证）。移植时需按矩阵列定义修正或保留原行为。
-4. **数据陈旧风险**：`Std`、`Qhc_Klimastat`、`KZ_Raum_2024` 为 Raumdatenblätter 的静态副本/手工数据；外部链接 `[3]` 指向 `SIA2024_Raumdatenblätter_dfi_V221_20241117.xlsm`（与发行文件名不一致），`[1]`（Lüftung_20201113.xlsm）与 `[4]`（Arealbewertungstool）链接已断/仅缓存。
-5. **单位面积指标的分母**：`Gebäude!D39`（EBF）只汇总 `C12:C32 = TRUE`（EBF 标志）的房间面积，且乘以 `(100+D37)%`（Anteil Konstruktionsfläche，默认 10%）。
-6. **`Std!N` 列（Ventilatorregelung Standard）与 `Gebäude`/`Lüftung` 的 J 列（Regelung）**是两套独立输入：`Std` 提供各用途的标准调节方式（数据属性），`Lüftung!J7` 是项目对该系统的实际调节方式（决定 `Berechnung LU` 的档位与全负荷小时）。
-7. **四舍五入为规范**：`ROUND(I×1000/H, -1)`（Lüftung!K7）与 `ROUND(H7*1000/G6,-1)`（Berechnung LU!J7）把全负荷小时取整到 10 h——这是发布值的一部分，移植时必须保留。
-8. **保护口令可恢复**（`lockStructure` 等，口令见 VBA 源码）——属商业包装而非加密安全。
-9. **`KZ_Raum_2024` 行 3 的序号列（B3=1, C3=2, …）与 A 列 SIA 代码（1.1…12.12）、AA 列内部代码（1.01…12.12）并存**；`Res` 的查键是 B 列房间用途名（德语）。
-10. **`Fallunterscheidung.bas`（Fall1Tzul/Fall1xzul/Fall2Tzul/Fall2xzul）被 `Berechnung LU!BB:BE` 列实际引用**（早期评估误判为死代码；全表检索证实 61×2 个区间行调用它们，`#NAME?` 仅出现在 `TaupunktA`）。该模块为**活代码**，移植时需一并实现。
-11. **`Lüftung!U32:Z32` 接线错位**：`U32←'Berechnung LU'!V7`（实为 Entfeuchtung Kühlung）、`W32←X7`（Entf. Erwärmung）、`Y32←T7`（Erwärmung Befeuchtung）——即"Befeuchtung / Entf. Kühlung / Entf. Erwärmung"三对列的表头与实际取值整体错一对，`Resultate!C37/C38` 沿同一错位链取值。示例建筑三对值均 ≈0 未暴露；移植时必须按 `Berechnung LU` 行 254–258 的语义重新接线（第 4 章 4.14-8）。
-12. **`Berechnung LU` 其他怪癖**：能量和从行 122 起（排除 −25 °C 区间）、`CC183` 功率最大从行 133 起（−10 °C）、SOLL 块（行 189–249）休眠（气候单元格 0、气压 `#REF!`）、`T{n}=MIN(单参)` 无操作、AD/AE 草稿列（`AD=n−122`，AE 无下游）、能源价格单元格空 → 成本恒 0、`BU` 列含 `#REF!` 死分支（Quellluft 且 I21≠0 时才会触发）。详见第 4 章 4.14。
-13. **`Resultate` 加权行两处复制粘贴错误**：`I21`（NEGF·Prozessanlagen）误用 THGE 权重列 Y（= 2.923，与 `I25` 相同）；`G22/F22`（PEne·Geräte）重复 E 列（Allg. Gebäudetechnik，146.99 MWh / 22.57 kWh/m²）。两者已用缓存值证实（第 5 章 5.10）。
+1. **The `TaupunktA` UDF is commented out** (`FeuchteLuft_Formeln.bas`, lines 90–99), yet `Berechnung LU` columns AQ/AS still call it → cached results `#NAME?` / `#VALUE!`. This column chain (ZUL dew-point control) **does not participate** in the results in the current version (the downstream of column AS is unused).
+2. **Inconsistent relative-humidity units**: the `Klimadaten` header states `[%]`, but the values are 0–1 fractions (e.g. 0.88); the UDFs `AbsFeuchte/RelFeuchte` expect 0–1 fractions, and `EnthalpieR`'s comment claims `%`, although its formula is only self-consistent for fractions (see §1.9).
+3. **The offsets of `Gebäude!N9/O9` (the Res column selector for Lüftung) for the Zielwert/Bestand (target/existing) value ranges appear too small** (+6/+12 vs. +7/+14): Zielwert looks up `AL` (Beleuchtung power) instead of `AM` (Lüftung power), and Bestand looks up `AR`/`T` instead of `AT`/`V`. The Standard range is correct (verified against cached values). When porting, correct the offsets according to the matrix column definitions or preserve the original behavior.
+4. **Risk of stale data**: `Std`, `Qhc_Klimastat`, and `KZ_Raum_2024` are static copies / manual data from the Raumdatenblätter; external link `[3]` points to `SIA2024_Raumdatenblätter_dfi_V221_20241117.xlsm` (which does not match the release file name), and links `[1]` (`Lüftung_20201113.xlsm`) and `[4]` (Arealbewertungstool) are broken / cached-only.
+5. **Denominator of the per-area indicators**: `Gebäude!D39` (EBF) only sums the areas of rooms with `C12:C32 = TRUE` (EBF flag) and multiplies by `(100+D37)%` (Anteil Konstruktionsfläche, default 10%).
+6. **Column `Std!N` (Ventilatorregelung Standard) and the J columns (Regelung) of `Gebäude`/`Lüftung`** are two independent sets of inputs: `Std` provides the standard control mode per use (a data attribute), while `Lüftung!J7` is the project's actual control mode for that system (it determines the stages and the full-load hours in `Berechnung LU`).
+7. **Rounding is normative**: `ROUND(I×1000/H, -1)` (`Lüftung!K7`) and `ROUND(H7*1000/G6,-1)` (`Berechnung LU!J7`) round the full-load hours to the nearest 10 h — this is part of the published values and must be preserved when porting.
+8. **Protection passwords are recoverable** (`lockStructure` etc.; the passwords are in the VBA source) — commercial packaging rather than cryptographic security.
+9. **In `KZ_Raum_2024`, row 3's index columns (B3=1, C3=2, …) coexist with the SIA codes in column A (1.1…12.12) and the internal codes in column AA (1.01…12.12)**; the lookup key of `Res` is the room-use name in column B (German).
+10. **`Fallunterscheidung.bas` (Fall1Tzul/Fall1xzul/Fall2Tzul/Fall2xzul) is actually referenced by columns `Berechnung LU!BB:BE`** (an earlier assessment misjudged it as dead code; a full-table search confirmed that 61×2 bin rows call them, and `#NAME?` occurs only for `TaupunktA`). This module is **live code** and must be implemented as well when porting.
+11. **`Lüftung!U32:Z32` is mis-wired**: `U32←'Berechnung LU'!V7` (actually Entfeuchtung Kühlung), `W32←X7` (Entf. Erwärmung), `Y32←T7` (Erwärmung Befeuchtung) — i.e. the headers and the actual values of the three column pairs "Befeuchtung / Entf. Kühlung / Entf. Erwärmung" are shifted by one pair as a whole, and `Resultate!C37/C38` read their values along the same mis-wired chain. In the example building all three pair values are ≈0, so this was not exposed; when porting, re-wire according to the semantics of `Berechnung LU` rows 254–258 (Chapter 4, §4.14-8).
+12. **Other `Berechnung LU` quirks**: the energy sum starts at row 122 (excluding the −25 °C bin), the `CC183` power maximum starts at row 133 (−10 °C), the SOLL block (rows 189–249) is dormant (climate cells 0, air pressure `#REF!`), `T{n}=MIN(单参)` is a no-op, columns AD/AE are draft columns (`AD=n−122`, AE has no downstream), the energy-price cells are empty → costs are always 0, and column `BU` contains a `#REF!` dead branch (triggered only when Quellluft and I21≠0). See Chapter 4, §4.14.
+13. **Two copy-paste errors in the `Resultate` weighting rows**: `I21` (NEGF·Prozessanlagen) mistakenly uses the THGE weight column Y (= 2.923, same as `I25`); `G22/F22` (PEne·Geräte) duplicates column E (Allg. Gebäudetechnik, 146.99 MWh / 22.57 kWh/m²). Both were confirmed with cached values (Chapter 5, §5.10).
 
-## 0.8 如何阅读每条公式
+## 0.8 How to Read Each Formula
 
-每章公式条目统一采用如下结构：
+Formula entries in every chapter uniformly follow the structure below:
 
-> **公式 n — 名称**
-> - 数学形式（符号式）
-> - 工作簿实现（Excel 原文 + 单元格）
-> - 单位
-> - 推导（从物理定义出发）
-> - 假设（常量、简化、规范取整）
-> - 适用范围（输入域、边界、失效条件）
-> - 单元格出处（一级引用链）
+> **Formula n — Name**
+> - Mathematical form (symbolic)
+> - Workbook implementation (Excel original + cell)
+> - Units
+> - Derivation (starting from the physical definition)
+> - Assumptions (constants, simplifications, normative rounding)
+> - Scope of validity (input domain, boundaries, failure conditions)
+> - Cell provenance (first-level reference chain)
 
-数值示例均以转储缓存值为准，并注明输入前提（站点、值域、系统）。
+Numerical examples are based on the cached dump values and state their input premises (station, value range, system).

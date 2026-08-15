@@ -1,0 +1,461 @@
+{
+  "release": {
+    "id": "V221",
+    "edition": "SIA 2024",
+    "publication_date": "2024-11-17",
+    "checksum_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "source_workbook": "2024_Raumdatenblätter_dfi_V221.xlsm",
+    "extraction_tool_version": "0.1.0",
+    "supersedes": null,
+    "changelog": [
+      {
+        "version": "V221",
+        "date": "2024-11-17",
+        "change": "prSIA 2024-C1 values; Qhc extended to 40 stations",
+        "migration": null
+      }
+    ]
+  },
+  "room_uses": [
+    {
+      "nutzid": 1,
+      "code": "1.01",
+      "category": 1,
+      "name": {
+        "de": "Wohnen MFH",
+        "fr": "Habitation CMI",
+        "it": "Abitazione CMI"
+      },
+      "sia_clause": "1.1.1"
+    },
+    {
+      "nutzid": 2,
+      "code": "1.02",
+      "category": 1,
+      "name": {
+        "de": "Wohnen EFH",
+        "fr": "Habitation CME",
+        "it": "Abitazione CME"
+      },
+      "sia_clause": "1.1.2"
+    },
+    {
+      "nutzid": 3,
+      "code": "3.01",
+      "category": 3,
+      "name": {
+        "de": "Einzel-, Gruppenbüro",
+        "fr": "Bureau individuel, collectif",
+        "it": "Ufficio singolo, di gruppo"
+      },
+      "sia_clause": "1.3.1"
+    }
+  ],
+  "parameters": [
+    {
+      "id": "1.1.2.7",
+      "label": {
+        "de": "Jahresgleichzeitigkeit",
+        "fr": "Facteur de simultanéité",
+        "it": "Fattore di contemporaneità"
+      },
+      "symbol": "g",
+      "data_type": "number",
+      "category": "Raumklima",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ]
+    },
+    {
+      "id": "1.1.2.1",
+      "label": {
+        "de": "Innentemperatur",
+        "fr": "Température intérieure",
+        "it": "Temperatura interna"
+      },
+      "symbol": "T_i",
+      "unit": "°C",
+      "data_type": "number",
+      "category": "Raumklima",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ]
+    },
+    {
+      "id": "1.2.1.1",
+      "label": {
+        "de": "Beleuchtungsleistung",
+        "fr": "Puissance d'éclairage",
+        "it": "Potenza di illuminazione"
+      },
+      "symbol": "P_B",
+      "unit": "W/m2",
+      "data_type": "number",
+      "category": "Beleuchtung",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ]
+    },
+    {
+      "id": "1.2.2.1",
+      "label": {
+        "de": "Geräteleistung",
+        "fr": "Puissance des appareils",
+        "it": "Potenza degli apparecchi"
+      },
+      "symbol": "P_G",
+      "unit": "W/m2",
+      "data_type": "number",
+      "category": "Geräte",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ]
+    },
+    {
+      "id": "5.1.1.1",
+      "label": {
+        "de": "Lüftungsvolumenstrom",
+        "fr": "Débit de ventilation",
+        "it": "Portata di ventilazione"
+      },
+      "symbol": "V_L",
+      "unit": "m3/h",
+      "data_type": "number",
+      "category": "Lüftung",
+      "value_kinds": [
+        "standard"
+      ]
+    },
+    {
+      "id": "1.3.1.1",
+      "label": {
+        "de": "Beleuchtungsart",
+        "fr": "Type d'éclairage",
+        "it": "Tipo di illuminazione"
+      },
+      "symbol": "B_art",
+      "unit": "-",
+      "data_type": "enum",
+      "category": "Beleuchtung",
+      "value_kinds": [
+        "standard",
+        "bestand"
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "room_use_id": 1,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.7,
+            "unit": "%"
+          },
+          "zielwert": {
+            "value": 0.6,
+            "unit": "%"
+          },
+          "bestand": {
+            "value": 0.8,
+            "unit": "%"
+          }
+        },
+        "1.1.2.1": {
+          "standard": {
+            "value": 20.0,
+            "unit": "°C"
+          },
+          "zielwert": {
+            "value": 21.0,
+            "unit": "°C"
+          },
+          "bestand": {
+            "value": 19.0,
+            "unit": "°C"
+          }
+        },
+        "1.2.1.1": {
+          "standard": {
+            "value": 6.0,
+            "unit": "W/m2"
+          },
+          "zielwert": {
+            "value": 5.0,
+            "unit": "W/m2"
+          },
+          "bestand": {
+            "value": 8.0,
+            "unit": "W/m2"
+          }
+        },
+        "1.2.2.1": {
+          "standard": {
+            "value": 10.0,
+            "unit": "W/m2"
+          },
+          "zielwert": {
+            "value": 8.0,
+            "unit": "W/m2"
+          },
+          "bestand": {
+            "value": 12.0,
+            "unit": "W/m2"
+          }
+        },
+        "5.1.1.1": {
+          "standard": {
+            "value": 30.0,
+            "unit": "m3/h",
+            "provenance": {
+              "note": "Sample: extracted from the Datenblatt sheet (column M)",
+              "sources": [
+                {
+                  "workbook": "2024_Raumdatenblätter_dfi_V221.xlsm",
+                  "sheet": "Datenblatt",
+                  "range": "M11"
+                }
+              ]
+            }
+          }
+        },
+        "1.3.1.1": {
+          "standard": {
+            "value": "LED",
+            "unit": "-"
+          },
+          "bestand": {
+            "value": "Leuchtstoff",
+            "unit": "-"
+          }
+        }
+      }
+    },
+    {
+      "room_use_id": 2,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.7,
+            "unit": "%"
+          },
+          "zielwert": {
+            "value": 0.65,
+            "unit": "%"
+          },
+          "bestand": {
+            "value": 0.8,
+            "unit": "%"
+          }
+        },
+        "1.1.2.1": {
+          "standard": {
+            "value": 20.0,
+            "unit": "°C"
+          },
+          "zielwert": {
+            "value": 21.0,
+            "unit": "°C"
+          },
+          "bestand": {
+            "value": 19.0,
+            "unit": "°C"
+          }
+        },
+        "1.2.1.1": {
+          "standard": {
+            "value": 7.0,
+            "unit": "W/m2"
+          },
+          "zielwert": {
+            "value": 6.0,
+            "unit": "W/m2"
+          },
+          "bestand": {
+            "value": 9.0,
+            "unit": "W/m2"
+          }
+        },
+        "1.2.2.1": {
+          "standard": {
+            "value": 11.0,
+            "unit": "W/m2"
+          },
+          "zielwert": {
+            "value": 9.0,
+            "unit": "W/m2"
+          },
+          "bestand": {
+            "value": 13.0,
+            "unit": "W/m2"
+          }
+        },
+        "5.1.1.1": {
+          "standard": {
+            "value": 25.0,
+            "unit": "m3/h"
+          }
+        },
+        "1.3.1.1": {
+          "standard": {
+            "value": "LED",
+            "unit": "-"
+          },
+          "bestand": {
+            "value": "Leuchtstoff",
+            "unit": "-"
+          }
+        }
+      }
+    },
+    {
+      "room_use_id": 3,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.8,
+            "unit": "%"
+          },
+          "zielwert": {
+            "value": 0.7,
+            "unit": "%"
+          },
+          "bestand": {
+            "value": 0.9,
+            "unit": "%"
+          }
+        },
+        "1.1.2.1": {
+          "standard": {
+            "value": 21.0,
+            "unit": "°C"
+          },
+          "zielwert": {
+            "value": 22.0,
+            "unit": "°C"
+          },
+          "bestand": {
+            "value": 20.0,
+            "unit": "°C"
+          }
+        },
+        "1.2.1.1": {
+          "standard": {
+            "value": 10.0,
+            "unit": "W/m2"
+          },
+          "zielwert": {
+            "value": 8.0,
+            "unit": "W/m2"
+          },
+          "bestand": {
+            "value": 12.0,
+            "unit": "W/m2"
+          }
+        },
+        "1.2.2.1": {
+          "standard": {
+            "value": 12.0,
+            "unit": "W/m2"
+          },
+          "zielwert": {
+            "value": 10.0,
+            "unit": "W/m2"
+          },
+          "bestand": {
+            "value": 14.0,
+            "unit": "W/m2"
+          }
+        },
+        "5.1.1.1": {
+          "standard": {
+            "value": 35.0,
+            "unit": "m3/h"
+          }
+        },
+        "1.3.1.1": {
+          "standard": {
+            "value": "LED",
+            "unit": "-"
+          },
+          "bestand": {
+            "value": "Leuchtstoff",
+            "unit": "-"
+          }
+        }
+      }
+    }
+  ],
+  "climate_stations": [
+    {
+      "id": 1,
+      "name": {
+        "de": "Basel-Binningen",
+        "fr": "Bâle-Binningen",
+        "it": ""
+      },
+      "winter_design": {
+        "t_a": {
+          "value": -8.0,
+          "unit": "°C"
+        },
+        "radiation": {
+          "value": 300.0,
+          "unit": "W/m2"
+        }
+      },
+      "summer_design": {
+        "t_a_max": {
+          "value": 32.0,
+          "unit": "°C"
+        }
+      },
+      "monthly": {
+        "t_mon": {
+          "value": 10.0,
+          "unit": "°C"
+        }
+      },
+      "hdd": null
+    },
+    {
+      "id": 40,
+      "name": {
+        "de": "Zürich-MeteoSchweiz",
+        "fr": "Zurich-MétéoSuisse",
+        "it": "Zurigo-MeteoSvizzera"
+      },
+      "winter_design": {
+        "t_a": {
+          "value": -8.0,
+          "unit": "°C"
+        },
+        "radiation": {
+          "value": 350.0,
+          "unit": "W/m2"
+        }
+      },
+      "summer_design": {
+        "t_a_max": {
+          "value": 33.0,
+          "unit": "°C"
+        }
+      },
+      "monthly": {
+        "t_mon": {
+          "value": 10.5,
+          "unit": "°C"
+        }
+      },
+      "hdd": null
+    }
+  ]
+}

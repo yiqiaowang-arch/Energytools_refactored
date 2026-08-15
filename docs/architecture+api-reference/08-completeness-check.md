@@ -26,7 +26,7 @@ was executed with a script (entry-block field check + markdown link/anchor check
 | **FastAPI layer** | [06 §1–§7](06-fastapi-layer.md) | `Settings`, `create_app`, 20 endpoints (15 datasets + 4 calculations + 1 versions), 13 schemas, 3 dependencies |
 | **MCP layer** | [07 §1–§5](07-mcp-layer.md) | `create_mcp_server`, `run_mcp_server`, `TOOL_REGISTRY`, 9 tools |
 | **API reference per symbol: purpose / inputs / outputs / exceptions / example** | every entry in parts 02–07 | verified in §2.2 (0 entries missing a field) |
-| **Docs inventory (docs清单) cross-check** | [docs/README.md](../README.md) + §3 | all rows `done` (sets 01–03 + installation/deployment) |
+| **Docs inventory cross-check** | [docs/README.md](../README.md) + §3 | all rows `done` (sets 01–03 + installation/deployment) |
 
 ---
 
@@ -79,7 +79,7 @@ none is silently omitted.
 
 ---
 
-## 3. Docs inventory (docs清单) status
+## 3. Docs inventory status
 
 [docs/README.md](../README.md) is the inventory. Status after this document set:
 

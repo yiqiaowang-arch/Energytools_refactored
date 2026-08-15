@@ -1,56 +1,65 @@
-# 文档构建与 ReadTheDocs 发布管线
+# Documentation Build & ReadTheDocs Release Pipeline
 
-本文档说明本仓库文档站（MkDocs + Material）的本地构建与 ReadTheDocs 发布方式。站点内容为
-`docs/` 下的全部文档（工作簿评估、架构与 API 参考、计算教科书、安装指南），导航结构定义在
-仓库根目录的 `mkdocs.yml`。
+This document explains how to build the documentation site of this repository (MkDocs +
+Material) locally and publish it via ReadTheDocs. The site content comprises all documents
+under `docs/` (workbook assessment, architecture & API reference, calculation textbook,
+installation guide); the navigation structure is defined in `mkdocs.yml` at the repository
+root.
 
-## 1. 本地构建
+## 1. Local build
 
-前置：Python ≥ 3.11（推荐 3.13）。
+Prerequisite: Python ≥ 3.11 (3.13 recommended).
 
 ```bash
-# 安装构建依赖（mkdocs + mkdocs-material）
+# Install the build dependencies (mkdocs + mkdocs-material)
 pip install -r requirements.txt
 
-# 本地预览（http://127.0.0.1:8000，自动重载）
+# Local preview (http://127.0.0.1:8000, auto-reload)
 mkdocs serve
 
-# 静态站点构建（输出到 site/）
+# Static site build (output to site/)
 mkdocs build
 ```
 
-也可以通过仓库自带的打包脚手架安装（`pip install -e ".[docs]"` 或
-`pixi install -e docs`），见 [installation.md](../installation.md)。
+You can also install through the repository's own packaging scaffold
+(`pip install -e ".[docs]"` or `pixi install -e docs`), see
+[installation.md](../installation.md).
 
-## 2. 站点结构
+## 2. Site structure
 
-`mkdocs.yml` 的 `nav` 与 `docs/` 目录一一对应：
+The `nav` of `mkdocs.yml` maps one-to-one onto the `docs/` directory:
 
-| 导航分组 | 内容 |
+| Navigation group | Content |
 |---|---|
-| 首页 | `docs/README.md`（docs清单） |
-| 工作簿评估 | `docs/01-workbook-assessment.md`（文档集 01） |
-| 架构 | `docs/architecture+api-reference/` 导读 + 01（包与符号清单）+ 08（完整性检查） |
-| 计算模型 | `docs/textbook/`（文档集 03，第 1–6 章 + 附录 A） |
-| API参考 | `docs/architecture+api-reference/` 02–07（公共基础 / Raumdaten / Gebäude / 版本化与导出 / FastAPI / MCP） |
-| 安装 | `docs/installation.md`（pixi / uv / conda / pip） |
-| 发布与部署 | 本文档 + [首次上线发布清单](release-checklist.md) |
+| Home | `docs/README.md` (docs inventory) |
+| Workbook assessment | `docs/01-workbook-assessment.md` (document set 01) |
+| Architecture | `docs/architecture+api-reference/` guide + 01 (package & symbol inventory) + 08 (completeness check) |
+| Calculation model | `docs/textbook/` (document set 03, chapters 1–6 + appendix A) |
+| API reference | `docs/architecture+api-reference/` 02–07 (common foundation / Raumdaten / Gebäude / versioning & export / FastAPI / MCP) |
+| Installation | `docs/installation.md` (pixi / uv / conda / pip) |
+| Release & deployment | this document + [first-launch release checklist](release-checklist.md) |
 
-约定：`docs_dir: docs`（默认），主题 `material`，语言 `zh`，启用搜索与代码复制等特性。
+Conventions: `docs_dir: docs` (default), theme `material`, language `zh`, search and code-copy
+features enabled.
 
-## 3. ReadTheDocs 发布
+## 3. ReadTheDocs publishing
 
-1. 在 ReadTheDocs 中导入本仓库（Admin → Advanced Settings 可指定构建配置）。
-2. 构建配置为 `.readthedocs.yaml`（MkDocs 构建器，Python 3.12，依赖
-   `requirements.txt`）。
-3. 每次推送到默认分支即触发构建；站点地址：`https://energytools-refactored.readthedocs.io/`
-   （`mkdocs.yml` 中 `site_url`，发布前替换为真实域名）。
-4. 发布前请将 `mkdocs.yml` 中的 `repo_name` / `repo_url` 替换为真实仓库地址。
+1. Import this repository in ReadTheDocs (Admin → Advanced Settings can specify the build
+   configuration).
+2. The build configuration is `.readthedocs.yaml` (MkDocs builder, Python 3.12, dependencies
+   from `requirements.txt`).
+3. Every push to the default branch triggers a build; site address:
+   `https://energytools-refactored.readthedocs.io/` (`site_url` in `mkdocs.yml`; replace with
+   the real domain before publishing).
+4. Before publishing, replace `repo_name` / `repo_url` in `mkdocs.yml` with the real repository
+   address.
 
-## 4. 校验与维护
+## 4. Validation & maintenance
 
-* 修改文档后运行 `mkdocs build`（或 `mkdocs serve`）验证链接与导航；文档间相对链接与
-  锚点校验脚本见 `docs/architecture+api-reference/08-completeness-check.md` §5 及
-  `docs-consistency-report.md`。
-* 新增文档时同步更新三处：`docs/README.md`（docs清单）、`mkdocs.yml`（`nav`）、必要时
-  `docs/architecture+api-reference/08-completeness-check.md` §3（清单状态表）。
+* After modifying documentation, run `mkdocs build` (or `mkdocs serve`) to validate links and
+  navigation; the relative-link and anchor validation script between documents is described in
+  `docs/architecture+api-reference/08-completeness-check.md` §5 and in
+  `docs-consistency-report.md`.
+* When adding a document, update three places in sync: `docs/README.md` (docs inventory),
+  `mkdocs.yml` (`nav`), and, if necessary,
+  `docs/architecture+api-reference/08-completeness-check.md` §3 (inventory status table).
