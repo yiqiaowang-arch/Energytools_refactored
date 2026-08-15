@@ -71,6 +71,8 @@ mcp = [
 ]
 data = [
     "pandas>=2.2",
+    "jsonschema>=4.20",
+    "openpyxl>=3.1",
 ]
 export = [
     "openpyxl>=3.1",
@@ -96,6 +98,7 @@ all = [
     "mcp>=1.2",
     # data
     "pandas>=2.2",
+    "jsonschema>=4.20",
     # export
     "openpyxl>=3.1",
     # docs

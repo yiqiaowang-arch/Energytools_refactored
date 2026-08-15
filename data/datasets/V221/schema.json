@@ -1,0 +1,1670 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://energytools.refactored.ch/schemas/raumdaten-package-1.0.schema.json",
+  "title": "energytools Raumdaten dataset package",
+  "description": "Canonical JSON package of one Raumdaten dataset release (V221 ...): release metadata plus every table of the canonical dataset.  Row maps use '|'-separated string keys ('nutzid|regulation|standard_version', 'nutzid|station_id|kind').",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "source_checksum_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edition": {
+          "type": "string"
+        },
+        "publication_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "checksum_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        },
+        "source_workbook": {
+          "type": "string"
+        },
+        "extraction_tool_version": {
+          "type": "string"
+        },
+        "supersedes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "changelog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "change": {
+                "type": "string"
+              },
+              "migration": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "version",
+              "date",
+              "change"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "id",
+        "edition",
+        "publication_date",
+        "checksum_sha256",
+        "source_workbook",
+        "extraction_tool_version"
+      ],
+      "additionalProperties": false
+    },
+    "room_uses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nutzid": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 45
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "category": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "name": {
+            "type": "object",
+            "properties": {
+              "de": {
+                "type": "string"
+              },
+              "fr": {
+                "type": "string"
+              },
+              "it": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "de",
+              "fr",
+              "it"
+            ],
+            "additionalProperties": false
+          },
+          "sia_clause": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "nutzid",
+          "code",
+          "category",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "object",
+            "properties": {
+              "de": {
+                "type": "string"
+              },
+              "fr": {
+                "type": "string"
+              },
+              "it": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "de",
+              "fr",
+              "it"
+            ],
+            "additionalProperties": false
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "data_type": {
+            "enum": [
+              "number",
+              "enum",
+              "text",
+              "bool"
+            ]
+          },
+          "category": {
+            "type": "string"
+          },
+          "value_kinds": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "standard",
+                "zielwert",
+                "bestand"
+              ]
+            }
+          },
+          "export_flag": {
+            "type": "boolean"
+          },
+          "display_flag": {
+            "type": "boolean"
+          },
+          "internal_heat_flag": {
+            "type": "boolean"
+          },
+          "qhc_flag": {
+            "type": "boolean"
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "symbol",
+          "unit",
+          "data_type",
+          "category",
+          "value_kinds"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "nutzid": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 45
+          },
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": [
+                      "number",
+                      "string",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "provenance": {
+                    "$ref": "#/$defs/provenance"
+                  }
+                },
+                "required": [
+                  "value",
+                  "unit"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "required": [
+          "nutzid",
+          "values"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "hourly_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "profile_type": {
+            "enum": [
+              "person",
+              "device",
+              "lighting",
+              "ventilation"
+            ]
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 24,
+            "maxItems": 24
+          },
+          "unit": {
+            "type": "string"
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "profile_type",
+          "values",
+          "unit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "monthly_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 12,
+            "maxItems": 12
+          },
+          "unit": {
+            "type": "string"
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "values",
+          "unit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "weekly_profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 7,
+            "maxItems": 7
+          },
+          "unit": {
+            "type": "string"
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "values",
+          "unit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "climate": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 40
+              },
+              "name": {
+                "type": "object",
+                "properties": {
+                  "de": {
+                    "type": "string"
+                  },
+                  "fr": {
+                    "type": "string"
+                  },
+                  "it": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "de",
+                  "fr",
+                  "it"
+                ],
+                "additionalProperties": false
+              },
+              "winter_design": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "unit": {
+                      "type": "string"
+                    },
+                    "provenance": {
+                      "$ref": "#/$defs/provenance"
+                    }
+                  },
+                  "required": [
+                    "value",
+                    "unit"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "summer_design": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "unit": {
+                      "type": "string"
+                    },
+                    "provenance": {
+                      "$ref": "#/$defs/provenance"
+                    }
+                  },
+                  "required": [
+                    "value",
+                    "unit"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "monthly": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "values": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 12,
+                      "maxItems": 12
+                    },
+                    "unit": {
+                      "type": "string"
+                    },
+                    "provenance": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "sources": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "workbook": {
+                                "type": "string"
+                              },
+                              "sheet": {
+                                "type": "string"
+                              },
+                              "range": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "formula": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "cached_value": {
+                                "type": [
+                                  "number",
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "extraction_hash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "workbook",
+                              "sheet"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "values",
+                    "unit"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "temperature_bins": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "lower": {
+                      "type": "number"
+                    },
+                    "upper": {
+                      "type": "number"
+                    },
+                    "hours": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "lower",
+                    "upper",
+                    "hours"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "hdd": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": [
+                      "number",
+                      "string",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "provenance": {
+                    "$ref": "#/$defs/provenance"
+                  }
+                },
+                "required": [
+                  "value",
+                  "unit"
+                ],
+                "additionalProperties": false
+              },
+              "provenance": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "sources": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "workbook": {
+                          "type": "string"
+                        },
+                        "sheet": {
+                          "type": "string"
+                        },
+                        "range": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "formula": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "cached_value": {
+                          "type": [
+                            "number",
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "extraction_hash": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "workbook",
+                        "sheet"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "note": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "winter_design",
+              "summer_design",
+              "monthly"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "version",
+        "stations"
+      ],
+      "additionalProperties": false
+    },
+    "full_load_hours": {
+      "type": "object",
+      "properties": {
+        "standard_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "regulations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "rows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "provenance": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "workbook": {
+                    "type": "string"
+                  },
+                  "sheet": {
+                    "type": "string"
+                  },
+                  "range": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "formula": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "cached_value": {
+                    "type": [
+                      "number",
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "extraction_hash": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "workbook",
+                  "sheet"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "standard_versions",
+        "regulations",
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "qhc": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean",
+                  "null"
+                ]
+              },
+              "unit": {
+                "type": "string"
+              },
+              "provenance": {
+                "$ref": "#/$defs/provenance"
+              }
+            },
+            "required": [
+              "value",
+              "unit"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "provenance": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "workbook": {
+                    "type": "string"
+                  },
+                  "sheet": {
+                    "type": "string"
+                  },
+                  "range": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "formula": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "cached_value": {
+                    "type": [
+                      "number",
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "extraction_hash": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "workbook",
+                  "sheet"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "rows"
+      ],
+      "additionalProperties": false
+    },
+    "sia3801": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "room_use_id": {
+            "type": "integer"
+          },
+          "station_id": {
+            "type": "integer"
+          },
+          "kind": {
+            "enum": [
+              "standard",
+              "zielwert",
+              "bestand"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "de",
+              "en",
+              "de+qc",
+              "en+qc"
+            ]
+          },
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": [
+                    "number",
+                    "string",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "unit": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "$ref": "#/$defs/provenance"
+                }
+              },
+              "required": [
+                "value",
+                "unit"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "room_use_id",
+          "station_id",
+          "kind",
+          "variant",
+          "values"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sia3801_category": {
+            "type": "string"
+          },
+          "room_use_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "name": {
+            "type": "object",
+            "properties": {
+              "de": {
+                "type": "string"
+              },
+              "fr": {
+                "type": "string"
+              },
+              "it": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "de",
+              "fr",
+              "it"
+            ],
+            "additionalProperties": false
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "sia3801_category",
+          "room_use_codes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "area_tables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "standard",
+              "zielwert",
+              "bestand"
+            ]
+          },
+          "rows": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": [
+                      "number",
+                      "string",
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "unit": {
+                    "type": "string"
+                  },
+                  "provenance": {
+                    "$ref": "#/$defs/provenance"
+                  }
+                },
+                "required": [
+                  "value",
+                  "unit"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "kind",
+          "rows"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "sia3801_coefficients": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "variant": {
+            "enum": [
+              "de",
+              "en",
+              "de+qc",
+              "en+qc"
+            ]
+          },
+          "category": {
+            "type": "string"
+          },
+          "coefficients": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": [
+                    "number",
+                    "string",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "unit": {
+                  "type": "string"
+                },
+                "provenance": {
+                  "$ref": "#/$defs/provenance"
+                }
+              },
+              "required": [
+                "value",
+                "unit"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "variant",
+          "category",
+          "coefficients"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "release",
+    "room_uses",
+    "parameters",
+    "profiles",
+    "hourly_profiles",
+    "monthly_profiles",
+    "weekly_profiles",
+    "climate",
+    "full_load_hours",
+    "qhc",
+    "sia3801",
+    "mappings",
+    "area_tables",
+    "sia3801_coefficients"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "provenance": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "workbook": {
+                "type": "string"
+              },
+              "sheet": {
+                "type": "string"
+              },
+              "range": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "formula": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "cached_value": {
+                "type": [
+                  "number",
+                  "string",
+                  "null"
+                ]
+              },
+              "extraction_hash": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "workbook",
+              "sheet"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "note": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "trilingual": {
+      "type": "object",
+      "properties": {
+        "de": {
+          "type": "string"
+        },
+        "fr": {
+          "type": "string"
+        },
+        "it": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "de",
+        "fr",
+        "it"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

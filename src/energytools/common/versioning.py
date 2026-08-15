@@ -256,17 +256,22 @@ class VersionResolver:
         models: Installed model releases keyed by id.
         implementation_version: Library version (PEP 440) reported by
             :meth:`current`, if any.
+        climate_versions: Optional mapping of dataset release id to the
+            climate-data version it was produced with (used to fill the
+            ``climate`` axis of :class:`VersionInfo`).
     """
 
     def __init__(
         self,
-        datasets: Mapping[str, DatasetRelease],
-        models: Mapping[str, ModelRelease],
+        datasets: Mapping[str, DatasetRelease] | None = None,
+        models: Mapping[str, ModelRelease] | None = None,
         implementation_version: str | None = None,
+        climate_versions: dict[str, str] | None = None,
     ) -> None:
-        self.datasets: Mapping[str, DatasetRelease] = dict(datasets)
-        self.models: Mapping[str, ModelRelease] = dict(models)
+        self.datasets: Mapping[str, DatasetRelease] = dict(datasets or {})
+        self.models: Mapping[str, ModelRelease] = dict(models or {})
         self.implementation_version = implementation_version
+        self.climate_versions: dict[str, str] = climate_versions or {}
 
     @classmethod
     def from_installed(

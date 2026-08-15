@@ -21,6 +21,7 @@ from energytools.common.errors import (
     ExportError,
     ModelVersionMismatchError,
     PsychrometricError,
+    TableLookupError,
     UnitError,
     UnknownClimateStationError,
     UnknownLanguageError,
@@ -46,6 +47,7 @@ ALL_EXCEPTIONS = [
     ExportError,
     UnitError,
     PsychrometricError,
+    TableLookupError,
 ]
 
 

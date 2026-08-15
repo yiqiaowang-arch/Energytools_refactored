@@ -17,7 +17,7 @@ from typing import Any
 
 from energytools.common.errors import UnitError
 
-__all__ = ["Unit", "Quantity"]
+__all__ = ["Unit", "Quantity", "register_unit"]
 
 #: Registry of known unit symbols: normalized symbol ->
 #: (dimension, factor to SI base, offset from SI base, default SI hint).
@@ -78,6 +78,10 @@ _UNIT_REGISTRY: dict[str, tuple[str, float, float, str | None]] = {
     "l/h": ("volume_flow", 1e-3, 0.0, "m³·h⁻¹"),
     "l/s": ("volume_flow", 3.6, 0.0, "m³·h⁻¹"),
     "m3/s": ("volume_flow", 3600.0, 0.0, "m³·h⁻¹"),
+    # metabolic / clothing units (SIA 2024 data sheet: Aktivitätsgrad "met",
+    # Wärmedämmwert "clo")
+    "met": ("metabolic_equivalent", 1.0, 0.0, None),
+    "clo": ("clothing_insulation", 1.0, 0.0, None),
     # mass
     "kg": ("mass", 1.0, 0.0, None),
     "g": ("mass", 1e-3, 0.0, "kg"),
@@ -90,6 +94,72 @@ _UNIT_REGISTRY: dict[str, tuple[str, float, float, str | None]] = {
     "min": ("time", 60.0, 0.0, "s"),
     "h": ("time", 3600.0, 0.0, "s"),
     "d": ("time", 86_400.0, 0.0, "s"),
+    "ppm": ("dimensionless", 1e-06, 0.0, None),
+    "ppb": ("dimensionless", 1e-09, 0.0, None),
+    "C": ("temperature", 1.0, 273.15, None),
+    "ha": ("area", 10000.0, 0.0, None),
+    "L": ("volume", 0.001, 0.0, None),
+    "a": ("time", 31536000.0, 0.0, None),
+    "Jahr": ("time", 31536000.0, 0.0, None),
+    "Hz": ("frequency", 1.0, 0.0, None),
+    "h-1": ("frequency", 0.0002777777777777778, 0.0, None),
+    "1/h": ("frequency", 0.0002777777777777778, 0.0, None),
+    "m/s": ("velocity", 1.0, 0.0, None),
+    "km/h": ("velocity", 0.2777777777777778, 0.0, None),
+    "kg/m3": ("density", 1.0, 0.0, None),
+    "N": ("force", 1.0, 0.0, None),
+    "kN": ("force", 1000.0, 0.0, None),
+    "MPa": ("pressure", 1000000.0, 0.0, None),
+    "GJ": ("energy", 1000000000.0, 0.0, None),
+    "GWh": ("energy", 3600000000000.0, 0.0, None),
+    "Wh/m2a": ("energy_per_area_time", 0.00011415525114155251, 0.0, None),
+    "kWh/m2a": ("energy_per_area_time", 0.1141552511415525, 0.0, None),
+    "MWh/m2a": ("energy_per_area_time", 114.15525114155251, 0.0, None),
+    "kJ/m2a": ("energy_per_area_time", 3.1709791983764585e-05, 0.0, None),
+    "J/kg": ("energy_per_mass", 1.0, 0.0, None),
+    "kJ/kg": ("energy_per_mass", 1000.0, 0.0, None),
+    "Wh/kg": ("energy_per_mass", 3600.0, 0.0, None),
+    "J/kgK": ("energy_per_mass_temperature", 1.0, 0.0, None),
+    "kJ/kgK": ("energy_per_mass_temperature", 1000.0, 0.0, None),
+    "Wh/kgK": ("energy_per_mass_temperature", 3600.0, 0.0, None),
+    "W/m3": ("power_per_volume", 1.0, 0.0, None),
+    "kW/m3": ("power_per_volume", 1000.0, 0.0, None),
+    "W/m2K": ("power_per_area_temperature", 1.0, 0.0, None),
+    "kW/m2K": ("power_per_area_temperature", 1000.0, 0.0, None),
+    "W/(m2K)": ("power_per_area_temperature", 1.0, 0.0, None),
+    "W/m2xK": ("power_per_area_temperature", 1.0, 0.0, None),
+    "W/(m2xK)": ("power_per_area_temperature", 1.0, 0.0, None),
+    "m2K/W": ("area_temperature_per_power", 1.0, 0.0, None),
+    "W/K": ("power_per_temperature", 1.0, 0.0, None),
+    "kW/K": ("power_per_temperature", 1000.0, 0.0, None),
+    "mg/m3": ("mass_per_volume", 1e-06, 0.0, None),
+    "Kd": ("degree_days", 86400.0, 0.0, None),
+    "K·d": ("degree_days", 86400.0, 0.0, None),
+    "°C·d": ("degree_days", 86400.0, 0.0, None),
+    "°Cd": ("degree_days", 86400.0, 0.0, None),
+    "lm": ("luminous_flux", 1.0, 0.0, None),
+    "lx": ("illuminance", 1.0, 0.0, None),
+    "V": ("voltage", 1.0, 0.0, None),
+    "A": ("current", 1.0, 0.0, None),
+    "dB": ("level", 1.0, 0.0, None),
+    "m3/hm2": ("volumetric_flow_per_area", 0.0002777777777777778, 0.0, None),
+    "l/sm2": ("volumetric_flow_per_area", 0.001, 0.0, None),
+    "GJ/m2": ("energy_per_area", 1000000000.0, 0.0, None),
+    "m3/m2h": ("volumetric_flow_per_area", 0.0002777777777777778, 0.0, None),
+    "m3/(m2xh)": ("volumetric_flow_per_area", 0.0002777777777777778, 0.0, None),
+    "g/(hm2)": ("mass_flow_per_area", 2.7777777777777776e-07, 0.0, None),
+    "g/(hxm2)": ("mass_flow_per_area", 2.7777777777777776e-07, 0.0, None),
+    "Wh/(m2K)": ("energy_per_area_temperature", 3600.0, 0.0, None),
+    "Wh/(m2xK)": ("energy_per_area_temperature", 3600.0, 0.0, None),
+    "MJ/(m2K)": ("energy_per_area_temperature", 1000000.0, 0.0, None),
+    "MJ/(m2*K)": ("energy_per_area_temperature", 1000000.0, 0.0, None),
+    "m2/P": ("area_per_person", 1.0, 0.0, None),
+    "l/d": ("volume_per_time", 1.1574074074074074e-08, 0.0, None),
+    "W/(m3/h)": ("power_per_volumetric_flow", 3600.0, 0.0, None),
+    "W/(m3xh)": ("power_per_volumetric_flow", 3600.0, 0.0, None),
+    "m3/d": ("volumetric_flow", 1.1574074074074073e-05, 0.0, None),
+    "Wh/m2d": ("energy_per_area_time", 0.041666666666666664, 0.0, None),
+    "kWh/m2d": ("energy_per_area_time", 41.666666666666664, 0.0, None),
 }
 
 #: Superscript characters the workbook's rich-text cells use for exponents.
@@ -123,9 +193,32 @@ def _normalize_symbol(symbol: str) -> str:
         .translate(_SUPERSCRIPT_MAP)
         .replace("−", "-")
         .replace("–", "-")
+        .replace("×", "x")
         .replace(" ", "")
         .replace("\u00a0", "")
     )
+
+
+def register_unit(
+    symbol: str,
+    dimension: str,
+    factor: float = 1.0,
+    offset: float = 0.0,
+    si_hint: str | None = None,
+) -> None:
+    """Register a custom unit symbol (e.g. for a private dataset package).
+
+    The symbol is normalized before registration; units of the same dimension
+    are convertible via :meth:`Unit.convert_to`.
+
+    Args:
+        symbol: The display symbol, e.g. ``"W/m2"`` or ``"kWh/m2"``.
+        dimension: Physical dimension id; units sharing an id are convertible.
+        factor: Multiplication factor to the SI base (relative to the dimension).
+        offset: Additive offset to SI (non-zero only for temperature scales).
+        si_hint: Optional SI rendering hint (e.g. ``"W·m⁻²"``).
+    """
+    _UNIT_REGISTRY[_normalize_symbol(symbol)] = (dimension, float(factor), float(offset), si_hint)
 
 
 @dataclass(frozen=True)

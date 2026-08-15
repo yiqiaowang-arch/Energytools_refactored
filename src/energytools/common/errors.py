@@ -33,6 +33,7 @@ __all__ = [
     "ExportError",
     "UnitError",
     "PsychrometricError",
+    "TableLookupError",
 ]
 
 
@@ -297,4 +298,25 @@ class PsychrometricError(EnergyToolsError):
     """
 
     def __init__(self, message: str, details: dict[str, Any] | None = None) -> None:
+        super().__init__(message, details)
+
+
+class TableLookupError(EnergyToolsError, KeyError):
+    """Raised when a lookup into a workbook-derived table misses its key.
+
+    Used by the Raumdaten layer for ``VLOOKUP``-style lookups against the
+    canonical dataset (e.g. an unknown room-use code or clause id), mirroring
+    the workbook's ``#N/A`` semantics without leaking cell addresses.
+
+    Args:
+        message: Human-readable error message.
+        details: Optional structured context, e.g.
+            ``{"table": ..., "key": ...}``.
+    """
+
+    def __init__(self, message: str, details: dict[str, Any] | None = None) -> None:
+        EnergyToolsError.__init__(self, message, details)
+
+    def __str__(self) -> str:
+        return self.message
         super().__init__(message, details)

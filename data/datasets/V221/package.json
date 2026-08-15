@@ -1,0 +1,2021 @@
+{
+  "schema_version": "1.0",
+  "release": {
+    "id": "V221",
+    "edition": "SIA 2024",
+    "publication_date": "2024-11-17",
+    "checksum_sha256": "c49d4136f09874c843fece86159f69afea072e99fc2cb0e070eea39332391c22",
+    "source_workbook": "2024_Raumdatenblätter_dfi_V221.xlsm",
+    "extraction_tool_version": "0.1.0",
+    "supersedes": null,
+    "changelog": [
+      {
+        "version": "V221",
+        "date": "2024-11-17",
+        "change": "Sample fixture: representative subset of the canonical V221 release (6 room uses, 11 parameters, 2 climate stations).",
+        "migration": null
+      }
+    ]
+  },
+  "room_uses": [
+    {
+      "nutzid": 1,
+      "code": "1.01",
+      "category": 1,
+      "name": {
+        "de": "Wohnen MFH",
+        "fr": "Habitat collectif",
+        "it": "Abitazione plurifamiliare"
+      }
+    },
+    {
+      "nutzid": 2,
+      "code": "1.02",
+      "category": 1,
+      "name": {
+        "de": "Wohnen EFH",
+        "fr": "Habitat individuel",
+        "it": "Abitazione monofamiliare"
+      }
+    },
+    {
+      "nutzid": 3,
+      "code": "2.01",
+      "category": 2,
+      "name": {
+        "de": "Hotelzimmer",
+        "fr": "Chambre d'hôtel",
+        "it": "Camera d'albergo"
+      }
+    },
+    {
+      "nutzid": 4,
+      "code": "3.01",
+      "category": 3,
+      "name": {
+        "de": "Einzel-, Gruppenbüro",
+        "fr": "Bureau individuel, collectif",
+        "it": "Ufficio individuale, collettivo"
+      }
+    },
+    {
+      "nutzid": 5,
+      "code": "3.02",
+      "category": 3,
+      "name": {
+        "de": "Grossraumbüro",
+        "fr": "Bureau paysagé",
+        "it": "Open space"
+      }
+    },
+    {
+      "nutzid": 6,
+      "code": "4.01",
+      "category": 4,
+      "name": {
+        "de": "Schulzimmer",
+        "fr": "Salle d'école",
+        "it": "Aula scolastica"
+      }
+    }
+  ],
+  "parameters": [
+    {
+      "id": "1.1.2.7",
+      "label": {
+        "de": "Jahresgleichzeitigkeit",
+        "fr": "Simultanéité annuelle",
+        "it": "Simultaneità annuale"
+      },
+      "symbol": "fP",
+      "unit": "-",
+      "data_type": "number",
+      "category": "Personen",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.1.12",
+      "label": {
+        "de": "Raumtemperatur-Auslegungswert",
+        "fr": "Température ambiante de dimensionnement",
+        "it": "Temperatura interna di dimensionamento"
+      },
+      "symbol": "qi,des,C",
+      "unit": "°C",
+      "data_type": "number",
+      "category": "Raumklima",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.2.9",
+      "label": {
+        "de": "Personenfläche",
+        "fr": "Surface par personne",
+        "it": "Superficie per persona"
+      },
+      "symbol": "AP,NGF",
+      "unit": "m2",
+      "data_type": "number",
+      "category": "Personen",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.2.10",
+      "label": {
+        "de": "Aktivitätsgrad",
+        "fr": "Activité métabolique",
+        "it": "Attività metabolica"
+      },
+      "symbol": "M",
+      "unit": "met",
+      "data_type": "number",
+      "category": "Personen",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.3.3",
+      "label": {
+        "de": "Elektrische Leistung der Geräte",
+        "fr": "Puissance électrique des appareils",
+        "it": "Potenza elettrica degli apparecchi"
+      },
+      "symbol": "pA",
+      "unit": "W/m2",
+      "data_type": "number",
+      "category": "Geräte und Prozessanlagen",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": true,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.4.1",
+      "label": {
+        "de": "Beleuchtungsstärke",
+        "fr": "Éclairement lumineux",
+        "it": "Intensità luminosa"
+      },
+      "symbol": "Evm",
+      "unit": "lx",
+      "data_type": "number",
+      "category": "Beleuchtung",
+      "value_kinds": [
+        "standard"
+      ],
+      "export_flag": false,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.4.10",
+      "label": {
+        "de": "Elektrische Leistung der Beleuchtung",
+        "fr": "Puissance électrique de l'éclairage",
+        "it": "Potenza elettrica dell'illuminazione"
+      },
+      "symbol": "pL",
+      "unit": "W/m2",
+      "data_type": "number",
+      "category": "Beleuchtung",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": true,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.5.1",
+      "label": {
+        "de": "Aussenluft-Volumenstrom pro Person",
+        "fr": "Débit d'air neuf par personne",
+        "it": "Flusso d'aria esterna per persona"
+      },
+      "symbol": "qV,e,P",
+      "unit": "m3/h",
+      "data_type": "number",
+      "category": "Lüftung",
+      "value_kinds": [
+        "standard"
+      ],
+      "export_flag": false,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": false
+    },
+    {
+      "id": "1.1.6.7",
+      "label": {
+        "de": "Jährlicher Klimakältebedarf",
+        "fr": "Besoins de froid pour le refroidissement par an",
+        "it": "Fabbisogno termico annuo per il raffreddamento"
+      },
+      "symbol": "QC",
+      "unit": "kWh/m2",
+      "data_type": "number",
+      "category": "Raumkühlung",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": true,
+      "qhc_flag": true
+    },
+    {
+      "id": "1.1.7.6",
+      "label": {
+        "de": "Norm-Heizlast",
+        "fr": "Charge thermique nominale",
+        "it": "Carico termico di dimensionamento"
+      },
+      "symbol": "FHL",
+      "unit": "W/m2",
+      "data_type": "number",
+      "category": "Raumheizung",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": true
+    },
+    {
+      "id": "1.1.7.9",
+      "label": {
+        "de": "Jährlicher Heizwärmebedarf",
+        "fr": "Besoins de chaleur pour le chauffage par an",
+        "it": "Fabbisogno termico annuo per il riscaldamento"
+      },
+      "symbol": "QH,eff",
+      "unit": "kWh/m2",
+      "data_type": "number",
+      "category": "Raumheizung",
+      "value_kinds": [
+        "standard",
+        "zielwert",
+        "bestand"
+      ],
+      "export_flag": true,
+      "display_flag": true,
+      "internal_heat_flag": false,
+      "qhc_flag": true
+    }
+  ],
+  "profiles": [
+    {
+      "nutzid": 1,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.7,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.6,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.8,
+            "unit": "-"
+          }
+        },
+        "1.1.1.12": {
+          "standard": {
+            "value": 26.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 25.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 28.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.9": {
+          "standard": {
+            "value": 35.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 30.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 45.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.10": {
+          "standard": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 1.2,
+            "unit": "-"
+          }
+        },
+        "1.1.3.3": {
+          "standard": {
+            "value": 10.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 5.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 12.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.1": {
+          "standard": {
+            "value": 150.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.10": {
+          "standard": {
+            "value": 2.98,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.91,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 3.83,
+            "unit": "-"
+          }
+        },
+        "1.1.5.1": {
+          "standard": {
+            "value": 29.0,
+            "unit": "-"
+          }
+        },
+        "1.1.6.7": {
+          "standard": {
+            "value": 4.98,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 2.76,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.0,
+            "unit": "-"
+          }
+        },
+        "1.1.7.6": {
+          "standard": {
+            "value": 15.5,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 11.59,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 53.89,
+            "unit": "-"
+          }
+        },
+        "1.1.7.9": {
+          "standard": {
+            "value": 14.85,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 10.3,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 103.48,
+            "unit": "-"
+          }
+        }
+      }
+    },
+    {
+      "nutzid": 2,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.7,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.6,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.8,
+            "unit": "-"
+          }
+        },
+        "1.1.1.12": {
+          "standard": {
+            "value": 26.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 25.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 28.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.9": {
+          "standard": {
+            "value": 35.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 30.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 45.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.10": {
+          "standard": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 1.2,
+            "unit": "-"
+          }
+        },
+        "1.1.3.3": {
+          "standard": {
+            "value": 10.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 5.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 12.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.1": {
+          "standard": {
+            "value": 150.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.10": {
+          "standard": {
+            "value": 2.98,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.91,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 3.83,
+            "unit": "-"
+          }
+        },
+        "1.1.5.1": {
+          "standard": {
+            "value": 29.0,
+            "unit": "-"
+          }
+        },
+        "1.1.6.7": {
+          "standard": {
+            "value": 0.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.0,
+            "unit": "-"
+          }
+        },
+        "1.1.7.6": {
+          "standard": {
+            "value": 19.7,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 14.71,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 66.3,
+            "unit": "-"
+          }
+        },
+        "1.1.7.9": {
+          "standard": {
+            "value": 27.16,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 15.55,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 123.2,
+            "unit": "-"
+          }
+        }
+      }
+    },
+    {
+      "nutzid": 3,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.8,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.7,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.9,
+            "unit": "-"
+          }
+        },
+        "1.1.1.12": {
+          "standard": {
+            "value": 26.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 25.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 28.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.9": {
+          "standard": {
+            "value": 28.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 24.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 36.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.10": {
+          "standard": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 1.2,
+            "unit": "-"
+          }
+        },
+        "1.1.3.3": {
+          "standard": {
+            "value": 6.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 4.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 8.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.1": {
+          "standard": {
+            "value": 200.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.10": {
+          "standard": {
+            "value": 3.5,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 2.5,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 4.5,
+            "unit": "-"
+          }
+        },
+        "1.1.5.1": {
+          "standard": {
+            "value": 36.0,
+            "unit": "-"
+          }
+        },
+        "1.1.6.7": {
+          "standard": {
+            "value": 0.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.0,
+            "unit": "-"
+          }
+        },
+        "1.1.7.6": {
+          "standard": {
+            "value": 16.96,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 12.69,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 57.9,
+            "unit": "-"
+          }
+        },
+        "1.1.7.9": {
+          "standard": {
+            "value": 16.9,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 9.39,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 113.4,
+            "unit": "-"
+          }
+        }
+      }
+    },
+    {
+      "nutzid": 4,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.8,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.7,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.9,
+            "unit": "-"
+          }
+        },
+        "1.1.1.12": {
+          "standard": {
+            "value": 26.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 25.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 28.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.9": {
+          "standard": {
+            "value": 14.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 12.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 18.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.10": {
+          "standard": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 1.2,
+            "unit": "-"
+          }
+        },
+        "1.1.3.3": {
+          "standard": {
+            "value": 12.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 8.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 14.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.1": {
+          "standard": {
+            "value": 300.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.10": {
+          "standard": {
+            "value": 10.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 8.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 12.0,
+            "unit": "-"
+          }
+        },
+        "1.1.5.1": {
+          "standard": {
+            "value": 36.0,
+            "unit": "-"
+          }
+        },
+        "1.1.6.7": {
+          "standard": {
+            "value": 1.96,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.0,
+            "unit": "-"
+          }
+        },
+        "1.1.7.6": {
+          "standard": {
+            "value": 21.64,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 16.57,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 72.4,
+            "unit": "-"
+          }
+        },
+        "1.1.7.9": {
+          "standard": {
+            "value": 8.51,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 6.56,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 76.1,
+            "unit": "-"
+          }
+        }
+      }
+    },
+    {
+      "nutzid": 5,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.8,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.7,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.9,
+            "unit": "-"
+          }
+        },
+        "1.1.1.12": {
+          "standard": {
+            "value": 26.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 25.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 28.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.9": {
+          "standard": {
+            "value": 14.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 12.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 18.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.10": {
+          "standard": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 1.2,
+            "unit": "-"
+          }
+        },
+        "1.1.3.3": {
+          "standard": {
+            "value": 12.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 8.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 14.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.1": {
+          "standard": {
+            "value": 300.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.10": {
+          "standard": {
+            "value": 10.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 8.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 12.0,
+            "unit": "-"
+          }
+        },
+        "1.1.5.1": {
+          "standard": {
+            "value": 36.0,
+            "unit": "-"
+          }
+        },
+        "1.1.6.7": {
+          "standard": {
+            "value": 10.66,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 4.55,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.0,
+            "unit": "-"
+          }
+        },
+        "1.1.7.6": {
+          "standard": {
+            "value": 13.74,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 10.73,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 51.8,
+            "unit": "-"
+          }
+        },
+        "1.1.7.9": {
+          "standard": {
+            "value": 1.7,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.39,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 58.2,
+            "unit": "-"
+          }
+        }
+      }
+    },
+    {
+      "nutzid": 6,
+      "values": {
+        "1.1.2.7": {
+          "standard": {
+            "value": 0.9,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.8,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 1.0,
+            "unit": "-"
+          }
+        },
+        "1.1.1.12": {
+          "standard": {
+            "value": 25.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 24.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 27.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.9": {
+          "standard": {
+            "value": 10.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 9.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 12.0,
+            "unit": "-"
+          }
+        },
+        "1.1.2.10": {
+          "standard": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 1.2,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 1.2,
+            "unit": "-"
+          }
+        },
+        "1.1.3.3": {
+          "standard": {
+            "value": 5.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 3.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 7.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.1": {
+          "standard": {
+            "value": 300.0,
+            "unit": "-"
+          }
+        },
+        "1.1.4.10": {
+          "standard": {
+            "value": 9.0,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 7.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 11.0,
+            "unit": "-"
+          }
+        },
+        "1.1.5.1": {
+          "standard": {
+            "value": 20.0,
+            "unit": "-"
+          }
+        },
+        "1.1.6.7": {
+          "standard": {
+            "value": 0.42,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 0.0,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 0.0,
+            "unit": "-"
+          }
+        },
+        "1.1.7.6": {
+          "standard": {
+            "value": 21.15,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 15.86,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 70.6,
+            "unit": "-"
+          }
+        },
+        "1.1.7.9": {
+          "standard": {
+            "value": 15.35,
+            "unit": "-"
+          },
+          "zielwert": {
+            "value": 9.39,
+            "unit": "-"
+          },
+          "bestand": {
+            "value": 80.4,
+            "unit": "-"
+          }
+        }
+      }
+    }
+  ],
+  "hourly_profiles": [
+    {
+      "id": "personen_werktag",
+      "profile_type": "person",
+      "values": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.6,
+        0.4,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.8,
+        0.4,
+        0.0,
+        0.0,
+        0.0,
+        0.4,
+        0.8,
+        0.8,
+        0.8,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unit": "%"
+    },
+    {
+      "id": "geraete_werktag",
+      "profile_type": "device",
+      "values": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.8,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.8,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.8,
+        1.0,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ],
+      "unit": "%"
+    },
+    {
+      "id": "lueftung_einstufig",
+      "profile_type": "ventilation",
+      "values": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "unit": "%"
+    }
+  ],
+  "monthly_profiles": [
+    {
+      "id": "t_aussen",
+      "values": [
+        -1.2,
+        -0.9,
+        1.7,
+        4.1,
+        8.5,
+        12.0,
+        14.5,
+        14.0,
+        10.5,
+        6.0,
+        1.8,
+        -0.8
+      ],
+      "unit": "°C"
+    },
+    {
+      "id": "radiation_horizontal",
+      "values": [
+        150.0,
+        213.0,
+        364.0,
+        443.0,
+        520.0,
+        540.0,
+        560.0,
+        510.0,
+        380.0,
+        240.0,
+        150.0,
+        100.0
+      ],
+      "unit": "MJ/m2"
+    },
+    {
+      "id": "t_aussen",
+      "values": [
+        1.1,
+        2.5,
+        6.2,
+        9.3,
+        13.5,
+        17.0,
+        19.5,
+        19.0,
+        15.5,
+        11.0,
+        6.0,
+        2.5
+      ],
+      "unit": "°C"
+    },
+    {
+      "id": "radiation_horizontal",
+      "values": [
+        139.0,
+        201.0,
+        362.0,
+        456.0,
+        520.0,
+        560.0,
+        580.0,
+        520.0,
+        380.0,
+        250.0,
+        140.0,
+        95.0
+      ],
+      "unit": "MJ/m2"
+    }
+  ],
+  "weekly_profiles": [
+    {
+      "id": "woche_buero",
+      "values": [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.1,
+        0.1
+      ],
+      "unit": "%"
+    }
+  ],
+  "climate": {
+    "version": "meteoschweiz-2024",
+    "source": "MeteoSchweiz",
+    "stations": [
+      {
+        "id": 1,
+        "name": {
+          "de": "Adelboden",
+          "fr": "Adelboden",
+          "it": "Adelboden"
+        },
+        "winter_design": {
+          "t_a": {
+            "value": -10.2,
+            "unit": "°C"
+          },
+          "t_heating": {
+            "value": -10.2,
+            "unit": "°C"
+          },
+          "t_ventilation": {
+            "value": -15.9,
+            "unit": "°C"
+          },
+          "radiation": {
+            "value": 73.0,
+            "unit": "W/m2"
+          }
+        },
+        "summer_design": {},
+        "monthly": {
+          "t_aussen": {
+            "id": "t_aussen",
+            "values": [
+              -1.2,
+              -0.9,
+              1.7,
+              4.1,
+              8.5,
+              12.0,
+              14.5,
+              14.0,
+              10.5,
+              6.0,
+              1.8,
+              -0.8
+            ],
+            "unit": "°C"
+          },
+          "radiation_horizontal": {
+            "id": "radiation_horizontal",
+            "values": [
+              150.0,
+              213.0,
+              364.0,
+              443.0,
+              520.0,
+              540.0,
+              560.0,
+              510.0,
+              380.0,
+              240.0,
+              150.0,
+              100.0
+            ],
+            "unit": "MJ/m2"
+          }
+        },
+        "temperature_bins": [
+          {
+            "lower": -10.0,
+            "upper": -9.0,
+            "hours": 12.0
+          },
+          {
+            "lower": -9.0,
+            "upper": -8.0,
+            "hours": 24.0
+          },
+          {
+            "lower": 33.0,
+            "upper": 34.0,
+            "hours": 6.0
+          }
+        ],
+        "hdd": {
+          "value": 4670.0,
+          "unit": "K·d"
+        }
+      },
+      {
+        "id": 2,
+        "name": {
+          "de": "Aigle",
+          "fr": "Aigle",
+          "it": "Aigle"
+        },
+        "winter_design": {
+          "t_a": {
+            "value": -5.5,
+            "unit": "°C"
+          },
+          "t_heating": {
+            "value": -5.5,
+            "unit": "°C"
+          },
+          "t_ventilation": {
+            "value": -12.9,
+            "unit": "°C"
+          },
+          "radiation": {
+            "value": 73.0,
+            "unit": "W/m2"
+          }
+        },
+        "summer_design": {},
+        "monthly": {
+          "t_aussen": {
+            "id": "t_aussen",
+            "values": [
+              1.1,
+              2.5,
+              6.2,
+              9.3,
+              13.5,
+              17.0,
+              19.5,
+              19.0,
+              15.5,
+              11.0,
+              6.0,
+              2.5
+            ],
+            "unit": "°C"
+          },
+          "radiation_horizontal": {
+            "id": "radiation_horizontal",
+            "values": [
+              139.0,
+              201.0,
+              362.0,
+              456.0,
+              520.0,
+              560.0,
+              580.0,
+              520.0,
+              380.0,
+              250.0,
+              140.0,
+              95.0
+            ],
+            "unit": "MJ/m2"
+          }
+        },
+        "temperature_bins": null,
+        "hdd": {
+          "value": 3152.0,
+          "unit": "K·d"
+        }
+      }
+    ]
+  },
+  "full_load_hours": {
+    "standard_versions": [
+      "SIA 2024:2015",
+      "prSIA 2024:2021",
+      "prSIA 2024-C1:2024"
+    ],
+    "regulations": [
+      "1-stufig",
+      "2-stufig",
+      "stufenlos"
+    ],
+    "rows": {
+      "1|1-stufig|SIA 2024:2015": 8409.6,
+      "1|2-stufig|SIA 2024:2015": 7238.4,
+      "1|stufenlos|SIA 2024:2015": 5520.0,
+      "1|1-stufig|prSIA 2024:2021": 8584.8,
+      "1|2-stufig|prSIA 2024:2021": 7389.2,
+      "1|stufenlos|prSIA 2024:2021": 5635.0,
+      "1|1-stufig|prSIA 2024-C1:2024": 8760.0,
+      "1|2-stufig|prSIA 2024-C1:2024": 7540.0,
+      "1|stufenlos|prSIA 2024-C1:2024": 5750.0,
+      "2|1-stufig|SIA 2024:2015": 8409.6,
+      "2|2-stufig|SIA 2024:2015": 7238.4,
+      "2|stufenlos|SIA 2024:2015": 5520.0,
+      "2|1-stufig|prSIA 2024:2021": 8584.8,
+      "2|2-stufig|prSIA 2024:2021": 7389.2,
+      "2|stufenlos|prSIA 2024:2021": 5635.0,
+      "2|1-stufig|prSIA 2024-C1:2024": 8760.0,
+      "2|2-stufig|prSIA 2024-C1:2024": 7540.0,
+      "2|stufenlos|prSIA 2024-C1:2024": 5750.0,
+      "3|1-stufig|SIA 2024:2015": 7008.0,
+      "3|2-stufig|SIA 2024:2015": 6076.8,
+      "3|stufenlos|SIA 2024:2015": 4656.0,
+      "3|1-stufig|prSIA 2024:2021": 7154.0,
+      "3|2-stufig|prSIA 2024:2021": 6203.4,
+      "3|stufenlos|prSIA 2024:2021": 4753.0,
+      "3|1-stufig|prSIA 2024-C1:2024": 7300.0,
+      "3|2-stufig|prSIA 2024-C1:2024": 6330.0,
+      "3|stufenlos|prSIA 2024-C1:2024": 4850.0,
+      "4|1-stufig|SIA 2024:2015": 3744.0,
+      "4|2-stufig|SIA 2024:2015": 3158.4,
+      "4|stufenlos|SIA 2024:2015": 2073.6,
+      "4|1-stufig|prSIA 2024:2021": 3822.0,
+      "4|2-stufig|prSIA 2024:2021": 3224.2,
+      "4|stufenlos|prSIA 2024:2021": 2116.8,
+      "4|1-stufig|prSIA 2024-C1:2024": 3900.0,
+      "4|2-stufig|prSIA 2024-C1:2024": 3290.0,
+      "4|stufenlos|prSIA 2024-C1:2024": 2160.0,
+      "5|1-stufig|SIA 2024:2015": 3744.0,
+      "5|2-stufig|SIA 2024:2015": 3158.4,
+      "5|stufenlos|SIA 2024:2015": 2073.6,
+      "5|1-stufig|prSIA 2024:2021": 3822.0,
+      "5|2-stufig|prSIA 2024:2021": 3224.2,
+      "5|stufenlos|prSIA 2024:2021": 2116.8,
+      "5|1-stufig|prSIA 2024-C1:2024": 3900.0,
+      "5|2-stufig|prSIA 2024-C1:2024": 3290.0,
+      "5|stufenlos|prSIA 2024-C1:2024": 2160.0,
+      "6|1-stufig|SIA 2024:2015": 3441.6,
+      "6|2-stufig|SIA 2024:2015": 2908.8,
+      "6|stufenlos|SIA 2024:2015": 1987.2,
+      "6|1-stufig|prSIA 2024:2021": 3513.3,
+      "6|2-stufig|prSIA 2024:2021": 2969.4,
+      "6|stufenlos|prSIA 2024:2021": 2028.6,
+      "6|1-stufig|prSIA 2024-C1:2024": 3585.0,
+      "6|2-stufig|prSIA 2024-C1:2024": 3030.0,
+      "6|stufenlos|prSIA 2024-C1:2024": 2070.0
+    }
+  },
+  "qhc": {
+    "rows": {
+      "1|1|standard": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "1|1|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "1|1|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "1|2|standard": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "1|2|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "1|2|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "2|1|standard": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "2|1|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "2|1|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "2|2|standard": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "2|2|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "2|2|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "3|1|standard": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "3|1|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "3|1|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "3|2|standard": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "3|2|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "3|2|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "4|1|standard": {
+        "value": 1.96,
+        "unit": "kWh/m2"
+      },
+      "4|1|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "4|1|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "4|2|standard": {
+        "value": 1.67,
+        "unit": "kWh/m2"
+      },
+      "4|2|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "4|2|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "5|1|standard": {
+        "value": 10.66,
+        "unit": "kWh/m2"
+      },
+      "5|1|zielwert": {
+        "value": 4.55,
+        "unit": "kWh/m2"
+      },
+      "5|1|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "5|2|standard": {
+        "value": 9.06,
+        "unit": "kWh/m2"
+      },
+      "5|2|zielwert": {
+        "value": 3.87,
+        "unit": "kWh/m2"
+      },
+      "5|2|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "6|1|standard": {
+        "value": 0.42,
+        "unit": "kWh/m2"
+      },
+      "6|1|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "6|1|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "6|2|standard": {
+        "value": 0.36,
+        "unit": "kWh/m2"
+      },
+      "6|2|zielwert": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      },
+      "6|2|bestand": {
+        "value": 0.0,
+        "unit": "kWh/m2"
+      }
+    }
+  },
+  "sia3801": [
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "standard",
+      "variant": "de",
+      "values": {
+        "Qh": {
+          "value": 14.85,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "zielwert",
+      "variant": "de",
+      "values": {
+        "Qh": {
+          "value": 10.3,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "bestand",
+      "variant": "de",
+      "values": {
+        "Qh": {
+          "value": 103.48,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "standard",
+      "variant": "en",
+      "values": {
+        "Qh": {
+          "value": 14.85,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "zielwert",
+      "variant": "en",
+      "values": {
+        "Qh": {
+          "value": 10.3,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "bestand",
+      "variant": "en",
+      "values": {
+        "Qh": {
+          "value": 103.48,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "standard",
+      "variant": "de+qc",
+      "values": {
+        "Qh": {
+          "value": 14.85,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "zielwert",
+      "variant": "de+qc",
+      "values": {
+        "Qh": {
+          "value": 10.3,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "bestand",
+      "variant": "de+qc",
+      "values": {
+        "Qh": {
+          "value": 103.48,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "standard",
+      "variant": "en+qc",
+      "values": {
+        "Qh": {
+          "value": 14.85,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "zielwert",
+      "variant": "en+qc",
+      "values": {
+        "Qh": {
+          "value": 10.3,
+          "unit": "kWh/m2a"
+        }
+      }
+    },
+    {
+      "room_use_id": 1,
+      "station_id": 1,
+      "kind": "bestand",
+      "variant": "en+qc",
+      "values": {
+        "Qh": {
+          "value": 103.48,
+          "unit": "kWh/m2a"
+        }
+      }
+    }
+  ],
+  "mappings": [
+    {
+      "sia3801_category": "I",
+      "room_use_codes": [
+        "1.01"
+      ]
+    },
+    {
+      "sia3801_category": "I.2",
+      "room_use_codes": [
+        "2.01",
+        "3.01"
+      ]
+    },
+    {
+      "sia3801_category": "II",
+      "room_use_codes": [
+        "1.02"
+      ]
+    },
+    {
+      "sia3801_category": "III",
+      "room_use_codes": [
+        "3.01",
+        "3.02"
+      ]
+    },
+    {
+      "sia3801_category": "IV",
+      "room_use_codes": [
+        "3.01",
+        "4.01"
+      ]
+    },
+    {
+      "sia3801_category": "IV.1",
+      "room_use_codes": [
+        "3.01",
+        "4.01"
+      ]
+    },
+    {
+      "sia3801_category": "IV.2",
+      "room_use_codes": [
+        "3.01",
+        "4.01"
+      ]
+    }
+  ],
+  "area_tables": [
+    {
+      "kind": "standard",
+      "rows": {
+        "I": {
+          "1.01": {
+            "value": 85.0,
+            "unit": "%"
+          }
+        },
+        "I.2": {
+          "2.01": {
+            "value": 55.0,
+            "unit": "%"
+          },
+          "3.01": {
+            "value": 5.0,
+            "unit": "%"
+          }
+        },
+        "II": {
+          "1.02": {
+            "value": 90.0,
+            "unit": "%"
+          }
+        },
+        "III": {
+          "3.01": {
+            "value": 40.0,
+            "unit": "%"
+          },
+          "3.02": {
+            "value": 15.0,
+            "unit": "%"
+          }
+        },
+        "IV": {
+          "3.01": {
+            "value": 5.0,
+            "unit": "%"
+          },
+          "4.01": {
+            "value": 45.0,
+            "unit": "%"
+          }
+        },
+        "IV.1": {
+          "3.01": {
+            "value": 5.0,
+            "unit": "%"
+          },
+          "4.01": {
+            "value": 45.0,
+            "unit": "%"
+          }
+        },
+        "IV.2": {
+          "3.01": {
+            "value": 10.0,
+            "unit": "%"
+          },
+          "4.01": {
+            "value": 10.0,
+            "unit": "%"
+          }
+        }
+      }
+    },
+    {
+      "kind": "zielwert",
+      "rows": {}
+    }
+  ],
+  "sia3801_coefficients": [
+    {
+      "variant": "de",
+      "category": "I",
+      "coefficients": {
+        "tau0": {
+          "value": 60.0,
+          "unit": "h"
+        },
+        "U_E3": {
+          "value": 0.2,
+          "unit": "W/m2K"
+        },
+        "U_E4": {
+          "value": 0.17,
+          "unit": "W/m2K"
+        }
+      }
+    }
+  ]
+}
