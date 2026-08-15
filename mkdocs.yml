@@ -105,10 +105,17 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.tasklist:
       custom_checkbox: true
+  - pymdownx.arithmatex:
+      generic: true
 
 # 插件
 plugins:
   - search
+
+# 数学公式渲染（MathJax 3，配合 pymdownx.arithmatex）
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 # 版权信息
 copyright: Copyright &copy; 2024 Energytools 项目组
