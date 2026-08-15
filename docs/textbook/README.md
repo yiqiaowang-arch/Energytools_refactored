@@ -5,7 +5,7 @@
 > Subject: `data/raw/2024_Gebaeude-Tool_dfi_V221.xlsm` (13 worksheets, ≈51 300 non-empty cells, ≈16 900 formula cells)
 > Companion dataset: `2024_Raumdatenblätter_dfi_V221.xlsm` (room data source, 45 room use types)
 >
-> Language convention: the body text is written in Chinese; technical terms keep the German original (with Chinese and English glosses at first occurrence); formula references retain the Excel/VBA syntax verbatim.
+> Language convention: the body text is written in English; technical terms keep the German original (with English glosses at first occurrence); formula references retain the Excel/VBA syntax verbatim.
 
 ---
 
@@ -40,7 +40,7 @@ All formulas, constants and cell references in this textbook are taken from the 
 - This textbook uses the original German worksheet names (the names stored in the file; they do not change with the UI language):
   `Gebäude`, `Lüftung`, `Erzeugung`, `Resultate`, `Nutzungsgrad`, `Berechnung LU`,
   `Klimadaten`, `KZ_Raum_2024`, `Qhc_Klimastat`, `Std`, `Begriffe`, `Anleitung`, `Lizenzieren`.
-- Cell notation: `工作表!列行` (worksheet!column-row), e.g. `Gebäude!F12`; ranges e.g. `KZ_Raum_2024!$B$7:$AV$51`.
+- Cell notation: `Sheet!ColumnRow` (worksheet!column-row), e.g. `Gebäude!F12`; ranges e.g. `KZ_Raum_2024!$B$7:$AV$51`.
 - Formula originals are quoted in a monospace font (`` ` ``), e.g. `` `VLOOKUP($B12,Res,F$9,FALSE)` ``; `Res` is the named range.
 - **Row-variable convention**: whenever a formula repeats along rows, the row number `n` denotes a generic row, and a concrete example row is given (e.g. `n=121`).
    For example, the temperature-bin rows of `Berechnung LU` are written as `X{n}` (IST (actual) block `n=121…181`, SOLL (target) block `n=189…249`, t_A = −25…+35 °C).
@@ -49,66 +49,68 @@ All formulas, constants and cell references in this textbook are taken from the 
 ## 0.4 Calculation-Flow Overview
 
 ```
-项目输入 (Gebäude!B2..J2, Klimastation via Gebäude!D2)
+Project input (Gebäude!B2..J2, climate station via Gebäude!D2)
         │
         ▼
-┌───────────────────────────── Gebäude 表 ─────────────────────────────┐
-│ 21 个房间行 (12..32)：Raumnutzung 下拉 (Begriffe!F13:F57)             │
-│   → A 列反查 SIA 代码 (INDEX/MATCH Begriffe!B13:F57)                 │
-│   → EBF 标志 (C)、NGF (D)、Anteil (E)                                │
-│   → 各用途 Leistung/Energie (F..K)  ← VLOOKUP(B, Res, 列号) × NGF/1000│
-│   → Lüftung 系统 (L)、Volumenstr. (M) ← VLOOKUP(B, Std!B:H)          │
-│   → Raumkühlung (P..R)、Raumheizung (S..U) ← VLOOKUP(B, Res) × NGF/1000│
-│   → Warmwasser Bedarf (V) ← VLOOKUP(B, Std!B:I)；Energie (W) ← Res   │
-│   → Total 行 33 → Rechenwert 行 35 (可被 "Werte aus anderen Quellen"│
-│     行 34 覆盖) → GF/EBF 行 37..39                                    │
-│   → Allg. Gebäudetechnik 行 47..57 (AG01..AG10, Minergie-Strommodell)│
-└──────────────┬────────────────────────────────────────────────────────┘
+┌──────────────────────────── Gebäude sheet ─────────────────────────────┐
+│ 21 room rows (12..32): Raumnutzung dropdown (Begriffe!F13:F57)         │
+│   → column A reverse-lookup SIA code (INDEX/MATCH Begriffe!B13:F57)    │
+│   → EBF flag (C), NGF (D), Anteil (E)                                  │
+│   → per-use Leistung/Energie (F..K) ← VLOOKUP(B, Res, <col>) × NGF/1000│
+│   → Lüftung system (L), Volumenstr. (M) ← VLOOKUP(B, Std!B:H)          │
+│   → Raumkühlung (P..R), Raumheizung (S..U) ← VLOOKUP(B, Res) × NGF/1000│
+│   → Warmwasser demand (V) ← VLOOKUP(B, Std!B:I); energy (W) ← Res      │
+│   → Total row 33 → Rechenwert row 35 (overridable by "Werte aus anderen│
+│     Quellen" row 34) → GF/EBF rows 37..39                              │
+│   → Allg. Gebäudetechnik rows 47..57 (AG01..AG10, Minergie-Strommodell)│
+└──────────────┬─────────────────────────────────────────────────────────┘
                ▼
-┌───────────────────────────── Lüftung 表 ──────────────────────────────┐
-│ 16 个系统行 (LA01..LA16, 7..22)                                       │
-│   C: Volumenstr. Standard ← SUMIF(Gebäude!L12:L32, 系统, M12:M32)    │
-│   F: Rechenwert = C 或 E(Projekt)；H: 风机功率 = F×SFP/1000           │
-│   J: Regelung (einstufig/zweistufig/stufenlos)                        │
-│   K: Vollast. = ROUND(I×1000/H, -1)（由 AHU 结果反推）                │
-│   Q..Z: 空气冷却/加热/加湿/除湿 Leistung+Energie ← Berechnung LU 结果 │
-│   Total 行 23                                                        │
-└──────────────┬────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────── Lüftung sheet ───────────────────────────────────────────┐
+│ 16 system rows (LA01..LA16, 7..22)                                                                  │
+│   C: Volumenstr. Standard ← SUMIF(Gebäude!L12:L32, system, M12:M32)                                 │
+│   F: Rechenwert = C or E (project); H: fan power = F×SFP/1000                                       │
+│   J: Regelung (einstufig/zweistufig/stufenlos)                                                      │
+│   K: Vollast. = ROUND(I×1000/H, -1) (back-calculated from the AHU result)                           │
+│   Q..Z: air cooling/heating/humidification/dehumidification Leistung+Energie ← Berechnung LU results│
+│   Total row 23                                                                                      │
+└──────────────┬──────────────────────────────────────────────────────────────────────────────────────┘
                ▼
-┌───────────────────────── Berechnung LU 表（物理引擎）────────────────┐
-│ 行 6：单系统输入（= Lüftung!32 模板行，宏复制到 7..22）               │
-│ 行 7：Resultate（风机电能 H7、各处理段功率/能量 P7..Y7）              │
-│ 行 11..55：IST/SOLL 输入（面积、层高、过滤器、风机效率级、WRG/KRG、  │
-│            冷却/加热/加湿/除湿设定、运行时间表、温度曲线）            │
-│ 行 63..67：分档运行时间加权风机功率与平均风量                        │
-│ 行 68..70：SIA 全负荷小时 (Std!Q:V 按 Regelung) 与合理性检验         │
-│ 行 100..114：电机效率级 (IE5..Eff3 × 功率带) 与过滤器压降            │
-│ 行 121..181：IST 温度区间焓湿计算（61 区间 −25…+35 °C，逐区间：      │
-│    AUL → 防冻 → nWRG → MIL(焓/温) → 冷盘管链 A/C/D1/D2 → Fall 1..4 →│
-│    Zuluft soll/ist、Raum；每小时功率 × 区间小时数 = 区间能量）        │
-│ 行 189..249：SOLL 区间块（休眠）；行 182/183：年度能量和/功率最大    │
-│ 行 254..260：年度能量汇总（kWh/kW；行 7 的 MWh 等价 Q7..Y7、H7）     │
-│ 行 261+：经济性（电价、运行成本）                                    │
-└──────────────┬────────────────────────────────────────────────────────┘
+┌─────────────────────────── Berechnung LU sheet (physics engine) ───────────────────────────┐
+│ row 6: single-system input (= Lüftung!32 template row, macro-copied to 7..22)              │
+│ row 7: Resultate (fan electrical energy H7, per-section power/energy P7..Y7)               │
+│ rows 11..55: IST/SOLL inputs (areas, ceiling heights, filters, fan efficiency              │
+│             classes, WRG/KRG, cooling/heating/humidification/dehumidification              │
+│             setpoints, operating schedules, temperature curves)                            │
+│ rows 63..67: stage runtime-weighted fan power and average air volume                       │
+│ rows 68..70: SIA full-load hours (Std!Q:V by Regelung) and plausibility check              │
+│ rows 100..114: motor efficiency classes (IE5..Eff3 × power bands) and filter pressure drops│
+│ rows 121..181: IST temperature-bin h-x calculation (61 bins −25…+35 °C, per bin:           │
+│    AUL → frost protection → nWRG → MIL (enthalpy/temperature) → cooling-coil               │
+│    chain A/C/D1/D2 → Fall 1..4 → Zuluft soll/ist, Raum; per-bin power × bin                │
+│    hours = bin energy)                                                                     │
+│ rows 189..249: SOLL bin block (dormant); rows 182/183: annual energy sum / power max       │
+│ rows 254..260: annual energy summary (kWh/kW; row-7 MWh equivalents Q7..Y7, H7)            │
+│ row 261+: economics (energy prices, operating costs)                                       │
+└──────────────┬─────────────────────────────────────────────────────────────────────────────┘
                ▼
-┌───────────────────────────── Erzeugung 表 ────────────────────────────┐
-│ Kälte (行 7..10)：需求 ← Gebäude!Q/R35 + Lüftung!Q/R23               │
-│ Wärme (行 16..19)：需求 ← Gebäude!T/U35 + Lüftung!S/T23              │
-│ WW   (行 25..28)：需求 ← Gebäude!V/W35（V×4.186/3.6×50/L29/1000）    │
-│ 每台：Deckungsgrad F/G%、Speicher-/Verteilverluste H/J%              │
-│   L/M = 需求×Deckungsgrad×(100+Verluste)%                            │
-│   N = M×1000/L（Volllaststunden）；P/Q = L/M÷Nutzungsgrad(项目或标准) │
-│   R = Energieträger ← VLOOKUP Nutzungsgrad 目录                      │
-│ Elektrizitätserzeugung (行 34..37)：PV/WKK 装机与效率                  │
-└──────────────┬────────────────────────────────────────────────────────┘
+┌─────────────────────────────── Erzeugung sheet ───────────────────────────────┐
+│ Kälte (rows 7..10): demand ← Gebäude!Q/R35 + Lüftung!Q/R23                    │
+│ Wärme (rows 16..19): demand ← Gebäude!T/U35 + Lüftung!S/T23                   │
+│ WW   (rows 25..28): demand ← Gebäude!V/W35 (V×4.186/3.6×50/L29/1000)          │
+│ per unit: Deckungsgrad F/G%, Speicher-/Verteilverluste H/J%                   │
+│   L/M = demand×Deckungsgrad×(100+losses)%                                     │
+│   N = M×1000/L (Volllaststunden); P/Q = L/M÷Nutzungsgrad (project or standard)│
+│   R = Energieträger ← VLOOKUP Nutzungsgrad catalogue                          │
+│ Elektrizitätserzeugung (rows 34..37): PV/WKK installed capacity and efficiency│
+└──────────────┬────────────────────────────────────────────────────────────────┘
                ▼
-┌───────────────────────────── Resultate 表 ────────────────────────────┐
-│ Energieträger × 用途矩阵 (行 7..15)：El/HEL/Gas/Pell/HSch/StH/Bio/FW │
-│   Geräte/Prozess/Beleuchtung ← Gebäude 行 35                          │
-│   Lüftung ← Lüftung!H23/I23；Kühlung/Heizung/WW ← Erzeugung SUMIF     │
-│ 加权行 21/22/25：NEGF (W)、PEne (X)、THGE (Y) 权重 SUMPRODUCT         │
-│ 能量平衡行 28..59：kWh/m²、kg/m² 单位面积指标                         │
-└──────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────── Resultate sheet ────────────────────────────┐
+│ Energieträger × use matrix (rows 7..15): El/HEL/Gas/Pell/HSch/StH/Bio/FW│
+│   Geräte/Prozess/Beleuchtung ← Gebäude row 35                           │
+│   Lüftung ← Lüftung!H23/I23; Kühlung/Heizung/WW ← Erzeugung SUMIF       │
+│ weighted rows 21/22/25: NEGF (W), PEne (X), THGE (Y) weights SUMPRODUCT │
+│ energy-balance rows 28..59: kWh/m², kg/m² per-floor-area indicators     │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 Dependency direction: `Gebäude` → `Lüftung`/`Berechnung LU` → `Erzeugung` → `Resultate`;
@@ -152,7 +154,7 @@ Data tables: `Klimadaten` (climate), `Std` (full-load hours and ventilation/hot-
 9. **In `KZ_Raum_2024`, row 3's index columns (B3=1, C3=2, …) coexist with the SIA codes in column A (1.1…12.12) and the internal codes in column AA (1.01…12.12)**; the lookup key of `Res` is the room-use name in column B (German).
 10. **`Fallunterscheidung.bas` (Fall1Tzul/Fall1xzul/Fall2Tzul/Fall2xzul) is actually referenced by columns `Berechnung LU!BB:BE`** (an earlier assessment misjudged it as dead code; a full-table search confirmed that 61×2 bin rows call them, and `#NAME?` occurs only for `TaupunktA`). This module is **live code** and must be implemented as well when porting.
 11. **`Lüftung!U32:Z32` is mis-wired**: `U32←'Berechnung LU'!V7` (actually Entfeuchtung Kühlung), `W32←X7` (Entf. Erwärmung), `Y32←T7` (Erwärmung Befeuchtung) — i.e. the headers and the actual values of the three column pairs "Befeuchtung / Entf. Kühlung / Entf. Erwärmung" are shifted by one pair as a whole, and `Resultate!C37/C38` read their values along the same mis-wired chain. In the example building all three pair values are ≈0, so this was not exposed; when porting, re-wire according to the semantics of `Berechnung LU` rows 254–258 (Chapter 4, §4.14-8).
-12. **Other `Berechnung LU` quirks**: the energy sum starts at row 122 (excluding the −25 °C bin), the `CC183` power maximum starts at row 133 (−10 °C), the SOLL block (rows 189–249) is dormant (climate cells 0, air pressure `#REF!`), `T{n}=MIN(单参)` is a no-op, columns AD/AE are draft columns (`AD=n−122`, AE has no downstream), the energy-price cells are empty → costs are always 0, and column `BU` contains a `#REF!` dead branch (triggered only when Quellluft and I21≠0). See Chapter 4, §4.14.
+12. **Other `Berechnung LU` quirks**: the energy sum starts at row 122 (excluding the −25 °C bin), the `CC183` power maximum starts at row 133 (−10 °C), the SOLL block (rows 189–249) is dormant (climate cells 0, air pressure `#REF!`), `T{n}=MIN(single-argument)` is a no-op, columns AD/AE are draft columns (`AD=n−122`, AE has no downstream), the energy-price cells are empty → costs are always 0, and column `BU` contains a `#REF!` dead branch (triggered only when Quellluft and I21≠0). See Chapter 4, §4.14.
 13. **Two copy-paste errors in the `Resultate` weighting rows**: `I21` (NEGF·Prozessanlagen) mistakenly uses the THGE weight column Y (= 2.923, same as `I25`); `G22/F22` (PEne·Geräte) duplicates column E (Allg. Gebäudetechnik, 146.99 MWh / 22.57 kWh/m²). Both were confirmed with cached values (Chapter 5, §5.10).
 
 ## 0.8 How to Read Each Formula

@@ -8,7 +8,7 @@
 This chapter answers one question: **after the user selects a room use and enters the NGF, how are the individual power values (kW) and annual energies (MWh) derived from the SIA 2024 room characteristic values (Kennzahlen)**. The derivation chain has three layers:
 
 1. **KPI matrix layer** (`KZ_Raum_2024`): a two-dimensional numeric table of 45 room uses × (energy kWh/m² + power W/m²) × (Standard/Zielwert/Bestand), in which the Klimakälte/Heizwärme columns are climate-dependent formulas (referencing `Qhc_Klimastat`).
-2. **Lookup layer** (`Gebäude!F12:W32`): `VLOOKUP($B{n}, Res, 列号, FALSE)` exact-matches on the room-use name, then multiplies by NGF/1000 to obtain kW and MWh.
+2. **Lookup layer** (`Gebäude!F12:W32`): `VLOOKUP($B{n}, Res, <col>, FALSE)` — where `<col>` is the column number of the `Res` matrix selected by Formula 1 (§2.3) — exact-matches on the room-use name, then multiplies by NGF/1000 to obtain kW and MWh.
 3. **Totals layer** (`Gebäude!D33:W39`): Total row 33 → Rechenwert row 35 (overridable by external values) → per-area indicators (divided by EBF).
 
 ## 2.2 KPI Matrix Layout (KZ_Raum_2024)
@@ -29,7 +29,7 @@ This chapter answers one question: **after the user selects a room use and enter
 | 34–40 | AI–AO | Power Zielwert (same 6 items) | W/m² |
 | 41–47 | AP–AV | Power Bestand (same 6 items) | W/m² |
 
-\* The Klimakälte and Heizwärme columns (12 columns in total across energy and power) are **not static values** but formulas: `=Qhc_Klimastat!<D…O>{行}`. For example `KZ_Raum_2024!G7: =Qhc_Klimastat!E7` (Einzelbüro row: `G11 = Qhc_Klimastat!E11 = 14.43 kWh/m²` Klimakälte Standard; `AG11 = Qhc_Klimastat!D11 = 43.66 W/m²` Klimakälte power Standard). The remaining 5 categories (Geräte/Prozess/Beleuchtung/Lüftung/Warmwasser) are **hard-coded values** (a snapshot from the publication of the Raumdatenblätter).
+\* The Klimakälte and Heizwärme columns (12 columns in total across energy and power) are **not static values** but formulas: `=Qhc_Klimastat!<D…O>{row}`. For example `KZ_Raum_2024!G7: =Qhc_Klimastat!E7` (Einzelbüro row: `G11 = Qhc_Klimastat!E11 = 14.43 kWh/m²` Klimakälte Standard; `AG11 = Qhc_Klimastat!D11 = 43.66 W/m²` Klimakälte power Standard). The remaining 5 categories (Geräte/Prozess/Beleuchtung/Lüftung/Warmwasser) are **hard-coded values** (a snapshot from the publication of the Raumdatenblätter).
 
 **Verification example** (Einzel-, Gruppenbüro, row 11, Standard): C11=32.01 (Geräte energy), E11=13.446 (Beleuchtung), F11=4.443 (Lüftung), G11=14.430 (Klimakälte, climate-dependent), H11=10.762 (Heizwärme), I11=2.595 (Warmwasser); AC11=11 (Geräte power), AF11=1.139 (Lüftung power), AH11=19.823 (Heizwärme power).
 
@@ -38,7 +38,7 @@ This chapter answers one question: **after the user selects a room use and enter
 **Mathematical form**: the user selects a value range (`Gebäude!B5`: Standard/Zielwert/Bestand, compared against `Begriffe!F76/F77`), and the base column number $c_0$ is shifted to obtain the target column $c$:
 
 $$
-c = \begin{cases} c_0 & \text{Standard}\\ c_0 + 7\ (功率) \text{ 或 } c_0 + 8\ (能量) & \text{Zielwert}\\ c_0 + 14\ (功率) \text{ 或 } c_0 + 16\ (能量) & \text{Bestand}\end{cases}
+c = \begin{cases} c_0 & \text{Standard}\\ c_0 + 7\ (\text{power}) \text{ or } c_0 + 8\ (\text{energy}) & \text{Zielwert}\\ c_0 + 14\ (\text{power}) \text{ or } c_0 + 16\ (\text{energy}) & \text{Bestand}\end{cases}
 $$
 
 **Workbook implementation** (`Gebäude!F9`, representative of the power columns):
@@ -157,7 +157,7 @@ $q_{WW}$ is the `Std!I` column (Warmwasserbedarf pro m², = `Std!H` (l/(d·P)) �
 **Geschossfläche (GF)** (`Gebäude!D38`):
 
 $$
-A_{GF} = A_{EBF,rec}\cdot\Big(1+\frac{k_{Konstr}}{100}\Big),\qquad k_{Konstr} = \text{Gebäude!D37} \text{（Anteil Konstruktionsfläche，默认 10 %）}
+A_{GF} = A_{EBF,rec}\cdot\Big(1+\frac{k_{Konstr}}{100}\Big),\qquad k_{Konstr} = \text{Gebäude!D37} \text{(Anteil Konstruktionsfläche, default 10 %)}
 $$
 
 Implementation: `=D35*(100+D37)%`.
@@ -203,5 +203,5 @@ Implementation: `=SUMIF(C12:C32,TRUE,D12:D32)*(100+D37)%`. **Key point**: EBF on
 
 1. In a port, the `Res` matrix should be expressed as a structured dataset (room_use × value_kind × {W/m², kWh/m²}), preserving the Klimakälte/Heizwärme dependence on the climate station (Qhc) — they are **functions**, not constants.
 2. The VLOOKUP exact match can be replaced by a key-value lookup; use the German names from `Begriffe!B13:F57` as the room-use keys (or the SIA codes 1.1…12.12, but matrix column B stores the names).
-3. Keep the gating semantics of `IF(flag=FALSE,0,…)` (Lüftung system, gekühlt, beheizt) and the `IF(空行,0)` guard.
+3. Keep the gating semantics of `IF(flag=FALSE,0,…)` (Lüftung system, gekühlt, beheizt) and the `IF(blank row,0)` guard.
 4. Keep the N9/O9 column selectors as-is or fix them according to the matrix definition (see the deviation note in §2.3); the EBF SUMIF and the construction-area factor (10 %) are normative values.

@@ -35,7 +35,7 @@
 | 109–115 | Filter pressure drop, shaft power/motor power, frost-protection power | `B110:B114`, `F113` |
 | 117–120 | IST block headers (state-point naming) | `A117` AUL, `F117` AUL nWRG, `N117/T117` MIL, `Z117` cooling coil, `AH/AK` D1/D2, `AN` E, `AQ` F, `AT` G, `AW` Fall-, `BB..BH` Fall 1–4, `BJ` soll, `BN` ist, `BR` Raum |
 | **121–181** | **IST temperature-bin calculation** (61 bins, t_A = −25…+35 °C) | see §4.4–4.11 column map |
-| 182–183 | **IST summary**: energy sums (`CE182…CM182、CT182`) and power maxima (`BZ183…CD183`) | see §4.12 |
+| 182–183 | **IST summary**: energy sums (`CE182…CM182, CT182`) and power maxima (`BZ183…CD183`) | see §4.12 |
 | 184 | Documentation row (legacy LUET/LUEAB formula text, a `#NAME?` risk source) | `A184/D184` |
 | 185–250 | SOLL bin block (dormant) + SOLL sum (row 250) | all 0 |
 | 251–253 | "Energiebedarf pro Aussentemp." header and chart lookup values | `H253:J253` |
@@ -113,13 +113,13 @@ $$
 
 **Units**: g/kg; –; °C.
 
-**Derivation**: $\varphi_R$ uses `RelFeuchte` (Chapter 1, formula 5) to back-calculate the relative humidity of the outdoor moisture content at room temperature (`BR`, from the temperature curve) — i.e. the simplified model "room humidity follows the outdoor moisture content" (when there is no independent moisture source). Frost-protection power `F113 = ṁ·cp·(t_设计−t_边界)/3600` (kW); preheating temperature rise = P/(ṁ·cp).
+**Derivation**: $\varphi_R$ uses `RelFeuchte` (Chapter 1, formula 5) to back-calculate the relative humidity of the outdoor moisture content at room temperature (`BR`, from the temperature curve) — i.e. the simplified model "room humidity follows the outdoor moisture content" (when there is no independent moisture source). Frost-protection power `F113 = ṁ·cp·(t_design−t_boundary)/3600` (kW); preheating temperature rise = P/(ṁ·cp).
 
 **Assumptions**: in the example `E32=0` (frost protection off) and `E33=0`, so `G{n} = A{n}` (no preheating); the room humidity band [E50, E48] = [0, 1] (not constraining).
 
 **Scope**: all 61 bins; the frost-protection branch activates only when t_A ≤ E33.
 
-**Cell origins**: `Berechnung LU!C121:C181、E121:E181、G121:G181、DB121:DB181、DC121:DC181`、`F113`.
+**Cell origins**: `Berechnung LU!C121:C181, E121:E181, G121:G181, DB121:DB181, DC121:DC181`, `F113`.
 
 ## 4.6 Formula 3 — Heat Recovery WRG (Fixed and Modulated Efficiency)
 
@@ -148,7 +148,7 @@ where $t_{ist} = \min(t_{WRG,0},\ t_{ZUL,soll})$ (no over-recovery — full bypa
 
 **Scope**: applies in both winter and summer; the example (E30="ja") takes the modulated branch, while E30="nein" uses the fixed η0.
 
-**Cell origins**: `Berechnung LU!F121:F181、H121:H181、I121:I181、J121:J181、K121:K181、L121:L181、M121:M181`、`BU121:BU181` (exhaust-air temperature)、`BW121:BW181` (exhaust-air moisture content).
+**Cell origins**: `Berechnung LU!F121:F181, H121:H181, I121:I181, J121:J181, K121:K181, L121:L181, M121:M181`, `BU121:BU181` (exhaust-air temperature), `BW121:BW181` (exhaust-air moisture content).
 
 ## 4.7 Formula 4 — Mixed Air MIL (Fresh-Air Ratio and Bypass)
 
@@ -232,7 +232,7 @@ BQ{n} = EnthalpieA(BN{n},BP{n},$N$19) ' h_ZUL,ist
 
 **Scope**: all bins; this is the IST side of the "IST vs SOLL comparison" (§4.10).
 
-**Cell origins**: `Berechnung LU!AW121:AW181、AX121:BA181、BB121:BI181、BN121:BQ181`; UDF source `Fallunterscheidung.bas` (`Fall1Tzul/Fall1xzul/Fall2Tzul/Fall2xzul` — columns BB–BE call them by name, so they are **live code** (an earlier assessment misjudged them as dead code); `#NAME?` appears only in AQ/AS (`TaupunktA`), which proves that the four UDFs of BB–BE are available in the VBA binary and are resolved by the formula engine).
+**Cell origins**: `Berechnung LU!AW121:AW181, AX121:BA181, BB121:BI181, BN121:BQ181`; UDF source `Fallunterscheidung.bas` (`Fall1Tzul/Fall1xzul/Fall2Tzul/Fall2xzul` — columns BB–BE call them by name, so they are **live code** (an earlier assessment misjudged them as dead code); `#NAME?` appears only in AQ/AS (`TaupunktA`), which proves that the four UDFs of BB–BE are available in the VBA binary and are resolved by the formula engine).
 
 ## 4.10 Formula 7 — Supply-Air Setpoint (SOLL) and Room/Exhaust-Air State
 
@@ -250,7 +250,7 @@ Implementation: `BJ{n} = IF($DA{n}<=$B$89,$C$89-($B$89-$DA{n})*$I$88,IF($DA{n}<=
 
 **Assumptions**: the exhaust-air state = the room state (perfect mixing); the room humidity band [E50,E48] is [0,1] in the example (not constraining); no independent room moisture source (E52=0 → I20=0).
 
-**Cell origins**: `Berechnung LU!BJ121:BM181、BR121:BW181`; temperature-curve breakpoints `B88:D91` and slopes `I88:J90`.
+**Cell origins**: `Berechnung LU!BJ121:BM181, BR121:BW181`; temperature-curve breakpoints `B88:D91` and slopes `I88:J90`.
 
 ## 4.11 Formula 8 — Enthalpy Difference and Energy (Per-Bin MWh)
 
@@ -303,11 +303,11 @@ CH182 = SUM(CH122:CH181)      CL182 = SUM(CL122:CL181)
 **Power maxima** (row 183, kW; MAX enthalpy difference × design air volume E18 × ρ / 3600):
 
 ```
-BZ183 = MAX(BZ$121:BZ$181)*$E$18*$N$23/3600      ' 冷却功率
-CA183 = MAX(CA$121:CA$181)*$E$18*$N$23/3600      ' 除湿冷却功率
-CB183 = MAX(CB$121:CB$181)*$E$18*$N$23/3600      ' 除湿再热功率
-CC183 = MAX(CC$133:CC$181)*$E$18*$N$23/3600      ' 加热功率（注意从行 133 起！）
-CD183 = MAX(CD$121:CD$181)*$E$18*$N$23/3600      ' 加湿加热功率
+BZ183 = MAX(BZ$121:BZ$181)*$E$18*$N$23/3600      ' cooling power
+CA183 = MAX(CA$121:CA$181)*$E$18*$N$23/3600      ' dehumidification cooling power
+CB183 = MAX(CB$121:CB$181)*$E$18*$N$23/3600      ' dehumidification reheat power
+CC183 = MAX(CC$133:CC$181)*$E$18*$N$23/3600      ' heating power (note: starts at row 133!)
+CD183 = MAX(CD$121:CD$181)*$E$18*$N$23/3600      ' humidification heating power
 ```
 
 **Annual result rows** (rows 254–260, kWh/kW):
@@ -326,7 +326,7 @@ CD183 = MAX(CD$121:CD$181)*$E$18*$N$23/3600      ' 加湿加热功率
 
 **Write-back to Lüftung** (template row 32): `Lüftung!Q32 ← 'Berechnung LU'!P7` (Luftkühlung power), `R32 ← Q7` (energy), `S32 ← R7`, `T32 ← S7`, `I32 ← H7` (fan energy), `K32 ← J7` (full-load hours); **note the misalignment**: `Lüftung!U32 ← V7` (dehumidification cooling power, but the header says "Befeuchtung"), `V32 ← W7`, `W32 ← X7`, `X32 ← Y7`, `Y32 ← T7` (humidification heating power, header says "Entf. Erwärmung"), `Z32 ← U7` — i.e. the wiring of the six columns U…Z on the `Lüftung` sheet is **shifted by one pair relative to the headers** (see §4.14-8; in the example building all three pairs are 0, so no visible difference results).
 
-**Cell origins**: `Berechnung LU!182–183 行`、`254–260 行`、`7 行`；`Lüftung!Q32:Z32、I32、K32`.
+**Cell origins**: rows `Berechnung LU!182–183`, `254–260`, `7`; `Lüftung!Q32:Z32, I32, K32`.
 
 ## 4.13 Formula 10 — Fan Model (Stages, Affinity Laws, Efficiency, Energy Consumption)
 
@@ -341,7 +341,7 @@ Implementation: `E19 = IF(OR(I6="einstufig",I6="1 vitesse",I6="1 velocità"),E18
 **Staged power (fan affinity laws, exponent 2.5)** (`I14:I16` ZUL, `I17:I19` ABL):
 
 $$
-P_{stufe} = P_{nom}\cdot\Big(\frac{\dot V_{stufe}}{\dot V_{max}}\Big)^{2.5},\quad P_{nom} = \frac{G6}{2}\ (\text{ZUL}),\ \text{ABL 同}
+P_{stufe} = P_{nom}\cdot\Big(\frac{\dot V_{stufe}}{\dot V_{max}}\Big)^{2.5},\quad P_{nom} = \frac{G6}{2}\ (\text{ZUL}),\ \text{ABL same}
 $$
 
 Implementation (`I14`): `=IF(E18<MAX(E19:E20),IF(ISERROR(E16*(E18^2.5)/(E19^2.5)),0,E16*(E18^2.5)/(MAX(E18:E20)^2.5)),E16)`.
@@ -358,14 +358,14 @@ Implementation (`I14`): `=IF(E18<MAX(E19:E20),IF(ISERROR(E16*(E18^2.5)/(E19^2.5)
 
 **Assumptions**: the efficiency-class lookup is selected by rated power E16; within a stage, power and air volume are constant; the ISERROR guard prevents division by zero for zero air volume.
 
-**Cell origins**: `Berechnung LU!E16:E25、I14:I19、J64:M67、K68:K70、M70、CT121:CT181、C259、H7`.
+**Cell origins**: `Berechnung LU!E16:E25, I14:I19, J64:M67, K68:K70, M70, CT121:CT181, C259, H7`.
 
 ## 4.14 Known Quirks and Risks (Observed)
 
 1. **Dead `TaupunktA` reference**: `AQ{n} = TaupunktA(AR{n},$N$19)` → `#NAME?`, cascading to `AS{n}` → `#VALUE!` (122 bins × 2 blocks). Columns AQ/AS ("ZUL Taupunkt bei Entfeuchtung (F)") do not feed any result — but they should be removed or fixed during a port (using the Chapter 1 Glück inverse).
 2. **Energy sums start at row 122**: `SUM(CE122:CE181)` etc. exclude t_A = −25 °C (row 121) from the annual sum (that bin has 0 hours, so no practical effect); the power maximum `CC183 = MAX(CC$133:CC$181)` starts at −10 °C (likewise no practical effect because CC is constantly 0 in the low bins, but the convention is inconsistent).
 3. **Dormant SOLL block**: columns B/C/D are literally 0, the pressure reference is `#REF!`, `K82/M82/P82/R82=0` → all SOLL energies are 0; activating the SOLL inputs would require fixing the `#REF!` and backfilling the climate data.
-4. **`T{n} = MIN(单参)`** is a no-op (intermediate value of temperature-controlled mixing) — a formula leftover.
+4. **`T{n} = MIN(single-argument)`** is a no-op (intermediate value of temperature-controlled mixing) — a formula leftover.
 5. **Columns `AD/AE` are draft columns**: AD = the consecutive integers of row number − 122 (−1…59), referenced only by AE, which in turn has no downstream — suspected debugging/charting residue; `AD181=59` makes `AE181 = h(9, 59 g/kg) = 157.6 kJ/kg` (59 g/kg at 9 °C is a supersaturated state, physically unreachable).
 6. **Chart guard values**: columns `CN…CV` use 222/−222 to "kick" the curves of bins without hours out of the charts; `AG` uses 1E+23 to prevent vertical cooling curves.
 7. **Empty energy prices**: `I26:I28`, `J26:J28` are unfilled → the costs `F254:F259` are all 0; only the water price 185 Rp./m³ (I29/J29) is effective.
@@ -380,14 +380,14 @@ Implementation (`I14`): `=IF(E18<MAX(E19:E20),IF(ISERROR(E16*(E18^2.5)/(E19^2.5)
 ## 4.15 Computation-Chain Overview (For Review)
 
 ```
-t_A (Klimadaten!M) ─► B = O/8760·K68（区间运行小时）
-AUL: x_A=C, φ_R=E ─► 防冻 G（关） ─► WRG: I/J/K/L/M（ε 调节，夏季旁通 ε=0）
-MIL: N..Y（γ=1 纯新风） ─► 冷盘管: Z..AM（A/C/D1/D2 + 线性冷却曲线）
-Fall 判定: AW（1 加热+加湿 / 2 除湿+加热 / 3 冷却±再热 / 4 冷却+加湿）
-ZUL soll: BJ..BM（温度曲线 + 湿度漂移）；ZUL ist: BN..BQ（BB..BI 按工况）
-焓差: BZ(冷却) CA(除湿冷却) CB(除湿再热) CC(加热) CD(加湿加热)
-能量: CJ/CE/CK/CF/CG/CM/CT = B·ṁ·Δh/3.6e6（风机 CT = B·M70/1000）
-汇总: 行182 和（MWh）→ 行183 最大（kW）→ 行254..259（kWh/kW）→ 行7（MWh）→ Lüftung
+t_A (Klimadaten!M) ─► B = O/8760·K68 (bin operating hours)
+AUL: x_A=C, φ_R=E ─► frost protection G (off) ─► WRG: I/J/K/L/M (ε modulated, summer bypass ε=0)
+MIL: N..Y (γ=1 pure fresh air) ─► cooling coil: Z..AM (A/C/D1/D2 + linear cooling curve)
+Fall determination: AW (1 heating+humidification / 2 dehumidification+heating / 3 cooling±reheat / 4 cooling+humidification)
+ZUL soll: BJ..BM (temperature curve + humidity drift); ZUL ist: BN..BQ (BB..BI by case)
+enthalpy difference: BZ(cooling) CA(dehumidification cooling) CB(dehumidification reheat) CC(heating) CD(humidification heating)
+energy: CJ/CE/CK/CF/CG/CM/CT = B·ṁ·Δh/3.6e6 (fan CT = B·M70/1000)
+summary: row 182 sum (MWh) → row 183 max (kW) → rows 254..259 (kWh/kW) → row 7 (MWh) → Lüftung
 ```
 
 ## 4.16 Porting Notes

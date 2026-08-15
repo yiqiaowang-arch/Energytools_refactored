@@ -12,11 +12,11 @@ This chapter presents all of Gebäude-Tool's moist-air state-variable formulas: 
 | # | UDF | Signature (units in comments) | Return | Referenced by workbook formulas? |
 |---|---|---|---|---|
 | 1 | `Saettigungsdruck` | `(T)` T[°C] | Saturation pressure [mbar] | No (dead code; the polynomial is inlined in other functions) |
-| 2 | `AbsFeuchte` | `(T, rF, p)` T[°C], rF[%], p[mbar] | Humidity ratio [g/kg] | **Yes**: `Klimadaten!Q5:Q65`, `Berechnung LU!AA{n}、BL{n}` |
+| 2 | `AbsFeuchte` | `(T, rF, p)` T[°C], rF[%], p[mbar] | Humidity ratio [g/kg] | **Yes**: `Klimadaten!Q5:Q65`, `Berechnung LU!AA{n}, BL{n}` |
 | 3 | `EnthalpieA` | `(T, x, p)` T[°C], x[g/kg], p[mbar] | Enthalpy [kJ/kg] | **Yes**: used extensively in `Berechnung LU` (columns N, O, Y, AB, AE, AJ, AM, AS, AV, BM, BQ) |
 | 4 | `EnthalpieR` | `(T, rF, p)` T[°C], rF[%], p[mbar] | Enthalpy [kJ/kg] | No (dead code) |
 | 5 | `TaupunktR` | `(T, rF, p)` | Dew point [°C] | No (dead code) |
-| 6 | `RelFeuchte` | `(T, x, p)` T[°C], x[g/kg], p[mbar] | Relative humidity [–] (the formula returns a decimal) | **Yes**: `Berechnung LU!E{n}、BK{n}、BO{n}、BV{n}` |
+| 6 | `RelFeuchte` | `(T, x, p)` T[°C], x[g/kg], p[mbar] | Relative humidity [–] (the formula returns a decimal) | **Yes**: `Berechnung LU!E{n}, BK{n}, BO{n}, BV{n}` |
 | 7 | `TemperaturH` | `(h, xein)` h[kJ/kg], x[g/kg] | Temperature [°C] | **Yes**: `Berechnung LU!AN{n}` |
 | 8 | `Feuchtkugel` | `(Tein, rFein)` T[°C], rF[%] | Wet-bulb temperature [°C] | No (dead code) |
 | (9) | `TaupunktA` (commented out) | `(x, p)` x[g/kg], p[mbar] | Dew point [°C] | Referenced but `#NAME?` (see §1.8) |
@@ -77,7 +77,7 @@ Here $\varphi$ is passed as a decimal (0–1) (as actually used at the call site
 **Workbook implementation**:
 
 ```vba
-'Glück 多项式 → ps [mbar]
+'Glück polynomial → ps [mbar]
 AbsFeuchte = (rF * 622 * ps) / (p - rF * ps)      ' [g/kg]
 ```
 
@@ -118,7 +118,7 @@ EnthalpieA = cpl * T + x / 1000 * (r0 + cpw * T)   ' x [g/kg]
 **Derivation**: with 0 °C dry air and 0 °C liquid water as the enthalpy datum (HVAC convention; reference state 0 °C, 0 kJ/kg):
 
 $$
-h = \underbrace{c_{pl}T}_{\text{干空气显热}} + \underbrace{\frac{x}{1000}\big(\underbrace{r_0}_{\text{0 °C 汽化潜热}} + \underbrace{c_{pw}T}_{\text{水蒸气显热}}\big)}_{\text{水蒸气焓}}
+h = \underbrace{c_{pl}T}_{\text{sensible heat of dry air}} + \underbrace{\frac{x}{1000}\big(\underbrace{r_0}_{\text{latent heat at 0 °C}} + \underbrace{c_{pw}T}_{\text{sensible heat of water vapour}}\big)}_{\text{enthalpy of water vapour}}
 $$
 
 i.e. $h = c_{pl}T + x_{kg}(r_0 + c_{pw}T)$. Above 0 °C: $r_0 + c_{pw}T$ is the enthalpy of water vapour at T (latent + sensible heat); below 0 °C the sublimation heat of ice is about 2834 kJ/kg, which this formula approximates with 2501.6 (the error grows as the temperature drops; see range of validity).
@@ -171,7 +171,7 @@ $$
 **Workbook implementation**:
 
 ```vba
-'Glück 多项式 → ps [mbar]
+'Glück polynomial → ps [mbar]
 RelFeuchte = (x * p) / (ps * (622 + x))
 ```
 
@@ -272,8 +272,8 @@ EnthalpieR = cpl * T + x * (r0 + cpw * T)
 | UDF | Calling cells (all) | Purpose |
 |---|---|---|
 | `AbsFeuchte` | `Klimadaten!Q5:Q65`; `Berechnung LU!AA{n}`, `BL{n}` | Interval humidity ratio; saturation/dew-point limiting |
-| `EnthalpieA` | `Berechnung LU!N{n}、O{n}、Y{n}、AB{n}、AE{n}、AJ{n}、AM{n}、AS{n}、AV{n}、BM{n}、BQ{n}` | Enthalpy at the individual state points (MIL, after KRG, after coils, Abluft, etc.) |
-| `RelFeuchte` | `Berechnung LU!E{n}、BK{n}、BO{n}、BV{n}` | Outdoor/exhaust relative humidity (with MIN saturation clamp) |
+| `EnthalpieA` | `Berechnung LU!N{n}, O{n}, Y{n}, AB{n}, AE{n}, AJ{n}, AM{n}, AS{n}, AV{n}, BM{n}, BQ{n}` | Enthalpy at the individual state points (MIL, after KRG, after coils, Abluft, etc.) |
+| `RelFeuchte` | `Berechnung LU!E{n}, BK{n}, BO{n}, BV{n}` | Outdoor/exhaust relative humidity (with MIN saturation clamp) |
 | `TemperaturH` | `Berechnung LU!AN{n}` | Inverted temperature after heating |
 | `TaupunktA` | `Berechnung LU!AQ{n}` (**commented out, reports #NAME?**) | Dew point (non-functional) |
 

@@ -21,7 +21,7 @@ This chapter covers the conversion from "room + air-treatment demand" to "final 
 
 **Representative standard values**: Kälte: KE01=3, KE02=4, KE03=4, KE04=7.5, KE05/KE06=15 (direct cold source, high EER); Wärme: WE01/WE02=0.8 (oil/gas condensing), WE03=0.6 (Stückholz), WE04/WE05=0.7 (Hackschnitzel/Pellets), WE06=0.98 (Fernwärme), WE07=0.93, WE08=1 (Elektro direkt), WE09=0.5 (WKK thermisch), WE11–WE16=3.0/2.2/4.3/3.1/4.3/3.1 (heat pumps 35/50 °C × air/ground/water source); WW: W01/W02=0.75, W03=0.55, W04=0.6, W05=0.65, W06/W07=1, W08=0.65, W11=2.2, W12=2.4, W13=1.9.
 
-**Cell sources**: `Nutzungsgrad!E3:E8、E11:E26、E29:E41`; F column same range; labels via `Begriffe!F244/F251/F242`.
+**Cell sources**: `Nutzungsgrad!E3:E8, E11:E26, E29:E41`; F column same range; labels via `Begriffe!F244/F251/F242`.
 
 ## 5.3 Erzeugung Layout
 
@@ -76,7 +76,7 @@ where $d_{P,i}$, $d_{E,i}$ are the power/energy Deckungsgrad (%), and $v_i = \te
 
 **Applicability**: Kälte (L7:M9) and Wärme (L16:M18) are isomorphic; the WW group has a different power source (see Formula 2). Empty rows (no generator) output 0.
 
-**Cell sources**: `Erzeugung!L7:M9`, `L16:M18`; demand sources `Gebäude!Q35/R35、T35/U35`, `Lüftung!Q23/R23、S23/T23`.
+**Cell sources**: `Erzeugung!L7:M9`, `L16:M18`; demand sources `Gebäude!Q35/R35, T35/U35`, `Lüftung!Q23/R23, S23/T23`.
 
 ## 5.5 Formula 2 — Warmwasser Power Demand (Water Volume → Power Conversion)
 
@@ -98,7 +98,7 @@ where $V_{WW}$ = `Gebäude!V35` (daily water demand l/d, Chapter 2, Formula 4), 
 
 **Assumptions**: Temperature rise is constant at 50 K; the daily water demand is heated uniformly within the Aufheizzeit (tank heat storage); water density 1 kg/l.
 
-**Cell sources**: `Erzeugung!L25:L27` (energy column `M25: =（Gebäude!W$35×G25%）×(100+IF($J25<>"",$J25,$H25))%`, expressed directly in MWh); `Erzeugung!L29/M29` (6 h/d).
+**Cell sources**: `Erzeugung!L25:L27` (energy column `M25: =(Gebäude!W$35×G25%)×(100+IF($J25<>"",$J25,$H25))%`, expressed directly in MWh); `Erzeugung!L29/M29` (6 h/d).
 
 ## 5.6 Formula 3 — Volllaststunden and Endenergie
 
@@ -164,7 +164,7 @@ Efficiency $\eta_i = \text{IF}(E_i\neq"", E_i, D_i)$ (project value takes preced
 **Mathematical form** (for Energieträger $e$, use $u$):
 
 $$
-Q_{End}(e,u) = \sum_{i\in \text{Erzeugung 组}(u)} Q_{End,i}\cdot\mathbb{1}[R_i = e]
+Q_{End}(e,u) = \sum_{i\in \text{generator group}(u)} Q_{End,i}\cdot\mathbb{1}[R_i = e]
 $$
 
 **Workbook implementation** (`Resultate!O7`, Kühlung energy):
@@ -183,7 +183,7 @@ $$
 
 **Applicability**: `Resultate!N7:S14` (6 use columns × 8 rows); the T/U Total columns use an explicit SUM (including the directly referenced Gebäude/Lüftung columns).
 
-**Cell sources**: `Resultate!N7:S14`; match keys `Erzeugung!R7:R9、R16:R18、R25:R27`; catalogue `Nutzungsgrad!F3:F8、F11:F26、F29:F41`.
+**Cell sources**: `Resultate!N7:S14`; match keys `Erzeugung!R7:R9, R16:R18, R25:R27`; catalogue `Nutzungsgrad!F3:F8, F11:F26, F29:F41`.
 
 ## 5.10 Formula 6 — Weighted Energy and Per-Floor-Area Indicators
 
@@ -198,7 +198,7 @@ $$
 
 ```
 =SUMPRODUCT(E$7:E$17*W7:W17)
-=D21*1000/Gebäude!$D$39     ' 注意：D21 指向 E21 的 1/1000 镜像（见下）
+=D21*1000/Gebäude!$D$39     ' note: D21 points to the 1/1000 mirror of E21 (see below)
 ```
 
 **Units**: MWh; kWh/m².
@@ -213,7 +213,7 @@ $$
 
 **Applicability**: `Resultate!D21:U25`; the weight columns W/X/Y can be edited by the user.
 
-**Cell sources**: `Resultate!E21、G21、I21、K21、M21、O21、Q21、S21、U21` (NEGF); `E22…U22` (PEne); `E25…U25` (THGE); weights `W7:Y17`; denominator `Gebäude!D39`.
+**Cell sources**: `Resultate!E21, G21, I21, K21, M21, O21, Q21, S21, U21` (NEGF); `E22…U22` (PEne); `E25…U25` (THGE); weights `W7:Y17`; denominator `Gebäude!D39`.
 
 ## 5.11 Verification Matrix (Example Building, El Row, Units MWh/kW)
 
@@ -225,8 +225,8 @@ $$
 | Beleuchtung | 59.9020 | 41.3754 | `K7/J7 ← Gebäude!K35/J35` |
 | Lüftung (fans) | 32.4834 | 9.2079 | `M7/L7 ← Lüftung!I23/H23` |
 | Kühlung | 8.1262 | 33.5893 | `O7/N7 ← Erzeugung!Q/P10` |
-| Heizung | 11.8202 | 17.7691 | `Q7/P7 ← SUMIF WE 组` |
-| Warmwasser | 2.6239 | 1.2597 | `S7/R7 ← SUMIF W 组` |
+| Heizung | 11.8202 | 17.7691 | `Q7/P7 ← SUMIF WE group` |
+| Warmwasser | 2.6239 | 1.2597 | `S7/R7 ← SUMIF W group` |
 | **Total** | **320.3159** | **207.5942** | `U7/T7` |
 
 **Energy-conservation check**: demand side (Gebäude+Luft+Warmwasser, before losses) 129.686+21.03+59.902+32.483+(61.207+2.113)+(68.834+5.042)+10.121 ≈ 390.4 MWh; the Endenergie side, after conversion by η, totals 347.89 MWh by Energieträger (`U15`) — the difference stems from the net effect of generation efficiency (COP>1 makes electricity consumption lower than demand) and the loss markup (>1). Both accounting conventions are traceable within the sheet.
