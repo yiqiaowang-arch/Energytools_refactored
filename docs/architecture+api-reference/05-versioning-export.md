@@ -98,7 +98,7 @@ Full entry: [02 §2.5](02-common-foundation.md#25-versionresolver). Usage contra
 ## 3. `energytools.export`
 
 Replaces the workbook export macros (`Res_Export`, `Volll_Lüft_Export`, `Qhc_Export`,
-`DatenblattSpeichern` — see [01 §3.1](01-package-inventory.md#31-raumdatenblätter-raumdatenxlsm-34-modules))
+`DatenblattSpeichern` — see [01 §3.1](01-package-inventory.md#31-raumdatenblatter-raumdatenxlsm-34-modules))
 with semantic exporters: **no cell copying, no filters, no clipboard**; exports are rendered
 from the domain model. Every exporter embeds version + provenance metadata.
 

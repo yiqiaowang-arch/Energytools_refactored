@@ -72,9 +72,9 @@ and functions.
 > `Fallunterscheidung` as dead code; the textbook's full-sheet formula scan proved it **live**
 > (`Berechnung LU!BB:BE` calls `Fall1Tzul`/`Fall1xzul`/`Fall2Tzul`/`Fall2xzul` on 61×2 interval
 > rows — textbook README §0.7-10, ch04 §4.9). It is therefore mapped as ported logic, not as
-> `not ported` (see [01 §3.2](01-package-inventory.md#32-gebäude-tool-gebaeudexlsm-21-modules)).
+> `not ported` (see [01 §3.2](01-package-inventory.md#32-gebaude-tool-gebaeudexlsm-21-modules)).
 
-Every VBA module of both workbooks appears in [01 §3](01-package-inventory.md#3-vba--python-symbol-mapping-grounding):
+Every VBA module of both workbooks appears in [01 §3](01-package-inventory.md#3-vba-python-symbol-mapping-grounding):
 none is silently omitted.
 
 ---
@@ -108,7 +108,7 @@ The following are **intentional design decisions / follow-ups**, not omissions:
    `Feuchtkugel`/`TaupunktR` and the commented-out `TaupunktA` (Gebäude) are mapped
    `reference-only` with explicit reasons (textbook ch01 §1.7–§1.9); license/protection/UI
    macros are `not ported` (see
-   [01 §3](01-package-inventory.md#3-vba--python-symbol-mapping-grounding)).
+   [01 §3](01-package-inventory.md#3-vba-python-symbol-mapping-grounding)).
    **`Fallunterscheidung` is live code** (see the correction note in §2.3): its Fall 1–4
    case logic is ported into `ahu.calculate_ahu` and must be **verified against the Excel
    oracle** with golden values from `Berechnung LU` rows 254–260 (per-system IST runs) — the
