@@ -168,7 +168,7 @@ Values for the example system LA01 (IST = column E, SOLL = column F).
 - `M58 = L58/L$61` → 0.625 (share of stage 1); M59/M60 = 0.1875.
 - Stage values: `J64=E18`, `K64=J64*M58` (weighted volume flow), `L64=(I14/C108+I17/E108)` (sum ZUL+ABL power/η), `M64=L64*M58`; analogous rows 65/66; `K67=SUM(K64:K66)` → 8578.57 (=E18, consistency test), `M67=SUM(M64:M66)` → 6.863 (=G6).
 - `K68 = IF($I$8=1,INDEX(Std!$Q$6:$V$50,MATCH('Berechnung LU'!$B$6,Std!$B$6:$B$50,0),1),IF($I$8=2,…,3),IF($I$8=3,…,5),FALSE))` → **3900** (Volllaststunden Volumenstrom, SIA 2024)
-- `K69 = …(index column 2/4/6)…` → **3900** (Volllaststunden Elektrizität)
+- `K69 = …(Indexspalte 2/4/6)…` → **3900** (Volllaststunden Elektrizität)
 - `K70 = E7*K68/8760` → 3819.23 m³/h (annual-average volume flow)
 - `M70 = G6*K69/K68` → 6.863 kW (annual-average fan power)
 - `P70 = K70`, `R70 = M70` (for the dV summer logic)
@@ -564,7 +564,7 @@ No `#DIV/0!` in the current state (caught by ISERROR/IFERROR/IF guards; see §8)
 1. **Gebläsegesetz with exponent 2.5** (instead of 3) in I14:I19.
 2. **Sums start at row 122** – the class −25 °C (row 121) is excluded from all energy sums (`CE182…CT182`, `CE250…CT250`) (B121=0, therefore without effect here).
 3. **`CC183 = MAX(CC$133:CC$181)…`** – heating power maximum from row 133 (−10 °C), not from 121.
-4. **`T{n} = MIN(…single argument…)`** – MIN() without a second argument is a no-op (temperature-control intermediate value).
+4. **`T{n} = MIN(…einfaches Argument…)`** – MIN() without a second argument is a no-op (temperature-control intermediate value).
 5. **AD column** is a literal running scratch column (−1…59) only for AE (which itself is nowhere referenced) – presumably legacy/chart aid.
 6. **D column (rF_AUL from Klimadaten!N)** is referenced by no formula (display only); the effective room rF is recomputed in E via `RelFeuchte(BR, C, p)`.
 7. **222/−222 guards** in CN…CV for charts (hiding when B=0 or E=0); `1E+23` in AG against a vertical cooling curve.
