@@ -45,8 +45,8 @@ theme:
     repo: fontawesome/brands/github
 
 # 仓库信息（发布前替换为真实仓库地址）
-repo_name: energytools/energytools
-repo_url: https://github.com/energytools/energytools
+repo_name: yiqiaowang-arch/Energytools_refactored
+repo_url: https://github.com/yiqiaowang-arch/Energytools_refactored
 
 # 站点导航: 首页 / 工作簿评估 / 架构 / 计算模型 / API参考 / 安装 / 发布与部署
 # 三大内容板块（架构、计算模型、API参考）分别映射到
