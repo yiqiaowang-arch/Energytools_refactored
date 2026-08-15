@@ -31,3 +31,7 @@ env/
 
 # --- Documentation build output (MkDocs) ---
 site/
+
+# --- Sandboxed-verification bootstrap ---
+.pylibs/
+.tmp/
