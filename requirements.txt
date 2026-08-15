@@ -1,0 +1,16 @@
+# =============================================================================
+# 文档构建依赖 (MkDocs + Material)
+# 本地与 ReadTheDocs 共用（.readthedocs.yaml 的 python.install 引用本文件）。
+#
+# 版本策略：固定主版本区间以便复用 mkdocs-material 的缓存/兼容性，
+# 同时允许补丁升级。本地验证基线：mkdocs 1.6.1 + mkdocs-material 9.7.7
+# （Python 3.12）。
+#
+# 说明：API 参考为手写文档（见 docs/architecture+api-reference/），
+# 不需要 mkdocstrings；若未来切换到自动生成模式，取消注释最后一行。
+# =============================================================================
+
+mkdocs>=1.6,<2
+mkdocs-material>=9.5,<10
+
+# mkdocstrings[python]>=0.26

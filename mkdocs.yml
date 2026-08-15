@@ -1,0 +1,114 @@
+# =============================================================================
+# Energytools 文档站点配置 (MkDocs + Material)
+# -----------------------------------------------------------------------------
+# 本地构建:
+#   pip install -r requirements.txt
+#   mkdocs serve     # 本地预览 http://127.0.0.1:8000
+#   mkdocs build     # 输出到 site/
+# ReadTheDocs 构建入口见 .readthedocs.yaml
+# =============================================================================
+
+site_name: Energytools 文档
+site_description: Energytools —— 能源工具库的架构、计算模型与 API 参考文档
+site_url: https://energytools.readthedocs.io/
+
+# 主题: mkdocs-material (https://squidfunk.github.io/mkdocs-material/)
+theme:
+  name: material
+  language: zh
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: 切换到暗色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到亮色模式
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+
+# 仓库信息（发布前替换为真实仓库地址）
+repo_name: energytools/energytools
+repo_url: https://github.com/energytools/energytools
+
+# 站点导航: 首页 / 工作簿评估 / 架构 / 计算模型 / API参考 / 安装 / 发布与部署
+# 三大内容板块（架构、计算模型、API参考）分别映射到
+# docs/architecture+api-reference/ 与 docs/textbook/ 下的真实文档:
+#   * 架构        -> architecture+api-reference/README + 01(包与符号清单) + 08(完整性检查)
+#   * 计算模型    -> textbook/ (第 1–6 章 + 附录 A)
+#   * API参考     -> architecture+api-reference/02–07 (各模块 API 条目)
+# 所有路径相对于 docs_dir（默认 docs/）。
+nav:
+  - 首页: README.md
+  - 工作簿评估: 01-workbook-assessment.md
+  - 架构:
+      - 导读: architecture+api-reference/README.md
+      - 包与符号清单: architecture+api-reference/01-package-inventory.md
+      - 完整性检查: architecture+api-reference/08-completeness-check.md
+      - 文档树一致性核对报告: verification/文档树一致性核对报告.md
+  - 计算模型:
+      - 导读: textbook/README.md
+      - 第 1 章 湿空气物理: textbook/ch01-湿空气物理-Glück多项式与UDF.md
+      - 第 2 章 房间 KPI 派生: textbook/ch02-房间KPI派生.md
+      - 第 3 章 通风全负荷小时: textbook/ch03-通风全负荷小时.md
+      - 第 4 章 AHU 温度区间法: textbook/ch04-AHU温度区间法.md
+      - 第 5 章 产热与 Resultate 汇总: textbook/ch05-产热与Resultate汇总.md
+      - 第 6 章 气候数据: textbook/ch06-气候数据.md
+      - 附录 A Berechnung LU 分析: textbook/analysis_Berechnung_LU.md
+      - 附录 B 公式与工作簿对拍复核报告: verification/教科书六章公式与工作簿对拍复核报告.md
+  - API参考:
+      - 公共基础: architecture+api-reference/02-common-foundation.md
+      - Raumdaten 数据服务: architecture+api-reference/03-raumdaten-service.md
+      - Gebäude 计算引擎: architecture+api-reference/04-gebaeude-engine.md
+      - 版本化与导出: architecture+api-reference/05-versioning-export.md
+      - FastAPI 层: architecture+api-reference/06-fastapi-layer.md
+      - MCP 层: architecture+api-reference/07-mcp-layer.md
+  - 安装: installation.md
+  - 发布与部署:
+      - 构建与发布管线: deployment/readthedocs.md
+      - 首次上线发布清单: deployment/release-checklist.md
+      - 发布前置清单（用户操作）: deployment/发布前置清单与用户操作手册.md
+
+# Markdown 扩展
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+# 插件
+plugins:
+  - search
+
+# 版权信息
+copyright: Copyright &copy; 2024 Energytools 项目组

@@ -1,0 +1,4721 @@
+{
+  "pass": 671,
+  "fail": 0,
+  "warn": 1,
+  "fails": [],
+  "warns": [
+    {
+      "id": "3.4-I8",
+      "chapter": "ch03",
+      "ok": false,
+      "detail": "BLU!I8 formula ≠ (dump: IF(I6=Begriffe!F205,1,IF('BerechnungLU'!I6=Begriffe!F206,2,IF('BerechnungLU'!I6=Begriffe!F207,3,FALSE))) / expect: IF('BerechnungLU'!I6=Begriffe!F205,1,IF('BerechnungLU'!I6=Begriffe!F206,2,IF('BerechnungLU'!I6=Begriffe!F207,3,FALSE))); 章节引用省略了同表前缀，语义一致)",
+      "severity": "warn"
+    }
+  ],
+  "results": [
+    {
+      "id": "1.1-const-cpl1006",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"cpl = 1.006\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-cpw186",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"cpw = 1.86\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-r025016",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"r0 = 2501.6\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckicecoeff4909965",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"-4.909965\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckicecoeff8183197",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"8.183197\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckicecoeff5552967",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"-5.552967\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckicecoeff2228376",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"-2.228376\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckicecoeff6211808",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"-6.211808\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckwatercoeff191275",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"-1.91275\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckwatercoeff7258",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"7.258\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckwatercoeff2939",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"-2.939\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckwatercoeff9841",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"9.841\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Glckwatercoeff192",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"-1.92\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-611factor",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"611 * Exp\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-AbsFeuchtebody",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"AbsFeuchte = (rF * 622 * ps) / (p - rF * ps)\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-EnthalpieAbody",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"EnthalpieA = cpl * T + x / 1000 * (r0 + cpw * T)\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-RelFeuchtebody",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"RelFeuchte = (x * p) / (ps * (622 + x))\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-TemperaturHbody",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"TemperaturH = (h - x * r0) / (cpl + cpw * x)\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-TaupunktRpst",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"pst = p / (0.622 * 1000 / x + 1)\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-TaupunktRTd",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"((pst / 2.8858) ^ (1 / 8.02) - 1.098) * 100\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-EnthalpieRbody",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"x = 0.622 * (rF * 100 * ps) / (p * 100 - rF * 100 * ps)\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Feuchtkugelbody",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"FK = -5.809 + 0.058 * rFein + 0.697 * Tein + 0.003 * rFein * Tein\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-const-Feuchtkugelicebranch",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "FeuchteLuft_Formeln.bas contains \"Feuchtkugel = FK * 0.8 + 0.5\"",
+      "severity": "pass"
+    },
+    {
+      "id": "1.1-TaupunktA-commented",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "TaupunktA 整段注释状态确认",
+      "severity": "pass"
+    },
+    {
+      "id": "1.2-ps0-jump",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "T=0 两段跳变 = 0.0372% (章节声称 0.03%)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.3-Q20",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "Klima!Q20 = 1.501516346575252 (expect ≈1.5015; AbsFeuchte(−10, 0.8817, 948.2))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.3-M20",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "Klima!M20 = \"-10\" (expect \"-10\"; T=−10 °C)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.3-N20",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "Klima!N20 = 0.8816666666666667 (章节 0.8817; 缓存 0.881666…=0.8817 取整)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.3-Q20-formula",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "Klima!Q20 formula MATCHES (dump: AbsFeuchte(M20,N20,$F$44) / expect: AbsFeuchte(M20,N20,$F$44); 调用示例公式)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.3-Q20-recompute",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "重算 AbsFeuchte(−10, 0.8817, 948.226) = 1.501516346575252 (缓存 1.50152)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-N121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!N121 formula MATCHES (dump: EnthalpieA(L121,M121,$N$19)*$E$35+(1-$E$35)*EnthalpieA(BU121,BW121,$N$19) / expect: EnthalpieA(L121,M121,$N$19)*$E$35+(1-$E$35)*EnthalpieA(BU121,BW121,$N$19); MIL 焓加权)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-Y121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!Y121 formula MATCHES (dump: EnthalpieA(W121,X121,$N$19) / expect: EnthalpieA(W121,X121,$N$19); KRG 后焓)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-AB121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AB121 formula MATCHES (dump: EnthalpieA(Z121,AA121,$N$19) / expect: EnthalpieA(Z121,AA121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-AE121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AE121 formula MATCHES (dump: EnthalpieA(AC121,AD121,$N$19) / expect: EnthalpieA(AC121,AD121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-AJ121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AJ121 formula contains \"EnthalpieA(\" (dump: EnthalpieA(AH121,AI121,$N$19); 盘管后焓)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-AM121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AM121 formula contains \"EnthalpieA(\" (dump: EnthalpieA(AK121,AL121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-AS121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AS121 formula MATCHES (dump: EnthalpieA(AQ121,AR121,$N$19) / expect: EnthalpieA(AQ121,AR121,$N$19); 级联 #VALUE!)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-AV121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AV121 formula contains \"EnthalpieA(\" (dump: EnthalpieA(AT121,AU121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-BM121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!BM121 formula MATCHES (dump: EnthalpieA(BJ121,BL121,$N$19) / expect: EnthalpieA(BJ121,BL121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-BQ121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!BQ121 formula MATCHES (dump: EnthalpieA(BN121,BP121,$N$19) / expect: EnthalpieA(BN121,BP121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.4-N121-v",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!N121 = 12.240572972972972 (expect ≈12.2406; MIL 焓 12.2406 kJ/kg)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.5-AN121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AN121 formula MATCHES (dump: TemperaturH(AP121,AO121) / expect: TemperaturH(AP121,AO121))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.5-AN121-v",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AN121 = 21.27027027027027 (expect ≈21.27; TemperaturH(AP121=21.3979, AO121=0) → 21.27 °C)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.5-AP121-v",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AP121 = 21.39789189189189 (expect ≈21.3979; AP=BM=21.398)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.6-E121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!E121 formula MATCHES (dump: MIN(100%,RelFeuchte(BR121,C121,$N$19)) / expect: MIN(100%,RelFeuchte(BR121,C121,$N$19)))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.6-BK121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!BK121 formula MATCHES (dump: MIN(1,RelFeuchte(BJ121,BT121,$N$19)) / expect: MIN(1,RelFeuchte(BJ121,BT121,$N$19)))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.6-BO121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!BO121 formula MATCHES (dump: MIN(1,RelFeuchte(BN121,BP121,$N$19)) / expect: MIN(1,RelFeuchte(BN121,BP121,$N$19)))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.6-BV121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!BV121 formula MATCHES (dump: RelFeuchte(BU121,BW121,$N$19) / expect: RelFeuchte(BU121,BW121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.7-fit-T0",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "幂律拟合 p_s(0°C) = 6.108 mbar (章节称 ≈6.11；Glück 真值 6.11；2025 修正)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.7-fit-T20",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "幂律拟合 p_s(20°C) = 23.374 mbar (章节称 ≈23.4；Glück 真值 23.4；2025 修正)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.7-AQ121-f",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AQ121 formula MATCHES (dump: TaupunktA(AR121,$N$19) / expect: TaupunktA(AR121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "1.7-AQ121-err",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AQ121 = \"{\\\"error\\\":\\\"#NAME?\\\"}\" (expect error #NAME?; TaupunktA 已注释)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.7-AS121-err",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AS121 = \"{\\\"error\\\":\\\"#VALUE!\\\"}\" (expect error #VALUE!; 级联错误)",
+      "severity": "pass"
+    },
+    {
+      "id": "1.8-Feuchtkugel-dead",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "工作簿公式无 Feuchtkugel( 调用",
+      "severity": "pass"
+    },
+    {
+      "id": "1.9-EnthalpieR-dead",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "工作簿公式无 EnthalpieR( 调用",
+      "severity": "pass"
+    },
+    {
+      "id": "1.7-TaupunktR-dead",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "工作簿公式无 TaupunktR( 调用",
+      "severity": "pass"
+    },
+    {
+      "id": "1.2-Saettigungsdruck-dead",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "工作簿公式无 Saettigungsdruck( 调用",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-F9",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!F9 formula MATCHES (dump: IF($B5=Begriffe!$F76,F8,IF($B5=Begriffe!$F77,F8+7,F8+14)) / expect: IF($B5=Begriffe!$F76,F8,IF($B5=Begriffe!$F77,F8+7,F8+14)))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-G9",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!G9 formula MATCHES (dump: IF($B5=Begriffe!$F76,G8,IF($B5=Begriffe!$F77,G8+8,G8+16)) / expect: IF($B5=Begriffe!$F76,G8,IF($B5=Begriffe!$F77,G8+8,G8+16)))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-N9",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!N9 formula MATCHES (dump: IF(B5=Begriffe!F76,N8,IF(B5=Begriffe!F77,N8+6,N8+12)) / expect: IF(B5=Begriffe!F76,N8,IF(B5=Begriffe!F77,N8+6,N8+12)); Lüftung 功率偏移 +6/+12（已知偏差）)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-O9",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!O9 formula MATCHES (dump: IF(B5=Begriffe!F76,O8,IF(B5=Begriffe!F77,O8+7,O8+14)) / expect: IF(B5=Begriffe!F76,O8,IF(B5=Begriffe!F77,O8+7,O8+14)); Lüftung 能量偏移 +7/+14（已知偏差）)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-F8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!F8 = 28 (expect ≈28; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-G8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!G8 = 2 (expect ≈2; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-H8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!H8 = 29 (expect ≈29; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-I8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!I8 = 3 (expect ≈3; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-J8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!J8 = 30 (expect ≈30; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-K8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!K8 = 4 (expect ≈4; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-N8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!N8 = 31 (expect ≈31; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-O8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!O8 = 5 (expect ≈5; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-Q8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!Q8 = 32 (expect ≈32; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-R8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!R8 = 6 (expect ≈6; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-T8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!T8 = 33 (expect ≈33; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-U8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!U8 = 7 (expect ≈7; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-V8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!V8 = 8 (expect ≈8; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.3-base-W8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!W8 = 8 (expect ≈8; 基础列号)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-F12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!F12 formula MATCHES (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,F$9,FALSE))*$D12/1000 / expect: IF($B12=\"\",0,VLOOKUP($B12,Res,F$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-F12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "F12 VLOOKUP 列 F$9 (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,F$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-G12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "G12 VLOOKUP 列 G$9 (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,G$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-H12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "H12 VLOOKUP 列 H$9 (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,H$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-I12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "I12 VLOOKUP 列 I$9 (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,I$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-J12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "J12 VLOOKUP 列 J$9 (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,J$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-K12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "K12 VLOOKUP 列 K$9 (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,K$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-N12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "N12 VLOOKUP 列 N$9 (dump: IF($B12=\"\",0,IF(L12=FALSE,0,VLOOKUP($B12,Res,N$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-O12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "O12 VLOOKUP 列 O$9 (dump: IF($B12=\"\",0,IF(L12=FALSE,0,VLOOKUP($B12,Res,O$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-Q12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Q12 VLOOKUP 列 Q$9 (dump: IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,Q$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-R12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "R12 VLOOKUP 列 R$9 (dump: IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,R$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-T12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "T12 VLOOKUP 列 T$9 (dump: IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,T$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-U12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "U12 VLOOKUP 列 U$9 (dump: IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,U$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-W12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "W12 VLOOKUP 列 W$9 (dump: IF($B12=\"\",0,VLOOKUP($B12,Res,W$9,FALSE))*$D12/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-F12-v",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!F12 = 27.5 (expect ≈27.5; Geräte 功率 kW (缓存))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-gate-N",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "N12 门控公式 (dump: IF($B12=\"\",0,IF(L12=FALSE,0,VLOOKUP($B12,Res,N$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-gate-O",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "O12 门控公式 (dump: IF($B12=\"\",0,IF(L12=FALSE,0,VLOOKUP($B12,Res,O$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-gate-Q",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Q12 门控公式 (dump: IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,Q$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-gate-R",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "R12 门控公式 (dump: IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,R$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-gate-T",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "T12 门控公式 (dump: IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,T$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.4-gate-U",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "U12 门控公式 (dump: IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,U$9,FALSE))*$D12/1000))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.5-M12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!M12 formula MATCHES (dump: IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$H$50,M$8,0))*$D12+IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$H$50,4,0))*$D12 / expect: IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$H$50,M$8,0))*$D12+IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$H$50,4,0))*$D12)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.5-M12-v",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!M12 = 5178.571428571429 (expect ≈5178.571428571429; 2.07143×2500 + 0×2500)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.5-StdD10",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Std!D10 = 2.0714285714285716 (expect ≈2.0714285714285716; Std!D10 卫生新风)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.5-LueftD12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Lueftung!D12 = 1340 (expect ≈1340; Parkhaus: Gebäude!D21×Std!E47 = 670×2)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.6-V12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!V12 formula MATCHES (dump: IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$I$50,$V$8,0))*$D12 / expect: IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$I$50,$V$8,0))*$D12)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.6-V12-v",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!V12 = 535.7142857142857 (expect ≈535.7142857142857; 0.21429×2500)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.6-StdI10",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Std!I10 = 0.21428571428571427 (expect ≈0.21428571428571427; I10 = H10/C10 = 3/14)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.6-StdI10-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Std!I10 formula MATCHES (dump: H10/C10 / expect: H10/C10)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.7-D38",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!D38 = 7249.000000000001 (expect ≈7249; GF = D35×(100+D37)%)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.7-D39",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!D39 = 6512.000000000001 (expect ≈6512; EBF = SUMIF(TRUE)×(100+D37)%)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.7-D38-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!D38 formula MATCHES (dump: D35*(100+D37)% / expect: D35*(100+D37)%)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.7-D39-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!D39 formula MATCHES (dump: SUMIF(C12:C32,TRUE,D12:D32)*(100+D37)% / expect: SUMIF(C12:C32,TRUE,D12:D32)*(100+D37)%)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.7-D37",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!D37 = 10 (expect ≈10; Anteil Konstruktionsfläche)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.7-G39",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!G39 = 19.914941646191643 (expect ≈19.9149; 129.6861×1000/6512)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.7-G39-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!G39 formula MATCHES (dump: G35*1000/$D$39 / expect: G35*1000/$D$39)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-E47",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!E47 formula contains \"VLOOKUP(B47,$B$69:$F$85,C47+2,0)\" (dump: IF(B47=\"\",0,VLOOKUP(B47,$B$69:$F$85,C47+2,0)); AG01 按强度档查目录)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-I47",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!I47 formula contains \"E47*G47/1000\" (dump: E47*G47/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-L47",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!L47 formula contains \"I47*1000/\" (dump: IF(B47=\"\",0,I47*1000/IF(OR(K47=\"\",K47=0),J47,K47)); 能量÷全负荷小时)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-I58",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!I58 = 54.6442 (expect ≈54.6442; AG 能量 Total MWh)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-L58",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!L58 = 55.82288812785388 (expect ≈55.8229; AG 功率 Total kW)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-I58-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!I58 formula MATCHES (dump: SUM(I47:I57) / expect: SUM(I47:I57))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-L58-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!L58 formula MATCHES (dump: SUM(L47:L57) / expect: SUM(L47:L57))",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-I62",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!I62 formula contains \"I58*1000/$D$39\" (dump: I58*1000/$D$39)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.8-L62",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!L62 formula contains \"L58*1000/$D$39\" (dump: L58*1000/$D$39)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-G7-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!G7 formula MATCHES (dump: Qhc_Klimastat!E7 / expect: Qhc_Klimastat!E7; Klimakälte 能量为公式)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-AG7-f",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!AG7 formula MATCHES (dump: Qhc_Klimastat!D7 / expect: Qhc_Klimastat!D7)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-C11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!C11 = 32.01 (expect ≈32.01; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-E11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!E11 = 13.445833333333333 (expect ≈13.4458; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-F11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!F11 = 4.443214285714286 (expect ≈4.443214; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-G11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!G11 = 14.430134539350295 (expect ≈14.4301; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-H11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!H11 = 10.76159676840914 (expect ≈10.7616; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-I11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!I11 = 2.5950857142857147 (expect ≈2.595086; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-AC11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!AC11 = 11 (expect ≈11; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-AF11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!AF11 = 1.1392857142857145 (expect ≈1.139286; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-AG11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!AG11 = 43.65646924369748 (expect ≈43.6565; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-kz-AH11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!AH11 = 19.82335098039216 (expect ≈19.82335; Einzel-, Gruppenbüro 行 11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-qhc-D11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Qhc!D11 = 43.65646924369748 (expect ≈43.6565; Qhc!D11 = KZ!AG11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-qhc-E11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Qhc!E11 = 14.430134539350295 (expect ≈14.4301; Qhc!E11 = KZ!G11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.2-qhc-F11",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Qhc!F11 = 19.82335098039216 (expect ≈19.82335; Qhc!F11 = KZ!AH11)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-F35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!F35 = 45.57 (expect ≈45.57; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-G35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!G35 = 129.6861 (expect ≈129.6861; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-J35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!J35 = 41.375400641025635 (expect ≈41.3754; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-K35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!K35 = 59.901999762820516 (expect ≈59.902; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-Q35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!Q35 = 167.13804777591034 (expect ≈167.138; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-R35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!R35 = 61.207458927900795 (expect ≈61.207; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-T35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!T35 = 103.32212882352943 (expect ≈103.32; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-U35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!U35 = 68.83391108630774 (expect ≈68.834; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-V35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!V35 = 835.7142857142857 (expect ≈835.7143; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "2.9-W35",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!W35 = 10.120834285714288 (expect ≈10.1214; Rechenwert)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-Q10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!Q10 = 3900 (expect ≈3900; Einzel-, Gruppenbüro)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-R10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!R10 = 3900 (expect ≈3900; Einzel-, Gruppenbüro)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-S10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!S10 = 3290 (expect ≈3290; Einzel-, Gruppenbüro)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-T10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!T10 = 2740 (expect ≈2740; Einzel-, Gruppenbüro)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-U10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!U10 = 2160 (expect ≈2160; Einzel-, Gruppenbüro)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-V10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!V10 = 1780 (expect ≈1780; Einzel-, Gruppenbüro)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-volll-D11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!D11 = 3900 (expect ≈3900; Volll_Lüft 行 1.03)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-volll-E11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!E11 = 3900 (expect ≈3900; Volll_Lüft 行 1.03)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-volll-F11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!F11 = 3290 (expect ≈3290; Volll_Lüft 行 1.03)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-volll-I11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!I11 = 2740 (expect ≈2740; Volll_Lüft 行 1.03)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-volll-J11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!J11 = 2160 (expect ≈2160; Volll_Lüft 行 1.03)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.2-volll-Q11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!Q11 = 1780 (expect ≈1780; Volll_Lüft 行 1.03)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.1-L2",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!L2 = \"Quelle: SIA2024_Raumdatenblätter > tblVoll_Lüft\" (expect \"Quelle: SIA2024_Raumdatenblätter > tblVoll_Lüft\"; 来源注释)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.1-L3",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!L3 = \"prSIA 2024-C1:2024 (29 m3/h pro Person)\" (应含 prSIA 2024-C1:2024, 29 m³/h)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.4-K68",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!K68 formula MATCHES (dump: IF($I$8=1,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),1),IF($I$8=2,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),3),IF($I$8=3,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),5),FALSE))) / expect: IF($I$8=1,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),1),IF($I$8=2,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),3),IF($I$8=3,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),5),FALSE))))",
+      "severity": "pass"
+    },
+    {
+      "id": "3.4-K69",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!K69 formula MATCHES (dump: IF($I$8=1,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),2),IF($I$8=2,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),4),IF($I$8=3,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),6),FALSE))) / expect: IF($I$8=1,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),2),IF($I$8=2,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),4),IF($I$8=3,INDEX(Std!$Q$6:$V$50,MATCH('BerechnungLU'!$B$6,Std!$B$6:$B$50,0),6),FALSE))))",
+      "severity": "pass"
+    },
+    {
+      "id": "3.4-K68-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!K68 = 3900 (expect ≈3900)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.4-K69-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!K69 = 3900 (expect ≈3900)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.4-I8",
+      "chapter": "ch03",
+      "ok": false,
+      "detail": "BLU!I8 formula ≠ (dump: IF(I6=Begriffe!F205,1,IF('BerechnungLU'!I6=Begriffe!F206,2,IF('BerechnungLU'!I6=Begriffe!F207,3,FALSE))) / expect: IF('BerechnungLU'!I6=Begriffe!F205,1,IF('BerechnungLU'!I6=Begriffe!F206,2,IF('BerechnungLU'!I6=Begriffe!F207,3,FALSE))); 章节引用省略了同表前缀，语义一致)",
+      "severity": "warn"
+    },
+    {
+      "id": "3.4-I8-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!I8 = 1 (expect ≈1; einstufig → 1)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.4-I6",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!I6 formula MATCHES (dump: Lüftung!J32 / expect: Lüftung!J32)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.4-I6-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!I6 = \"einstufig\" (expect \"einstufig\"; 当前系统 Regelung)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.5-H7",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!H7 formula MATCHES (dump: C259/1000 / expect: C259/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.5-J7",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!J7 formula MATCHES (dump: ROUND(IF(G6=0,0,H7*1000/G6),-1) / expect: ROUND(IF(G6=0,0,H7*1000/G6),-1))",
+      "severity": "pass"
+    },
+    {
+      "id": "3.5-H7-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!H7 = 26.76514285714287 (expect ≈26.7651; 风机电能 MWh)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.5-J7-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!J7 = 3900 (expect ≈3900; 反推全负荷小时)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.5-LueftK7",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Lueftung!K7 formula MATCHES (dump: IF(H7=0,0,ROUND(I7*1000/H7,-1)) / expect: IF(H7=0,0,ROUND(I7*1000/H7,-1)))",
+      "severity": "pass"
+    },
+    {
+      "id": "3.5-LueftH7",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Lueftung!H7 formula MATCHES (dump: F7*G7/1000 / expect: F7*G7/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.5-LueftK7-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Lueftung!K7 = 3900 (expect ≈3900)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.6-K70",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!K70 formula MATCHES (dump: E7*K68/8760 / expect: E7*K68/8760)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.6-M70",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!M70 formula MATCHES (dump: G6*K69/K68 / expect: G6*K69/K68)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.6-K70-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!K70 = 3819.227005870842 (expect ≈3819.227; 年加权平均风量)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.6-M70-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!M70 = 6.862857142857144 (expect ≈6.862857; 年加权平均风机功率)",
+      "severity": "pass"
+    },
+    {
+      "id": "3.6-I20",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!I20 formula contains \"E52*1000)/(3600*(K70/3600)*N23)\" (dump: IF(E52=0,0,(E52*1000)/(3600*(K70/3600)*N23)); Feuchtelast 用 K70)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N19",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N19 = 948.225968475814 (expect ≈948.226; 物性常量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N20",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N20 = 1.006 (expect ≈1.006; 物性常量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N21",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N21 = 1.86 (expect ≈1.86; 物性常量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N22",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N22 = 4.19 (expect ≈4.19; 物性常量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N23",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N23 = 1.15 (expect ≈1.15; 物性常量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N24",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N24 = 2501.6 (expect ≈2501.6; 物性常量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N25",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N25 = 2256 (expect ≈2256; 物性常量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.0-N19-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N19 formula MATCHES (dump: Klimadaten!F44 / expect: Klimadaten!F44)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.4-B121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B121 formula MATCHES (dump: Klimadaten!O5/8760*$K$68 / expect: Klimadaten!O5/8760*$K$68)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.4-B121-v",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B121 = 0 (expect ≈0; −25 °C 区间小时数 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.4-B136",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B136 = 2.671232876712329 (expect ≈2.67123; 6/8760×3900)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.4-B168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B168 = 59.657534246575345 (expect ≈59.65753; 134/8760×3900)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.4-O20",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Klima!O20 = 6 (expect ≈6; Klimadaten!O20 区间小时数)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.4-O52",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Klima!O52 = 134 (expect ≈134; Klimadaten!O52 区间小时数)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.5-C121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C121 formula MATCHES (dump: Klimadaten!Q5 / expect: Klimadaten!Q5; x_A = Klimadaten!Q{k+30})",
+      "severity": "pass"
+    },
+    {
+      "id": "4.5-E121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E121 formula MATCHES (dump: MIN(100%,RelFeuchte(BR121,C121,$N$19)) / expect: MIN(100%,RelFeuchte(BR121,C121,$N$19)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.5-G121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!G121 formula contains \"IF(A121<=$E$33\" (dump: IF(A121<=$E$33,(IF($E$32=$I$32,DB121,IF($E$32=$I$33,DC121,0))*3600)/($K$70*$N$20*$N$23)+A121,A121); 防冻预热分支)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.5-DB121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!DB121 formula contains \"IF(A121<=$E$33,$F$113,0)\" (dump: IF(A121<=$E$33,$F$113,0); 开关式防冻)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.5-DC121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!DC121 formula contains \"IF(A121<=$E$33,ABS($K$70*$N$20*$N$23*\" (dump: IF(A121<=$E$33,ABS($K$70*$N$20*$N$23*MIN(ABS(A121-$E$33),ABS($E$40-$E$33))/3600),0); 可变式防冻)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.5-F113",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!F113 = 15.955563444498802 (expect ≈15.9556; 防冻加热功率 kW)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-I168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!I168 formula MATCHES (dump: $E$28*(BU168-A168)+A168 / expect: $E$28*(BU168-A168)+A168)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-I168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!I168 = 23.6 (expect ≈23.6; 22+0.8×(24−22))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-J168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!J168 formula contains \"IF(F168=0,MIN(I168,BJ168),I168)\" (dump: IF(F168=0,MIN(I168,BJ168),I168))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-J168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!J168 = 20 (expect ≈20; MIN(23.6, 20))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-K168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!K168 formula contains \"MAX(IF(AND($E$31=$S$20,F168=1),0,IF(A168=BU168,0,(J168-A168)/(BU168-A168))),0)\" (dump: IF($E$30=$S$20,$E$28,MAX(IF(AND($E$31=$S$20,F168=1),0,IF(A168=BU168,0,(J168-A168)/(BU168-A168))),0)); 调节效率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-K168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!K168 = 0 (expect ≈0; 夏季全旁通 ε=0)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-L168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!L168 = 22 (expect ≈22; 旁通后送风侧温度)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-M168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!M168 formula contains \"$E$28=0,C168\" (dump: IF($E$28=0,C168,(K168/$E$28*$E$29)*(BW168-C168)+C168); 湿度回收 E29=0 → x_A)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-F168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!F168 formula MATCHES (dump: IF(H168<=0,IF(BU168<A168,1,0),0) / expect: IF(H168<=0,IF(BU168<A168,1,0),0); 夏季冷却标志)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-BU168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BU168 = 24 (expect ≈24; 排风温度 = 室温 24 °C)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.6-BW168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BW168 = 10.036723173953218 (expect ≈10.03672; 排风含湿量 = BT+I20)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-N168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N168 formula MATCHES (dump: EnthalpieA(L168,M168,$N$19)*$E$35+(1-$E$35)*EnthalpieA(BU168,BW168,$N$19) / expect: EnthalpieA(L168,M168,$N$19)*$E$35+(1-$E$35)*EnthalpieA(BU168,BW168,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-O168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!O168 formula contains \"$E$34\" (dump: EnthalpieA(L168,M168,$N$19)*$E$34+(1-$E$34)*EnthalpieA(BU168,BW168,$N$19); γ_min)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-P168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!P168 formula contains \"1-IF(EnthalpieA(L168,M168,$N$19)=S168\" (dump: 1-IF(EnthalpieA(L168,M168,$N$19)=S168,$E$35,(S168-EnthalpieA(BU168,BW168,$N$19))/((EnthalpieA(L168,M168,$N$19)-EnthalpieA(BU168,BW168,$N$19)))); 回风份额)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-Q168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Q168 formula contains \"L168*(1-P168)+BU168*P168\" (dump: L168*(1-P168)+BU168*P168)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-R168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!R168 formula contains \"M168*(1-P168)+BW168*P168\" (dump: (M168*(1-P168)+BW168*P168))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-S168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!S168 formula contains \"MIN(MAX(N168,BM168),O168)\" (dump: MIN(MAX(N168,BM168),O168); 目标焓)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-T168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!T168 formula contains \"MIN(\" (dump: MIN((L168*($E$35)+BU168*(1-$E$35))); MIN 单参 no-op)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-V168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!V168 formula contains \"1-IF(L168=W168\" (dump: 1-IF(L168=W168,$E$35,(W168-BU168)/(L168-BU168)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-W168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!W168 formula contains \"MIN(MAX(T168,BJ168),U168)\" (dump: MIN(MAX(T168,BJ168),U168))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-X168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!X168 formula contains \"M168*(1-$V168)+BW168*$V168\" (dump: (M168*(1-$V168)+BW168*$V168))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.7-Y168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Y168 formula MATCHES (dump: EnthalpieA(W168,X168,$N$19) / expect: EnthalpieA(W168,X168,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-Z168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Z168 formula MATCHES (dump: AVERAGE($E$45:$F$46) / expect: AVERAGE($E$45:$F$46))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-Z168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Z168 = 9 (expect ≈9; 盘管表面温度)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AA168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AA168 formula MATCHES (dump: IF($E$36=$D$36,MIN(AbsFeuchte(Z168,100%,$N$19),R168),MIN(AbsFeuchte(Z168,100%,$N$19),X168)) / expect: IF($E$36=$D$36,MIN(AbsFeuchte(Z168,100%,$N$19),R168),MIN(AbsFeuchte(Z168,100%,$N$19),X168)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AA168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AA168 = 7.616928135621499 (expect ≈7.617; x_sat(9°C))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AF168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AF168 formula MATCHES (dump: AVERAGE($E$45:$E$46) / expect: AVERAGE($E$45:$E$46))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AF168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AF168 = 9 (expect ≈9)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AG168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AG168 formula contains \"(Q168-AF168)/(R168-AA168)\" (dump: IF($E$36=$D$36,IF(AA168=R168,1E+23,(Q168-AF168)/(R168-AA168)),IF(AA168=X168,1E+23,(W168-AF168)/(X168-AA168))); 线性冷却曲线斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AG168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AG168 = 5.3723558376095335 (expect ≈5.372; (22−9)/(10.037−7.617))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AH168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AH168 formula contains \"MAX(IF(R168>BL168,AF168+(AG168*(BL168-AA168)),Q168),Z168)\" (dump: IF($E$36=$D$36,MAX(IF(R168>BL168,AF168+(AG168*(BL168-AA168)),Q168),Z168),MAX(IF(X168>BL168,AF168+(AG168*(BL168-AA168)),W168),Z168)); D1)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AK168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AK168 formula contains \"MAX(MIN(W168,BJ168),Z168)\" (dump: IF($E$36=$D$36,MAX(MIN(Q168,BJ168),Z168),MAX(MIN(W168,BJ168),Z168)); D2 (温度控分支))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AK168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AK168 = 20 (expect ≈20; MAX(MIN(22,20),9))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AL168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AL168 formula contains \"(BJ168-AF168)/AG168+AA168\" (dump: IF(Z168=AK168,AA168,(BJ168-AF168)/AG168+AA168); 沿曲线插值)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AL168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AL168 = 9.664447014209877 (expect ≈9.664; (20−9)/5.372+7.617)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.8-AM168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AM168 = 44.656098079676035 (expect ≈44.66; h(20, 9.664))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-AW168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AW168 formula contains \"IF($E$36=$C$36,IF(AND(ROUND(BM168,4)>=ROUND(S168,4),ROUND(BL168,4)>=ROUND(R168,4),ROUND(BJ168,4)>=ROUND(Q168,4)),1,IF(ROUND(BL168,4)<ROUND(AA168,4),2,IF(ROUND(BJ168,4)>=ROUND(AH168,4),3,4)))\" (dump: IF($E$36=$C$36,IF(AND(ROUND(BM168,4)>=ROUND(S168,4),ROUND(BL168,4)>=ROUND(R168,4),ROUND(BJ168,4)>=ROUND(Q168,4)),1,IF(ROUND(BL168,4)<ROUND(AA168,4),2,IF(ROUND(BJ168,4)>=ROUND(AH168,4),3,4))),IF(AND(ROUND(BM168,4)>=ROUND(Y168,4),ROUND(BL168,4)>=ROUND(X168,4),ROUND(BJ168,4)>=ROUND(W168,4)),1,IF(ROUND(BL168,4)<ROUND(AA168,4),2,IF(ROUND(BJ168,4)>=ROUND(AH168,4),3,4)))))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-AW168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AW168 = 4 (expect ≈4; 夏季冷却工况)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BB168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BB168 formula contains \"Fall1Tzul(AX168,AY168,BJ168\" (dump: IF($E$36=$D$36,IF(AW168=1,Fall1Tzul(AX168,AY168,BJ168,Q168),0),IF(AW168=1,Fall1Tzul(AX168,AY168,BJ168,W168),0)); Fall1 活代码)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BD168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BD168 formula contains \"Fall2Tzul(AX168\" (dump: IF($E$36=$D$36,IF(AW168=2,Fall2Tzul(AX168, AZ168, BJ168,Q168, Z168),0),IF(AW168=2,Fall2Tzul(AX168, AZ168, BJ168,W168, Z168),0)); Fall2 活代码)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BC168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BC168 formula contains \"Fall1xzul(\" (dump: IF($E$36=$D$36,IF(AW168=1,Fall1xzul(AX168,AY168,BL168,R168),0),IF(AW168=1,Fall1xzul(AX168,AY168,BL168,X168),0)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BE168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BE168 formula contains \"Fall2xzul(\" (dump: IF($E$36=$D$36,IF(AW168=2,Fall2xzul(AX168,AZ168,BL168,R168,AA168),0),IF(AW168=2,Fall2xzul(AX168,AZ168,BL168,X168,AA168),0)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BN168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BN168 formula MATCHES (dump: BB168+BD168+BF168+BH168 / expect: BB168+BD168+BF168+BH168)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BP168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BP168 formula MATCHES (dump: BC168+BE168+BG168+BI168 / expect: BC168+BE168+BG168+BI168)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BQ168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BQ168 formula MATCHES (dump: EnthalpieA(BN168,BP168,$N$19) / expect: EnthalpieA(BN168,BP168,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BN168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BN168 = 20 (expect ≈20; t_ZUL,ist)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BP168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BP168 = 10.03672317395322 (expect ≈10.0367; x_ZUL,ist (Fall 4 加湿到设定))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BQ168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BQ168 = 45.601232794032434 (expect ≈45.6012; h_ZUL,ist)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BH168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BH168 = 20 (expect ≈20)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.9-BI168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BI168 = 10.03672317395322 (expect ≈10.0367; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BJ168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BJ168 formula MATCHES (dump: IF($DA168<=$B$89,$C$89-($B$89-$DA168)*$I$88,IF($DA168<=$B$90,$C$90-($B$90-$DA168)*$I$89,$C$91-($B$91-$DA168)*$I$90)) / expect: IF($DA168<=$B$89,$C$89-($B$89-$DA168)*$I$88,IF($DA168<=$B$90,$C$90-($B$90-$DA168)*$I$89,$C$91-($B$91-$DA168)*$I$90)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BJ168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BJ168 = 20 (expect ≈20; t_ZUL,soll)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BK168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BK168 formula MATCHES (dump: MIN(1,RelFeuchte(BJ168,BT168,$N$19)) / expect: MIN(1,RelFeuchte(BJ168,BT168,$N$19)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BL168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BL168 formula MATCHES (dump: AbsFeuchte(BJ168,BK168,$N$19) / expect: AbsFeuchte(BJ168,BK168,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BM168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BM168 formula MATCHES (dump: EnthalpieA(BJ168,BL168,$N$19) / expect: EnthalpieA(BJ168,BL168,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BL168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BL168 = 10.03672317395322 (expect ≈10.0367; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BM168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BM168 = 45.601232794032434 (expect ≈45.6012; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BS168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BS168 formula contains \"IF(E168<$E$50,$E$50,IF(E168>$E$48,$E$48,E168))\" (dump: IF(E168<$E$50,$E$50,IF(E168>$E$48,$E$48,E168)); 室温 rF 限幅)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BT168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BT168 formula contains \"AbsFeuchte(BR168,BS168,$N$19)\" (dump: AbsFeuchte(BR168,BS168,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-BV168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BV168 formula MATCHES (dump: RelFeuchte(BU168,BW168,$N$19) / expect: RelFeuchte(BU168,BW168,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-B88",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B88 = -15 (expect ≈-15; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-C88",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C88 = 21 (expect ≈21; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-D88",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D88 = 22 (expect ≈22; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-B89",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B89 = 22 (expect ≈22; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-C89",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C89 = 20 (expect ≈20; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-D89",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D89 = 24 (expect ≈24; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-B90",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B90 = 24 (expect ≈24; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-C90",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C90 = 20 (expect ≈20; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-D90",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D90 = 25 (expect ≈25; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-B91",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B91 = 30 (expect ≈30; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-C91",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C91 = 20 (expect ≈20; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-D91",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D91 = 25 (expect ≈25; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-I88",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!I88 = -0.02702702702702703 (expect ≈-0.027; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-J88",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!J88 = 0.05405405405405406 (expect ≈0.0541; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-I89",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!I89 = 0 (expect ≈0; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-J89",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!J89 = 0.5 (expect ≈0.5; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-I90",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!I90 = 0 (expect ≈0; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.10-curve-J90",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!J90 = 0 (expect ≈0; 温度曲线折点/斜率)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-BZ168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BZ168 formula contains \"MAX(IF(AZ168=1,IF(OR(AW168=3,AW168=4,AW168=2),Y168-AM168,0),0),0)\" (dump: IF($E$36=$C$36,MAX(IF(AZ168=1,IF(OR(AW168=3,AW168=4,AW168=2),S168-AM168,0),0),0),MAX(IF(AZ168=1,IF(OR(AW168=3,AW168=4,AW168=2),Y168-AM168,0),0),0)); 冷却焓差)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CA168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CA168 formula contains \"IF(AW168=3,AM168-AJ168\" (dump: IF($E$36=$D$36,MAX(IF(BA168=1,IF(AW168=3,AM168-AJ168,IF(AW168=2,(IF(BP168=R168,0,S168-AB168-BZ168)),0)),0),0),MAX(IF(BA168=1,IF(AW168=3,AM168-AJ168,IF(AW168=2,(IF(BP168=X168,0,Y168-AB168-BZ168)),0)),0),0)); 除湿冷却)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CB168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CB168 formula contains \"IF(AW168=3,BQ168-AJ168\" (dump: IF($E$36=$D$36,MAX(IF(AND(BA168=1,AX168=1),IF(AW168=3,BQ168-AJ168,IF(AW168=2,IF(R168=BP168,0,BQ168-AB168),0)),0),0),MAX(IF(AND(BA168=1,AX168=1),IF(AW168=3,BQ168-AJ168,IF(AW168=2,IF(X168=BP168,0,BQ168-AB168),0)),0),0)); 除湿再热)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CC168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CC168 formula contains \"IF(F168=1,0,IF($E$36=$D$36,IF(AX168=1,IF(AW168=1,AV168-S168,0),0),IF(AX168=1,IF(AW168=1,AV168-Y168,0),0)))\" (dump: IF(F168=1,0,IF($E$36=$D$36,IF(AX168=1,IF(AW168=1,AV168-S168,0),0),IF(AX168=1,IF(AW168=1,AV168-Y168,0),0))); 章节仅引温度控分支；实际含焓/温控分派)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CD168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CD168 formula contains \"IF(AND(AY168=1,B168>0),IF(OR(AW168=1,AW168=4),BQ168-AV168,0),0)\" (dump: IF(AND(AY168=1,B168>0),IF(OR(AW168=1,AW168=4),BQ168-AV168,0),0); 加湿加热)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-BX168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BX168 formula MATCHES (dump: SUM(BZ168:CA168) / expect: SUM(BZ168:CA168); 章节写 BZ+CA；实际用 SUM，语义等价)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-BY168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BY168 formula MATCHES (dump: SUM(CB168:CD168) / expect: SUM(CB168:CD168); 章节写 CB+CC+CD；实际用 SUM，语义等价)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CJ168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CJ168 formula contains \"$K$70*B168*$N$23*(BZ168)/3.6/1000000\" (dump: IF($E$42=$S$21,IF(OR(AND(A168>=$E$26,$E$27>0),AND(A168>=$E$26,$E$27<0)),$P$70*B168*$N$23*(BZ168)/3.6/1000000,$K$70*B168*$N$23*(BZ168)/3.6/1000000),0); 冷却能量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CJ168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CJ168 = 0.21794969719497817 (expect ≈0.21795; 3819.23×59.6575×1.15×2.9945/3.6e6)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CT168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CT168 formula contains \"B168*($M$70)/1000\" (dump: IF(OR(AND(A168>=$E$26,$E$27>0),AND(A168>=$E$26,$E$27<0)),B168*($R$70/1000),B168*($M$70)/1000); 风机能量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CT168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CT168 = 0.4094211350293543 (expect ≈0.40942; 59.6575×6.8629/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CH168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CH168 formula contains \"MAX(0,(BP168-R168)*B168*$K$70*$N$23/1000)\" (dump: IF($E$36=$D$36,IF(OR(AND(A168>=$E$26,$E$27>0),AND(A168>=$E$26,$E$27<0)),MAX(0,(BP168-R168)*B168*$P$70*$N$23/1000),MAX(0,(BP168-R168)*B168*$K$70*$N$23/1000)),IF(OR(AND(A168>=$E$26,$E$27>0),AND(A168>=$E$26,$E$27<0)),MAX(0,(BP168-X168)*B168*$P$70*$N$23/1000),MAX(0,(BP168-X168)*B168*$K$70*$N$23/1000))); 章节仅引 K70 温度控分支；实际含 P70 夏季分支)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CI168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CI168 formula contains \"(CH168*$N$22*(100-$E$51)+$N$25*CH168)/3600000\" (dump: (CH168*$N$22*(100-$E$51)+$N$25*CH168)/3600000; 蒸汽加湿能量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CM168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CM168 formula contains \"IF($E$49=$S$16,0,IF($E$49=$S$17,CG168,CI168))\" (dump: IF($E$49=$S$16,0,IF($E$49=$S$17,CG168,CI168)); 按加湿方式)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.11-CW168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!CW168 formula MATCHES (dump: SUM(CK168,CJ168,CE168,CF168,CM168,CT168) / expect: SUM(CK168,CJ168,CE168,CF168,CM168,CT168); 区间总能量)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CJ",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CJ182 = SUM(CJ122:CJ181) (expect SUM(CJ122:CJ181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CK",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CK182 = SUM(CK122:CK181) (expect SUM(CK122:CK181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CE",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CE182 = SUM(CE122:CE181) (expect SUM(CE122:CE181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CF",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CF182 = SUM(CF122:CF181) (expect SUM(CF122:CF181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CM",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CM182 = SUM(CM122:CM181) (expect SUM(CM122:CM181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CT",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CT182 = SUM(CT122:CT181) (expect SUM(CT122:CT181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CH",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CH182 = SUM(CH122:CH181) (expect SUM(CH122:CH181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-sum-CL",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CL182 = SUM(CL122:CL181) (expect SUM(CL122:CL181))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-max-BZ",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BZ183 = MAX(BZ$121:BZ$181)*$E$18*$N$23/3600 (expect MAX(BZ$121:BZ$181)×E18×N23/3600)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-max-CA",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CA183 = MAX(CA$121:CA$181)*$E$18*$N$23/3600 (expect MAX(CA$121:CA$181)×E18×N23/3600)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-max-CB",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CB183 = MAX(CB$121:CB$181)*$E$18*$N$23/3600 (expect MAX(CB$121:CB$181)×E18×N23/3600)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-max-CD",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CD183 = MAX(CD$121:CD$181)*$E$18*$N$23/3600 (expect MAX(CD$121:CD$181)×E18×N23/3600)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C254",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C254 = 1750.15970360182 (expect ≈1750.16; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D254",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D254 = 25.78085214123151 (expect ≈25.7809; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C255",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C255 = 3786.2957285656107 (expect ≈3786.3; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D255",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D255 = 16.153470609180598 (expect ≈16.1535; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C256",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C256 = -3.2534871175269233e-12 (expect ≈0; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D256",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D256 = 3.8943099186312e-14 (expect ≈0; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C257",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C257 = 0 (expect ≈0; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D257",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D257 = 0 (expect ≈0; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C258",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C258 = 0 (expect ≈0; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D258",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D258 = 0 (expect ≈0; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C259",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C259 = 26765.14285714287 (expect ≈26765.14; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D259",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D259 = 6.862857142857144 (expect ≈6.862857; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C260",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C260 = 32301.598289310296 (expect ≈32301.6; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D260",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D260 = 48.79717989326929 (expect ≈48.7972; 年度结果行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C254-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C254 formula MATCHES (dump: IFERROR(CJ182*1000,0) / expect: IFERROR(CJ182*1000,0))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D254-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D254 formula MATCHES (dump: BZ183 / expect: BZ183)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-D259-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D259 formula MATCHES (dump: G6 / expect: G6)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-C260-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C260 formula MATCHES (dump: SUM(C254:C259) / expect: SUM(C254:C259))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-P7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!P7 formula MATCHES (dump: D254 / expect: D254)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-Q7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Q7 formula MATCHES (dump: C254/1000 / expect: C254/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-R7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!R7 formula MATCHES (dump: D255 / expect: D255)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-S7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!S7 formula MATCHES (dump: C255/1000 / expect: C255/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-T7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!T7 formula MATCHES (dump: D256 / expect: D256)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-U7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!U7 formula MATCHES (dump: C256/1000 / expect: C256/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-V7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!V7 formula MATCHES (dump: D257 / expect: D257)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-W7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!W7 formula MATCHES (dump: C257/1000 / expect: C257/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-X7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!X7 formula MATCHES (dump: D258 / expect: D258)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-row7-Y7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Y7 formula MATCHES (dump: C258/1000 / expect: C258/1000)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-P7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!P7 = 25.78085214123151 (expect ≈25.7809; 0.005)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-Q7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Q7 = 1.75015970360182 (expect ≈1.75016; 0.0001)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-S7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!S7 = 3.786295728565611 (expect ≈3.7863; 0.0001)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-U32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!U32 formula MATCHES (dump: 'BerechnungLU'!V7 / expect: 'BerechnungLU'!V7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-V32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!V32 formula MATCHES (dump: 'BerechnungLU'!W7 / expect: 'BerechnungLU'!W7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-W32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!W32 formula MATCHES (dump: 'BerechnungLU'!X7 / expect: 'BerechnungLU'!X7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-X32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!X32 formula MATCHES (dump: 'BerechnungLU'!Y7 / expect: 'BerechnungLU'!Y7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-Y32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!Y32 formula MATCHES (dump: 'BerechnungLU'!T7 / expect: 'BerechnungLU'!T7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-Z32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!Z32 formula MATCHES (dump: 'BerechnungLU'!U7 / expect: 'BerechnungLU'!U7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-Q32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!Q32 formula MATCHES (dump: 'BerechnungLU'!P7 / expect: 'BerechnungLU'!P7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-R32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!R32 formula MATCHES (dump: 'BerechnungLU'!Q7 / expect: 'BerechnungLU'!Q7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-S32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!S32 formula MATCHES (dump: 'BerechnungLU'!R7 / expect: 'BerechnungLU'!R7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-T32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!T32 formula MATCHES (dump: 'BerechnungLU'!S7 / expect: 'BerechnungLU'!S7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-I32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!I32 formula MATCHES (dump: 'BerechnungLU'!H7 / expect: 'BerechnungLU'!H7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-wire-K32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!K32 formula MATCHES (dump: 'BerechnungLU'!J7 / expect: 'BerechnungLU'!J7; 接线（含错位）)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-Q32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!Q32 = 25.78085214123151 (expect ≈25.7809; 0.005)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.12-Y32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "Lueftung!Y32 = 3.8943099186312e-14 (expect ≈3.894e-14; ≈0 (错位链 0 值))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-E19",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E19 formula MATCHES (dump: IF(OR(I6=\"einstufig\",I6=\"1vitesse\",I6=\"1velocità\"),E18,E18*0.67) / expect: IF(OR(I6=\"einstufig\",I6=\"1vitesse\",I6=\"1velocità\"),E18,E18*0.67))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-E20",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E20 formula MATCHES (dump: IF(OR(I6=\"einstufig\",I6=\"1vitesse\",I6=\"1velocità\"),E18,IF(OR(I6=\"zweistufig\",I6=\"2vitesses\",I6=\"2velocità\"),E18*0.67,E18*0.33)) / expect: IF(OR(I6=\"einstufig\",I6=\"1vitesse\",I6=\"1velocità\"),E18,IF(OR(I6=\"zweistufig\",I6=\"2vitesses\",I6=\"2velocità\"),E18*0.67,E18*0.33)))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-I14",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!I14 formula MATCHES (dump: IF(E18<MAX(E19:E20),IF(ISERROR(E16*(E18^2.5)/(E19^2.5)),0,E16*(E18^2.5)/(MAX(E18:E20)^2.5)),E16) / expect: IF(E18<MAX(E19:E20),IF(ISERROR(E16*(E18^2.5)/(E19^2.5)),0,E16*(E18^2.5)/(MAX(E18:E20)^2.5)),E16); P∝V^2.5)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-E18",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E18 = 8578.57142857143 (expect ≈8578.571; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-E16",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E16 = 3.431428571428572 (expect ≈3.43143; G6/2)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-M67",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!M67 = 6.862857142857143 (expect ≈6.862857; = G6 一致性)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-M58",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!M58 = 0.625 (expect ≈0.625; 档位 1 时间占比)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-L58",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!L58 = 50 (expect ≈50; 因子 1)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.13-L61",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!L61 = 80 (expect ≈80; 80 h/周)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.14-AQ121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AQ121 = \"{\\\"error\\\":\\\"#NAME?\\\"}\" (expect error #NAME?)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.14-AS121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AS121 = \"{\\\"error\\\":\\\"#VALUE!\\\"}\" (expect error #VALUE!)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.14-AD181",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AD181 = 59 (expect ≈59; AD = n−122)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.14-AE181",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AE181 = 157.63606 (expect ≈157.6; h(9, 59 g/kg) 过饱和)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.14-T121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!T121 formula contains \"MIN(\" (dump: MIN((L121*($E$35)+BU121*(1-$E$35))); MIN 单参 no-op)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-C6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C6 = 8578.57142857143 (expect ≈8578.571; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-D6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!D6 = 0 (expect ≈0; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E6 = 0 (expect ≈0; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-F6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!F6 = 0.8 (expect ≈0.8; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-K6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!K6 = 80 (expect ≈80; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-L6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!L6 = 20 (expect ≈20; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-M6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!M6 = 21 (expect ≈21; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E11",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E11 = 500 (expect ≈500; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E12",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E12 = 3 (expect ≈3; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E28",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E28 = 0.8 (expect ≈0.8; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E33",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E33 = 0 (expect ≈0; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E32",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E32 = 0 (expect ≈0; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E39",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E39 = \"ja\" (expect \"ja\")",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E40",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E40 = -13 (expect ≈-13; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E42",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E42 = \"ja\" (expect \"ja\")",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E43",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E43 = 35 (expect ≈35; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E45",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E45 = 6 (expect ≈6; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E46",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E46 = 12 (expect ≈12; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E47",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E47 = \"ja\" (expect \"ja\")",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E49",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E49 = \"Adiabatisch Bef.\" (expect \"Adiabatisch Bef.\")",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E51",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E51 = 10 (expect ≈10; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E52",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E52 = 0 (expect ≈0; IST 输入)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-E54",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E54 = \"Benutzerdefiniert\" (expect \"Benutzerdefiniert\")",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-C108",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C108 = 1 (expect ≈1; η_ZUL,IST = IE5 行)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-B102",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B102 = 1 (expect ≈1; IE5 行功率带查表)",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-B102-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B102 formula contains \"IF(E$16<1.1,N11\" (dump: IF(E$16<1.1,N11,IF(E$16<2.2,O11,IF(E$16<11,P11,IF(E$16<110,Q11,R11)))))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-C102-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C102 formula contains \"IF(E$17=A102,B102,0)\" (dump: IF(E$17=A102,B102,0))",
+      "severity": "pass"
+    },
+    {
+      "id": "4.3-B110",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B110 = 0 (expect ≈0; 过滤器压降 0 Pa)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E3",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E3 = 3 (expect ≈3; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E4",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E4 = 4 (expect ≈4; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E5",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E5 = 4 (expect ≈4; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E6",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E6 = 7.5 (expect ≈7.5; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E7 = 15 (expect ≈15; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E8",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E8 = 15 (expect ≈15; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E11",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E11 = 0.8 (expect ≈0.8; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E12",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E12 = 0.8 (expect ≈0.8; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E13",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E13 = 0.6 (expect ≈0.6; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E14",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E14 = 0.7 (expect ≈0.7; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E15",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E15 = 0.7 (expect ≈0.7; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E16",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E16 = 0.98 (expect ≈0.98; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E17",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E17 = 0.93 (expect ≈0.93; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E18",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E18 = 1 (expect ≈1; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E19",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E19 = 0.5 (expect ≈0.5; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E21",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E21 = 3 (expect ≈3; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E22",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E22 = 2.2 (expect ≈2.2; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E23",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E23 = 4.3 (expect ≈4.3; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E24",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E24 = 3.1 (expect ≈3.1; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E25",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E25 = 4.3 (expect ≈4.3; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E26",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E26 = 3.1 (expect ≈3.1; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E29",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E29 = 0.75 (expect ≈0.75; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E30",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E30 = 0.75 (expect ≈0.75; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E31",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E31 = 0.55 (expect ≈0.55; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E32",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E32 = 0.6 (expect ≈0.6; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E33",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E33 = 0.65 (expect ≈0.65; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E34",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E34 = 1 (expect ≈1; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E35",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E35 = 1 (expect ≈1; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E36",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E36 = 0.65 (expect ≈0.65; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E38",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E38 = 0.5 (expect ≈0.5; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E39",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E39 = 2.2 (expect ≈2.2; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E40",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E40 = 2.4 (expect ≈2.4; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-E41",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!E41 = 1.9 (expect ≈1.9; 目录 Nutzungsgrad)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-name-C3",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!C3 = \"Kompaktkältemaschine 7°C\" (expect \"Kompaktkältemaschine 7°C\")",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-name-C4",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!C4 = \"Kompaktkältemaschine 14°C\" (expect \"Kompaktkältemaschine 14°C\")",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-name-C11",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!C11 = \"Ölfeuerung kondensierend \" (expect \"Ölfeuerung kondensierend \")",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-name-C21",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!C21 = \"Wärmepumpe Aussenluft 35°C\" (expect \"Wärmepumpe Aussenluft 35°C\")",
+      "severity": "pass"
+    },
+    {
+      "id": "5.2-name-C25",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Nutzungsgrad!C25 = \"Wärmepumpe Grundwasser 35°C\" (expect \"Wärmepumpe Grundwasser 35°C\")",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-L7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L7 formula MATCHES (dump: (Gebäude!Q$35+Lüftung!Q$23)*F7%*(100+IF($J7<>\"\",$J7,$H7))% / expect: (Gebäude!Q$35+Lüftung!Q$23)*F7%*(100+IF($J7<>\"\",$J7,$H7))%)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-L7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L7 = 134.3570347111197 (expect ≈134.357; (167.138+36.433)×0.6×1.1)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-M7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!M7 = 55.722316336032236 (expect ≈55.7223; (61.207+2.113)×0.8×1.1)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-L8",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L8 = 89.5713564740798 (expect ≈89.5714; 223.928×0.4×1.1)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-M8",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!M8 = 13.930579084008059 (expect ≈13.9306; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-L10",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L10 = 223.9283911851995 (expect ≈223.928; 203.571×1.1)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-F7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!F7 = 60 (expect ≈60)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-G7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!G7 = 80 (expect ≈80)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-H7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!H7 = 10 (expect ≈10)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.4-M7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!M7 formula MATCHES (dump: (Gebäude!R$35+Lüftung!R$23)*G7%*(100+IF($J7<>\"\",$J7,$H7))% / expect: (Gebäude!R$35+Lüftung!R$23)*G7%*(100+IF($J7<>\"\",$J7,$H7))%)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.5-L25-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L25 formula MATCHES (dump: Gebäude!V$35*4.186/3.6*50/L$29/1000*F25%*(100+IF($J25<>\"\",$J25,$H25))% / expect: Gebäude!V$35*4.186/3.6*50/L$29/1000*F25%*(100+IF($J25<>\"\",$J25,$H25))%)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.5-L25",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L25 = 3.401124999999999 (expect ≈3.401125; 835.7×(4.186/3.6)×50/6/1000×0.3×1.4)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.5-L29",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L29 = 6 (expect ≈6; Aufheizzeit 6 h/d)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.5-F25",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!F25 = 30 (expect ≈30)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.5-H25",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!H25 = 40 (expect ≈40)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.5-M25-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!M25 formula MATCHES (dump: (Gebäude!W$35*G25%)*(100+IF($J25<>\"\",$J25,$H25))% / expect: (Gebäude!W$35*G25%)*(100+IF($J25<>\"\",$J25,$H25))%)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-N7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!N7 formula MATCHES (dump: IF(L7=0,0,M7*1000/L7) / expect: IF(L7=0,0,M7*1000/L7))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-P7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!P7 formula MATCHES (dump: IF(D7=0,0,$L7/IF($E7<>\"\",$E7,$D7)) / expect: IF(D7=0,0,$L7/IF($E7<>\"\",$E7,$D7)))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-Q7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!Q7 formula MATCHES (dump: IF(D7=0,0,$M7/IF($E7<>\"\",$E7,$D7)) / expect: IF(D7=0,0,$M7/IF($E7<>\"\",$E7,$D7)))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-N7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!N7 = 414.7331507861905 (expect ≈414.733; 55.72×1000/134.36)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-P7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!P7 = 11.196419559259974 (expect ≈11.1964; 134.36/12)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-Q7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!Q7 = 4.643526361336019 (expect ≈4.64353; 55.72/12)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-E7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!E7 = 12 (expect ≈12; 项目 COP)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-D7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!D7 = 15 (expect ≈15; 标准 COP (KE06))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.6-N10-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!N10 formula MATCHES (dump: M10*1000/L10 / expect: M10*1000/L10; Total 行无 IF 守卫)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-D34",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!D34 = 30 (expect ≈30; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-G34",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!G34 = 0.21 (expect ≈0.21; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-O34",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!O34 = 8 (expect ≈8; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-P34",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!P34 = -45 (expect ≈-45; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-Q34",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!Q34 = 0.83 (expect ≈0.83; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-D35",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!D35 = 5 (expect ≈5; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-E35",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!E35 = 16 (expect ≈16; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-G35",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!G35 = 0.27 (expect ≈0.27; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-H35",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!H35 = 0.51 (expect ≈0.51; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.7-L35",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L35 = 3500 (expect ≈3500; Elektrizitätserzeugung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-D7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!D7 = 55.82288812785388 (expect ≈55.8229; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-E7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!E7 = 54.6442 (expect ≈54.6442; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-F7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!F7 = 45.57 (expect ≈45.57; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-G7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!G7 = 129.6861 (expect ≈129.6861; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-H7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!H7 = 3 (expect ≈3; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-I7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!I7 = 21.03 (expect ≈21.03; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-J7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!J7 = 41.375400641025635 (expect ≈41.3754; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-K7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!K7 = 59.901999762820516 (expect ≈59.902; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-L7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!L7 = 9.207857142857144 (expect ≈9.20786; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-M7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!M7 = 32.483389523809535 (expect ≈32.4834; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-N7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!N7 = 33.589258677779924 (expect ≈33.5893; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-O7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!O7 = 8.126171132338033 (expect ≈8.12617; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-P7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!P7 = 17.769098061871194 (expect ≈17.7691; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-Q7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Q7 = 11.82016017897236 (expect ≈11.8202; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-R7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!R7 = 1.2596759259259256 (expect ≈1.25968; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-S7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!S7 = 2.6239200000000005 (expect ≈2.62392; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-T7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!T7 = 207.59417857731373 (expect ≈207.594; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-U7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!U7 = 320.3159405979404 (expect ≈320.316; El 行矩阵)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-O7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!O7 formula MATCHES (dump: SUMIF(Erzeugung!$R$7:$R$9,$B7,Erzeugung!$Q$7:$Q$9) / expect: SUMIF(Erzeugung!$R$7:$R$9,$B7,Erzeugung!$Q$7:$Q$9))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-P7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!P7 formula MATCHES (dump: SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$P$16:$P$18) / expect: SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$P$16:$P$18))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-Q7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Q7 formula MATCHES (dump: SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$Q$16:$Q$18) / expect: SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$Q$16:$Q$18))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-R7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!R7 formula MATCHES (dump: SUMIF(Erzeugung!$R$25:$R$27,$B7,Erzeugung!$P$25:$P$27) / expect: SUMIF(Erzeugung!$R$25:$R$27,$B7,Erzeugung!$P$25:$P$27))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-S7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!S7 formula MATCHES (dump: SUMIF(Erzeugung!$R$25:$R$27,$B7,Erzeugung!$Q$25:$Q$27) / expect: SUMIF(Erzeugung!$R$25:$R$27,$B7,Erzeugung!$Q$25:$Q$27))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-T7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!T7 formula MATCHES (dump: SUM(D7,F7,H7,J7,L7,N7,P7,R7) / expect: SUM(D7,F7,H7,J7,L7,N7,P7,R7))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-U7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!U7 formula MATCHES (dump: E7+G7+I7+K7+M7+O7+Q7+S7 / expect: E7+G7+I7+K7+M7+O7+Q7+S7)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.9-Q10",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Q10 = 23.21817178012428 (expect ≈23.2182; Pell Heizung)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.9-S10",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!S10 = 4.359744000000001 (expect ≈4.35974; Pell WW)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.9-U15",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!U15 = 347.8938563780647 (expect ≈347.894; Endenergie 合计)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W7 = 2 (expect ≈2; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X7 = 2.69 (expect ≈2.69; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y7",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y7 = 0.139 (expect ≈0.139; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W8",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W8 = 1 (expect ≈1; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X8",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X8 = 1.22 (expect ≈1.22; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y8",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y8 = 0.298 (expect ≈0.298; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W9",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W9 = 1 (expect ≈1; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X9",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X9 = 1.06 (expect ≈1.06; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y9",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y9 = 0.228 (expect ≈0.228; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W10",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W10 = 0.7 (expect ≈0.7; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X10",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X10 = 0.2 (expect ≈0.2; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y10",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y10 = 0.034 (expect ≈0.034; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W11",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W11 = 0.7 (expect ≈0.7; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X11",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X11 = 0.06 (expect ≈0.06; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y11",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y11 = 0.022 (expect ≈0.022; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W12",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W12 = 0.7 (expect ≈0.7; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X12",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X12 = 0.05 (expect ≈0.05; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y12",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y12 = 0.022 (expect ≈0.022; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W13",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W13 = 1 (expect ≈1; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X13",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X13 = 0.31 (expect ≈0.31; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y13",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y13 = 0.132 (expect ≈0.132; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-W14",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!W14 = 0.6 (expect ≈0.6; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-X14",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!X14 = 0.55 (expect ≈0.55; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-w-Y14",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!Y14 = 0.1 (expect ≈0.1; 权重)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-E21-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!E21 formula MATCHES (dump: SUMPRODUCT(E$7:E$17*W7:W17) / expect: SUMPRODUCT(E$7:E$17*W7:W17))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-D21-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!D21 formula MATCHES (dump: E21*1000/Gebäude!$D$39 / expect: E21*1000/Gebäude!$D$39)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-E21",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!E21 = 109.2884 (expect ≈109.2884; 54.644×2)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-G21",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!G21 = 259.3722 (expect ≈259.3722; 129.686×2)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-U21",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!U21 = 620.799592241968 (expect ≈620.8; 0.01)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-D21",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!D21 = 16.782616707616704 (expect ≈16.7826; E21×1000/6512)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-I21-bug",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!I21 formula MATCHES (dump: SUMPRODUCT(I$7:I$17*Y7:Y17) / expect: SUMPRODUCT(I$7:I$17*Y7:Y17); 已知错误：误用 THGE 权重列 Y)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-G22-bug",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!G22 formula MATCHES (dump: SUMPRODUCT(E$7:E$17*$X7:$X17) / expect: SUMPRODUCT(E$7:E$17*$X7:$X17); 已知错误：重复 E 列)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-F22-bug",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!F22 formula MATCHES (dump: G22*1000/Gebäude!$D$39 / expect: G22*1000/Gebäude!$D$39)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-I21-v",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!I21 = 2.9231700000000003 (expect ≈2.92317; = I25 相同)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-I25-v",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!I25 = 2.9231700000000003 (expect ≈2.92317; 0.0001)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-G22-v",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!G22 = 146.992898 (expect ≈146.993; 146.99 (错误值))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-F22-v",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!F22 = 22.572619471744467 (expect ≈22.5726; 22.57 kWh/m²)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.10-E22-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!E22 formula MATCHES (dump: SUMPRODUCT(E$7:E$17*$X7:$X17) / expect: SUMPRODUCT(E$7:E$17*$X7:$X17))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-C31-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!C31 formula MATCHES (dump: Gebäude!R35*1000/Gebäude!D39 / expect: Gebäude!R35*1000/Gebäude!D39)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-C31",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!C31 = 9.399179810795575 (expect ≈9.39918; 61.207×1000/6512)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-C37-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!C37 formula MATCHES (dump: Lüftung!V23*1000/Gebäude!D39 / expect: Lüftung!V23*1000/Gebäude!D39)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-C38-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!C38 formula MATCHES (dump: Lüftung!X23*1000/Gebäude!D39 / expect: Lüftung!X23*1000/Gebäude!D39)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-C37",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!C37 = 0 (expect ≈0)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.8-C38",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Resultate!C38 = 0 (expect ≈0)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.3-L16-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!L16 formula contains \"Gebäude!T$35+Lüftung!S$23\" (dump: (Gebäude!T$35+Lüftung!S$23)*F16%*(100+IF($J16<>\"\",$J16,$H16))%; Wärme 需求源)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.3-M16-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!M16 formula contains \"Gebäude!U$35+Lüftung!T$23\" (dump: (Gebäude!U$35+Lüftung!T$23)*G16%*(100+IF($J16<>\"\",$J16,$H16))%)",
+      "severity": "pass"
+    },
+    {
+      "id": "5.3-A7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!A7 formula contains \"INDEX(Nutzungsgrad!$B$3:$C$8,MATCH(Erzeugung!B7,Nutzungsgrad!$C$3:$C$8,0),1)\" (dump: IF(B7<>\"\",INDEX(Nutzungsgrad!$B$3:$C$8,MATCH(Erzeugung!B7,Nutzungsgrad!$C$3:$C$8,0),1),\"\"))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.3-D7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!D7 formula contains \"VLOOKUP($B7,Nutzungsgrad!$C$3:$G$8,3,FALSE)\" (dump: IF(B7<>\"\",VLOOKUP($B7,Nutzungsgrad!$C$3:$G$8,3,FALSE),0))",
+      "severity": "pass"
+    },
+    {
+      "id": "5.3-R7-f",
+      "chapter": "ch05",
+      "ok": true,
+      "detail": "Erzeugung!R7 formula contains \"VLOOKUP($B7,Nutzungsgrad!$C$3:$G$8,4,FALSE)\" (dump: IF(D7=0,\"\",VLOOKUP($B7,Nutzungsgrad!$C$3:$G$8,4,FALSE)))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.3-E43-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!E43 formula MATCHES (dump: 1013.25*(1-(0.0065*D43)/288.15)^5.255 / expect: 1013.25*(1-(0.0065*D43)/288.15)^5.255)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.3-E43",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!E43 = 948.225968475814 (expect ≈948.226; Zürich-MeteoSchweiz 556 m)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.3-D43",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!D43 = 556 (expect ≈556; 海拔 m ü.M.)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.3-F44-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!F44 formula MATCHES (dump: SUM(F4:F43) / expect: SUM(F4:F43))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.3-F44",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!F44 = 948.225968475814 (expect ≈948.226; 选择站气压)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.3-H44-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!H44 formula MATCHES (dump: SUM(H4:H43) / expect: SUM(H4:H43))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.3-H44",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!H44 = 3440 (expect ≈3440; 选择站 HDD)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.2-N1-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!N1 formula MATCHES (dump: INDEX(B4:B43,Gebäude!D2,0) / expect: INDEX(B4:B43,Gebäude!D2,0))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.2-N1",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!N1 = \"Zürich-MeteoSchweiz\" (expect \"Zürich-MeteoSchweiz\"; 选择站名)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.2-GebD2",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Gebaeude!D2 = 40 (expect ≈40; 站序号 40)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.4-O5-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!O5 formula MATCHES (dump: INDEX($S$1:$CT$65,L5,MATCH($O$2,$S$2:$CT$2,0)) / expect: INDEX($S$1:$CT$65,L5,MATCH($O$2,$S$2:$CT$2,0)))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.4-P6-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!P6 formula MATCHES (dump: O6+P5 / expect: O6+P5)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.4-P65",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!P65 = 8760 (expect ≈8760; 年合计)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.4-O65",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!O65 = 0 (expect ≈0; +35 °C 区间小时数 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.4-O5",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!O5 = 0 (expect ≈0; −25 °C 区间小时数 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.5-N5-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!N5 formula MATCHES (dump: INDEX($S$1:$CT$65,L5,MATCH($N$2,$S$2:$CT$2,0)) / expect: INDEX($S$1:$CT$65,L5,MATCH($N$2,$S$2:$CT$2,0)))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.5-Q5-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!Q5 formula MATCHES (dump: AbsFeuchte(M5,N5,$F$44) / expect: AbsFeuchte(M5,N5,$F$44))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.5-N20",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!N20 = 0.8816666666666667 (expect ≈0.881667; φ(−10))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.5-Q20",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!Q20 = 1.501516346575252 (expect ≈1.50152; x(−10))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.5-N50",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!N50 = 0.5925 (expect ≈0.5925; φ(20))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.5-Q50",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!Q50 = 9.216475765386784 (expect ≈9.21648; x(20))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-G3-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!G3 formula MATCHES (dump: MATCH(D3,P3:SA3,0) / expect: MATCH(D3,P3:SA3,0))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-G3",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!G3 = 469 (expect ≈469; 选择站块起始列)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-D7-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!D7 formula MATCHES (dump: INDEX($P$7:$SA$51,$C7,$G$3-1+D$2) / expect: INDEX($P$7:$SA$51,$C7,$G$3-1+D$2))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-E11-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!E11 formula MATCHES (dump: INDEX($P$7:$SA$51,$C11,$G$3-1+E$2) / expect: INDEX($P$7:$SA$51,$C11,$G$3-1+E$2))",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-D11",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!D11 = 43.65646924369748 (expect ≈43.6565; Kühlung Leistung Standard)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-E11",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!E11 = 14.430134539350295 (expect ≈14.4301; Kühlung Energie Standard)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-F11",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!F11 = 19.82335098039216 (expect ≈19.82335; Heizung Leistung Standard)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-D3",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!D3 = \"Zürich-MeteoSchweiz\" (expect \"Zürich-MeteoSchweiz\")",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-P3-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!P3 formula contains \"[3]Winter_Auslegung!A5\" (dump: [3]Winter_Auslegung!A5; 外部链接 [3])",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-KZ-G11-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "KZ!G11 formula MATCHES (dump: Qhc_Klimastat!E11 / expect: Qhc_Klimastat!E11)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-KZ-AG11-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "KZ!AG11 formula MATCHES (dump: Qhc_Klimastat!D11 / expect: Qhc_Klimastat!D11)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-KZ-AH11-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "KZ!AH11 formula MATCHES (dump: Qhc_Klimastat!F11 / expect: Qhc_Klimastat!F11)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-KZ-AG11",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "KZ!AG11 = 43.65646924369748 (expect ≈43.6565; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-KZ-G11",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "KZ!G11 = 14.430134539350295 (expect ≈14.4301; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.6-KZ-AH11",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "KZ!AH11 = 19.82335098039216 (expect ≈19.82335; 0.001)",
+      "severity": "pass"
+    },
+    {
+      "id": "6.7-N19-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "BLU!N19 formula MATCHES (dump: Klimadaten!F44 / expect: Klimadaten!F44)",
+      "severity": "pass"
+    },
+    {
+      "id": "x1-AP121",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AP121 = 21.39789189189189 (expect ≈21.3979; = BM121)",
+      "severity": "pass"
+    },
+    {
+      "id": "x1-AO121",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AO121 = 0 (expect ≈0; 温度控分支 X121 = 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x1-AN121-inputs",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "TemperaturH(AP121=21.3979, AO121=0) = 21.2703 °C ≈ AN121 缓存 21.2703 °C（章节示例已按转储修正：焓取室内状态焓 BM121，非 MIL 焓 N121）",
+      "severity": "pass"
+    },
+    {
+      "id": "x1-Q5",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "Klima!Q5 formula MATCHES (dump: AbsFeuchte(M5,N5,$F$44) / expect: AbsFeuchte(M5,N5,$F$44))",
+      "severity": "pass"
+    },
+    {
+      "id": "x1-Q65",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "Klima!Q65 formula MATCHES (dump: AbsFeuchte(M65,N65,$F$44) / expect: AbsFeuchte(M65,N65,$F$44))",
+      "severity": "pass"
+    },
+    {
+      "id": "x1-AA121",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!AA121 formula MATCHES (dump: IF($E$36=$D$36,MIN(AbsFeuchte(Z121,100%,$N$19),R121),MIN(AbsFeuchte(Z121,100%,$N$19),X121)) / expect: IF($E$36=$D$36,MIN(AbsFeuchte(Z121,100%,$N$19),R121),MIN(AbsFeuchte(Z121,100%,$N$19),X121)); 100% 以小数 1 传入)",
+      "severity": "pass"
+    },
+    {
+      "id": "x1-BL121",
+      "chapter": "ch01",
+      "ok": true,
+      "detail": "BLU!BL121 formula MATCHES (dump: AbsFeuchte(BJ121,BK121,$N$19) / expect: AbsFeuchte(BJ121,BK121,$N$19))",
+      "severity": "pass"
+    },
+    {
+      "id": "x2-A51",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!A51 = 12.12 (expect ≈12.12; SIA 代码末行)",
+      "severity": "pass"
+    },
+    {
+      "id": "x2-AA51",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "KZ!AA51 = 12.12 (expect ≈12.12; 内部代码末行)",
+      "severity": "pass"
+    },
+    {
+      "id": "x2-L12",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!L12 = \"LA01\" (expect \"LA01\"; 通风系统选择)",
+      "severity": "pass"
+    },
+    {
+      "id": "x2-M8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!M8 = 3 (expect ≈3; → Std!D 列)",
+      "severity": "pass"
+    },
+    {
+      "id": "x2-V8",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!V8 = 8 (expect ≈8; → Std!I 列)",
+      "severity": "pass"
+    },
+    {
+      "id": "x2-D21",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Gebaeude!D21 = 670 (expect ≈670; Parkhaus NGF)",
+      "severity": "pass"
+    },
+    {
+      "id": "x2-StdE47",
+      "chapter": "ch02",
+      "ok": true,
+      "detail": "Std!E47 = 2 (expect ≈2; Parkhaus 过程新风)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-M10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!M10 = 0.55 (expect ≈0.55; Spez. Ventilatorleistung)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-N10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!N10 = \"einstufig\" (expect \"einstufig\"; Ventilatorregelung Standard)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-O10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!O10 = 3900 (expect ≈3900; 电基准 Volllaststunden (静态副本))",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-P10",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!P10 = 4.443214285714286 (expect ≈4.443214; Elektrischer Energiebedarf kWh/m²)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-kuehlraum-Q",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!Q49 = 0 (expect ≈0; 12.11 Kühlraum 全为 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-kuehlraum-R",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!R49 = 0 (expect ≈0; 12.11 Kühlraum 全为 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-kuehlraum-S",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!S49 = 0 (expect ≈0; 12.11 Kühlraum 全为 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-kuehlraum-T",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!T49 = 0 (expect ≈0; 12.11 Kühlraum 全为 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-kuehlraum-U",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!U49 = 0 (expect ≈0; 12.11 Kühlraum 全为 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-kuehlraum-V",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!V49 = 0 (expect ≈0; 12.11 Kühlraum 全为 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-kuehlraum-B",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Std!B49 = \"Kühlraum\" (expect \"Kühlraum\")",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-R11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!R11 formula MATCHES (dump: F11/D11 / expect: F11/D11; 2-stufig/1-stufig 比值)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-R11-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!R11 = 0.8435897435897436 (expect ≈0.8435897; 0.8435897435897436)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-S11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!S11 formula MATCHES (dump: J11/D11 / expect: J11/D11; stufenlos/1-stufig 比值)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-S11-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!S11 = 0.5538461538461539 (expect ≈0.5538461; 0.5538461538461539)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-AJ11",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "Volll!AJ11 formula MATCHES (dump: IF(AI11=\"einstufig\",$E11,IF(AI11=\"zweistufig\",$I11,$Q11)) / expect: IF(AI11=\"einstufig\",$E11,IF(AI11=\"zweistufig\",$I11,$Q11)); C1:2024 块电基准选取)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-I20",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!I20 formula MATCHES (dump: IF(E52=0,0,(E52*1000)/(3600*(K70/3600)*N23)) / expect: IF(E52=0,0,(E52*1000)/(3600*(K70/3600)*N23)); Feuchtelast 使用 K70)",
+      "severity": "pass"
+    },
+    {
+      "id": "x3-I20-v",
+      "chapter": "ch03",
+      "ok": true,
+      "detail": "BLU!I20 = 0 (expect ≈0; E52=0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-C168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!C168 = 10.036723173953218 (expect ≈10.0367; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-E168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E168 = 0.5048770905933516 (expect ≈0.504877; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-M168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!M168 = 10.036723173953218 (expect ≈10.0367; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-N168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N168 = 47.65056940423954 (expect ≈47.6506; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-O168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!O168 = 47.65056940423954 (expect ≈47.6506; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-P168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!P168 = 0 (expect ≈0; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-Q168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Q168 = 22 (expect ≈22; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-R168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!R168 = 10.036723173953218 (expect ≈10.0367; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-S168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!S168 = 47.65056940423954 (expect ≈47.6506; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-T168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!T168 = 22 (expect ≈22; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-U168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!U168 = 22 (expect ≈22; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-V168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!V168 = 0 (expect ≈0; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-W168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!W168 = 22 (expect ≈22; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-X168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!X168 = 10.036723173953218 (expect ≈10.0367; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-Y168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Y168 = 47.65056940423954 (expect ≈47.6506; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-BR168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BR168 = 24 (expect ≈24; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-BS168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BS168 = 0.5048770905933516 (expect ≈0.504877; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-BT168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BT168 = 10.036723173953218 (expect ≈10.0367; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-BU168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BU168 = 24 (expect ≈24; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-BW168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BW168 = 10.036723173953218 (expect ≈10.0367; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-L168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!L168 = 22 (expect ≈22; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-Z168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!Z168 = 9 (expect ≈9; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-AF168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!AF168 = 9 (expect ≈9; 行 168 状态链)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-T168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!T168 formula contains \"MIN((L168*($E$35)+BU168*(1-$E$35)))\" (dump: MIN((L168*($E$35)+BU168*(1-$E$35))); MIN 单参 no-op)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-BR168-f",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!BR168 formula contains \"IF($DA168<=$B$89,$D$89-($B$89-$DA168)*$J$88\" (dump: IF($DA168<=$B$89,$D$89-($B$89-$DA168)*$J$88,IF($DA168<=$B$90,$D$90-($B$90-$DA168)*$J$89,$D$91-($B$91-$DA168)*$J$90)); 室温曲线插值)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-E17",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E17 = \"IE5 - gefaked\" (expect \"IE5 - gefaked\")",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-E30",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E30 = \"ja\" (expect \"ja\"; 旁通存在)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-E31",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E31 = \"ja\" (expect \"ja\"; KRG 存在)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-S20",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!S20 = \"nein\" (expect \"nein\"; 比较标签)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-S21",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!S21 = \"ja\" (expect \"ja\"; 比较标签)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-N6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!N6 = 0 (expect ≈0; 送风设定湿度夏季)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-O6",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!O6 = 0 (expect ≈0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-E7",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!E7 formula MATCHES (dump: IF(OR(E6=\"\",E6=0),C6,E6) / expect: IF(OR(E6=\"\",E6=0),C6,E6); E18/K70 上游)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-J11",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!J11 = \"{\\\"error\\\":\\\"#N/A\\\"}\" (expect error #N/A; SOLL 状态公式 #N/A (4.14-14))",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-F40",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!F40 = \"{\\\"error\\\":\\\"#N/A\\\"}\" (expect error #N/A; SOLL 设计温度空 (4.14-14))",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-K82",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!K82 = 0 (expect ≈0; SOLL 休眠 (4.14-3))",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-M82",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!M82 = 0 (expect ≈0; SOLL 休眠 (4.14-3))",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-P82",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!P82 = 0 (expect ≈0; SOLL 休眠 (4.14-3))",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-R82",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!R82 = 0 (expect ≈0; SOLL 休眠 (4.14-3))",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-B189",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!B189 = 0 (expect ≈0; SOLL 区间行 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-F254",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BLU!F254 = 0 (expect ≈0; 能源价格空 → 成本 0 (4.14-7))",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-CN168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CN168 图表守卫 (dump: IF(E168>0,BK168,222)) (4.14-6)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-CV168",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "CV168 图表守卫 (dump: IF(B168>0,BJ168,-222)) (4.14-6)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-A184",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "A184 文档行含 LUET/LUEAB (4.14-11)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-D184",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "D184 文档行含 LUET (4.14-11)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-BU121",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "BU121 含 #REF! 死分支 (4.14-13) (dump: IF($I$21=0,IF(E$13=$S$10,BR121+$N$18,BR121),IF(E$13=$S$10,BR…)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-E41-empty",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "E41 为空 (4.14-10)",
+      "severity": "pass"
+    },
+    {
+      "id": "x4-E44-empty",
+      "chapter": "ch04",
+      "ok": true,
+      "detail": "E44 为空 (4.14-10)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-B4",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!B4 = \"Adelboden\" (expect \"Adelboden\"; 首站)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-E4-f",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!E4 formula MATCHES (dump: 1013.25*(1-(0.0065*D4)/288.15)^5.255 / expect: 1013.25*(1-(0.0065*D4)/288.15)^5.255)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-D4",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!D4 = 1320 (expect ≈1320; Adelboden 海拔)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-E4",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!E4 = 864.42769071035 (expect ≈864.428; 首站气压)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-B16",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!B16 = \"Grand-St-Bernard\" (expect \"Grand-St-Bernard\")",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-D16",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!D16 = 2472 (expect ≈2472; Grand-St-Bernard 海拔)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-E16",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!E16 = 749.4941582457825 (expect ≈749.494; ≈750 mbar)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-N2",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!N2 formula MATCHES (dump: N1&N3 / expect: N1&N3; MATCH 键名)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-O2",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!O2 formula MATCHES (dump: N1&O3 / expect: N1&O3)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-S4",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!S4 = \"[%]\" (expect \"[%]\"; 表头单位 [%] 与实际小数不符 (README 0.7-2))",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-P5",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Klima!P5 = 0 (expect ≈0; P5 = O5+P4 = 0)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-QhcD3",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!D3 formula MATCHES (dump: INDEX(Klimadaten!B4:B43,Gebäude!D2,0) / expect: INDEX(Klimadaten!B4:B43,Gebäude!D2,0))",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-QhcD2",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!D2 = 1 (expect ≈1; 块内偏移 1)",
+      "severity": "pass"
+    },
+    {
+      "id": "x6-QhcC11",
+      "chapter": "ch06",
+      "ok": true,
+      "detail": "Qhc!C11 = 5 (expect ≈5; 行号列 C7:C51 = 1..45)",
+      "severity": "pass"
+    }
+  ]
+}

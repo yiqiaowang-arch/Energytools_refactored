@@ -1,0 +1,33 @@
+# --- Derived analysis artifacts (workbook copies, TSV dumps, extracted VBA, tools) ---
+.analysis/
+
+# --- Node tooling ---
+node_modules/
+
+# --- Python packaging ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Tool caches ---
+.pytest_cache/
+pytest-cache-files-*/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# --- Virtual environments / package managers ---
+.pixi/
+.pixi-home/
+.venv/
+venv/
+env/
+
+# --- Documentation build output (MkDocs) ---
+site/

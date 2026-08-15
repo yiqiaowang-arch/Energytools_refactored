@@ -1,0 +1,130 @@
+# =====================================================================
+# energytools — single-source packaging manifest (PEP 621)
+#
+# Build backend: hatchling.
+# Layout:      src-layout (src/energytools).
+# Install:     `pip install -e .`, `pip install -e ".[dev]"`,
+#              `uv sync`, `pixi install` (see pixi.toml and
+#              docs/installation.md for the full matrix).
+# =====================================================================
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "energytools"
+version = "0.1.0"
+description = "SIA 2024 energy tools (Raumdatenblaetter, Gebaeude-Tool) reimplemented as a Python library"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = ["sia-2024", "energy", "building", "raumdaten", "gebaeude", "excel-refactor"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+]
+
+# Runtime dependencies of the *scaffold* are intentionally empty: the real
+# modules land later (pandas for `data`/`export`, pydantic for `api`, …) and
+# their dependencies will be promoted into `dependencies` at that point.
+dependencies = []
+
+[project.scripts]
+energytools = "energytools.cli:main"
+
+# ---------------------------------------------------------------------
+# Optional dependency groups (extras).
+#
+# Layering (bottom-up):
+#   dev    – everything needed to work on the repository (build, lint,
+#            type-check, test). Installed by default in the pixi `dev`
+#            environment and by `pip install -e ".[dev]"`.
+#   api    – FastAPI layer    (energytools.api, planned)
+#   mcp    – MCP adapter      (energytools.mcp, planned)
+#   data   – pandas-backed dataset model (energytools.raumdaten, planned)
+#   export – JSON/CSV/XLSX/PDF export (energytools.export, planned)
+#   docs   – MkDocs documentation toolchain (mkdocs.yml + docs/;
+#            see docs/deployment/readthedocs.md)
+#   all    – dev + api + mcp + data + export + docs
+# ---------------------------------------------------------------------
+[project.optional-dependencies]
+dev = [
+    "build>=1.2",
+    "hatchling>=1.25",
+    "mypy>=1.11",
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+]
+api = [
+    "fastapi>=0.115,<1",
+    "pydantic-settings>=2.4",
+    "uvicorn[standard]>=0.30",
+]
+mcp = [
+    "mcp>=1.2",
+]
+data = [
+    "pandas>=2.2",
+]
+export = [
+    "openpyxl>=3.1",
+    "pandas>=2.2",
+]
+docs = [
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5",
+]
+all = [
+    # dev
+    "build>=1.2",
+    "hatchling>=1.25",
+    "mypy>=1.11",
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.6",
+    # api
+    "fastapi>=0.115,<1",
+    "pydantic-settings>=2.4",
+    "uvicorn[standard]>=0.30",
+    # mcp
+    "mcp>=1.2",
+    # data
+    "pandas>=2.2",
+    # export
+    "openpyxl>=3.1",
+    # docs
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5",
+]
+
+# ---------------------------------------------------------------------
+# hatchling build configuration
+# ---------------------------------------------------------------------
+[tool.hatch.build.targets.wheel]
+packages = ["src/energytools"]
+
+# sdist: hatchling's default — everything not ignored by VCS
+# (see .gitignore: .pixi/, .venv/, dist/, *.egg-info/, …).
+
+# ---------------------------------------------------------------------
+# Dev-tool configuration (shared by pip/uv/pixi workflows)
+# ---------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+# pytest's atomic cache-write can leave a locked `pytest-cache-files-*`
+# temp directory in the repo root (Windows); never scan it.
+exclude = ["pytest-cache-files-*"]
+
+[tool.mypy]
+python_version = "3.11"

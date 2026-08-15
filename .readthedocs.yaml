@@ -1,0 +1,37 @@
+# =============================================================================
+# ReadTheDocs 构建配置 (RTD config file v2)
+# 文档: https://docs.readthedocs.io/en/stable/config-file/v2.html
+#
+# 本配置同时被 ReadTheDocs 云端构建与本地验证共用：
+#   - 云端：RTD 导入仓库后自动读取本文件，按 python.install 安装依赖，
+#     再按 mkdocs.configuration 执行 `mkdocs build`；
+#   - 本地：`pip install -r requirements.txt` + `mkdocs build` 与云端等价。
+# =============================================================================
+
+version: 2
+
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.12"
+  jobs:
+    # 可选：构建完成后将 MkDocs 输出目录同步到 RTD 的预期位置
+    # （MkDocs 构建器默认自动处理，无需配置；此处仅作记录）
+
+mkdocs:
+  configuration: mkdocs.yml
+
+python:
+  install:
+    - requirements: requirements.txt
+    # 说明：API 参考目前为手写文档（docs/architecture+api-reference/02–07），
+    # 不依赖 mkdocstrings 自动生成，因此无需安装 energytools 包本身。
+    # 若未来切换到 mkdocstrings 自动生成模式，需取消注释以下两行：
+    # - method: pip
+    #   path: .
+    #   extra_requirements:
+    #     - docs
+
+# 可选：构建失败时通过 webhook 通知 (需在 RTD 项目设置中配置)
+# notifications:
+#   webhook: https://example.com/rtd-build-failed
