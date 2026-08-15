@@ -14,9 +14,6 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.12"
-  jobs:
-    # 可选：构建完成后将 MkDocs 输出目录同步到 RTD 的预期位置
-    # （MkDocs 构建器默认自动处理，无需配置；此处仅作记录）
 
 mkdocs:
   configuration: mkdocs.yml
