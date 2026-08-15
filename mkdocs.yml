@@ -10,7 +10,7 @@
 
 site_name: Energytools 文档
 site_description: Energytools —— 能源工具库的架构、计算模型与 API 参考文档
-site_url: https://energytools.readthedocs.io/
+site_url: https://energytools-refactored.readthedocs.io/
 
 # 主题: mkdocs-material (https://squidfunk.github.io/mkdocs-material/)
 theme:

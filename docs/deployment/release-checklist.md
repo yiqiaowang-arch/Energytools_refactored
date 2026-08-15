@@ -28,7 +28,7 @@
 
 - [ ] 将默认分支设为 `main`（Settings → Branches）
 - [ ] 更新 `mkdocs.yml`：`repo_url` → 真实仓库地址
-- [ ] 建议：在 GitHub 仓库 About 中开启 **Website** 指向 `https://energytools.readthedocs.io/`
+- [ ] 建议：在 GitHub 仓库 About 中开启 **Website** 指向 `https://energytools-refactored.readthedocs.io/`
 
 ---
 
@@ -46,7 +46,7 @@
 - [ ] 登录 RTD → **Import a Project** → 选择 GitHub 仓库
 - [ ] RTD 自动识别 `.readthedocs.yaml`（无需手动填写构建配置）
 - [ ] 触发首次构建：Projects → `energytools` → **Builds** → Build version: `latest`
-- [ ] 构建成功，站点地址：`https://energytools.readthedocs.io/`
+- [ ] 构建成功，站点地址：`https://energytools-refactored.readthedocs.io/`
 - [ ] 更新 `mkdocs.yml`：`site_url` → 实际站点地址（影响搜索与 SEO）
 
 > 若导入时未自动创建集成，需手动检查（见第 4 步）。
@@ -79,7 +79,7 @@
 
 - [ ] 打 release 标签：GitHub → Releases → `v1.0.0`（或按语义化版本规则）
 - [ ] RTD 项目 → **Versions** → 将 `v1.0.0` 设为 **Active** 并标记为 **stable**
-- [ ] 对外正式链接统一使用 `https://energytools.readthedocs.io/en/stable/`
+- [ ] 对外正式链接统一使用 `https://energytools-refactored.readthedocs.io/en/stable/`
 
 ---
 

@@ -43,7 +43,7 @@ mkdocs build
 1. 在 ReadTheDocs 中导入本仓库（Admin → Advanced Settings 可指定构建配置）。
 2. 构建配置为 `.readthedocs.yaml`（MkDocs 构建器，Python 3.12，依赖
    `requirements.txt`）。
-3. 每次推送到默认分支即触发构建；站点地址：`https://energytools.readthedocs.io/`
+3. 每次推送到默认分支即触发构建；站点地址：`https://energytools-refactored.readthedocs.io/`
    （`mkdocs.yml` 中 `site_url`，发布前替换为真实域名）。
 4. 发布前请将 `mkdocs.yml` 中的 `repo_name` / `repo_url` 替换为真实仓库地址。
 
