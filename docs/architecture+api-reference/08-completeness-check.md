@@ -87,7 +87,7 @@ none is silently omitted.
 |---|----------|--------|
 | 01 | [01-workbook-assessment.md](../01-workbook-assessment.md) | done (pre-existing, copied into this worktree so the set is self-contained) |
 | 02a–02i | architecture+api-reference set (README, parts 01–08) | **done** (this document set) |
-| 03 | Calculation-model textbook ([../textbook/README.md](../textbook/README.md)) — chapters [ch01](../textbook/ch01-湿空气物理-Glück多项式与UDF.md) … [ch06](../textbook/ch06-气候数据.md) + appendix [analysis_Berechnung_LU.md](../textbook/analysis_Berechnung_LU.md) | **done** (merged from the parallel worktree; this set is now self-contained) |
+| 03 | Calculation-model textbook ([../textbook/README.md](../textbook/README.md)) — chapters [ch01](../textbook/ch01-moist-air-physics.md) … [ch06](../textbook/ch06-climate-data.md) + appendix [analysis_Berechnung_LU.md](../textbook/analysis_Berechnung_LU.md) | **done** (merged from the parallel worktree; this set is now self-contained) |
 | 04 | Installation & deployment ([installation.md](../installation.md), [deployment/readthedocs.md](../deployment/readthedocs.md), `mkdocs.yml`) | **done** (merged packaging-scaffold + docs-pipeline worktrees) |
 
 Completeness statement: all documents promised by the inventory exist, and the inventory lists

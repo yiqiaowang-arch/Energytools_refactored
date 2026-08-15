@@ -14,12 +14,12 @@
 | Section | File | Content |
 |---|---|---|
 | Introduction (this file) | `README.md` | Tool positioning, data sources, cell-reference conventions, calculation-flow overview, worksheet list, unit system, known quirks |
-| Chapter 1 | `ch01-湿空气物理-Glück多项式与UDF.md` | Moist-air physics: derivation, units, assumptions, scope of validity and all call sites of the 8 UDFs — Glück saturation-pressure polynomial, enthalpy/humidity ratio/relative humidity/dew point, etc. |
-| Chapter 2 | `ch02-房间KPI派生.md` | Room KPI derivation: `KZ_Raum_2024` matrix, `Res` named range, `Gebäude` room-row VLOOKUP chain, EBF/GF (energy reference area / floor area) weighting, Allg. Gebäudetechnik |
-| Chapter 3 | `ch03-通风全负荷小时.md` | Ventilation full-load hours: `Std` table (copy of Raumdaten `Volll_Lüft`), mechanism of selection by Regelung (control mode), use in the AHU engine |
-| Chapter 4 | `ch04-AHU温度区间法.md` | AHU temperature-bin method (`Berechnung LU`): meteorological bin h-x chain, three fan stages P∝V^2.5, WRG/KRG (heat/cold recovery), four control cases (Fall 1–4), energy summary |
-| Chapter 5 | `ch05-产热与Resultate汇总.md` | Heat generation and Resultate summary: `Nutzungsgrad` catalogue, the three heat-generator groups in `Erzeugung`, Endenergie/Energieträger allocation, `Resultate` weighting (NEGF/PEne/THGE) |
-| Chapter 6 | `ch06-气候数据.md` | Climate data: `Klimadaten` 40 stations, air pressure (barometric-height formula), HDD, design temperatures, temperature-bin hours and humidity sequences, `Qhc_Klimastat` |
+| Chapter 1 | `ch01-moist-air-physics.md` | Moist-air physics: derivation, units, assumptions, scope of validity and all call sites of the 8 UDFs — Glück saturation-pressure polynomial, enthalpy/humidity ratio/relative humidity/dew point, etc. |
+| Chapter 2 | `ch02-room-kpi-derivation.md` | Room KPI derivation: `KZ_Raum_2024` matrix, `Res` named range, `Gebäude` room-row VLOOKUP chain, EBF/GF (energy reference area / floor area) weighting, Allg. Gebäudetechnik |
+| Chapter 3 | `ch03-ventilation-full-load-hours.md` | Ventilation full-load hours: `Std` table (copy of Raumdaten `Volll_Lüft`), mechanism of selection by Regelung (control mode), use in the AHU engine |
+| Chapter 4 | `ch04-ahu-temperature-bin-method.md` | AHU temperature-bin method (`Berechnung LU`): meteorological bin h-x chain, three fan stages P∝V^2.5, WRG/KRG (heat/cold recovery), four control cases (Fall 1–4), energy summary |
+| Chapter 5 | `ch05-heat-generation-resultate.md` | Heat generation and Resultate summary: `Nutzungsgrad` catalogue, the three heat-generator groups in `Erzeugung`, Endenergie/Energieträger allocation, `Resultate` weighting (NEGF/PEne/THGE) |
+| Chapter 6 | `ch06-climate-data.md` | Climate data: `Klimadaten` 40 stations, air pressure (barometric-height formula), HDD, design temperatures, temperature-bin hours and humidity sequences, `Qhc_Klimastat` |
 | Appendix A | `analysis_Berechnung_LU.md` | Column-by-column analysis worksheet of the entire `Berechnung LU` table (basis for the Chapter 4 derivations; includes a complete numerical example for row 168) |
 
 ## 0.2 Data Sources and Reproducibility

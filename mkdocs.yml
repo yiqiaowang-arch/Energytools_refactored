@@ -64,17 +64,17 @@ nav:
       - Introduction: architecture+api-reference/README.md
       - Package & Symbol Inventory: architecture+api-reference/01-package-inventory.md
       - Completeness Check: architecture+api-reference/08-completeness-check.md
-      - Document-Tree Consistency Report: verification/文档树一致性核对报告.md
+      - Document-Tree Consistency Report: verification/doc-tree-consistency-report.md
   - Calculation Model:
       - Introduction: textbook/README.md
-      - Chapter 1 — Moist-Air Physics: textbook/ch01-湿空气物理-Glück多项式与UDF.md
-      - Chapter 2 — Room KPI Derivation: textbook/ch02-房间KPI派生.md
-      - Chapter 3 — Ventilation Full-Load Hours: textbook/ch03-通风全负荷小时.md
-      - Chapter 4 — AHU Temperature-Bin Method: textbook/ch04-AHU温度区间法.md
-      - Chapter 5 — Heat Generation & Resultate (Results) Summary: textbook/ch05-产热与Resultate汇总.md
-      - Chapter 6 — Climate Data: textbook/ch06-气候数据.md
+      - Chapter 1 — Moist-Air Physics: textbook/ch01-moist-air-physics.md
+      - Chapter 2 — Room KPI Derivation: textbook/ch02-room-kpi-derivation.md
+      - Chapter 3 — Ventilation Full-Load Hours: textbook/ch03-ventilation-full-load-hours.md
+      - Chapter 4 — AHU Temperature-Bin Method: textbook/ch04-ahu-temperature-bin-method.md
+      - Chapter 5 — Heat Generation & Resultate (Results) Summary: textbook/ch05-heat-generation-resultate.md
+      - Chapter 6 — Climate Data: textbook/ch06-climate-data.md
       - Appendix A — Berechnung LU (LU Calculation) Analysis: textbook/analysis_Berechnung_LU.md
-      - Appendix B — Formula & Workbook Cross-Check Report: verification/教科书六章公式与工作簿对拍复核报告.md
+      - Appendix B — Formula & Workbook Cross-Check Report: verification/textbook-workbook-crosscheck-report.md
   - API Reference:
       - Common Foundation: architecture+api-reference/02-common-foundation.md
       - Raumdaten (Room Data) Service: architecture+api-reference/03-raumdaten-service.md
@@ -86,7 +86,7 @@ nav:
   - Release & Deployment:
       - Build & Release Pipeline: deployment/readthedocs.md
       - First-Release Checklist: deployment/release-checklist.md
-      - Pre-Release Checklist (User Actions): deployment/发布前置清单与用户操作手册.md
+      - Pre-Release Checklist (User Actions): deployment/pre-release-user-operations.md
 
 # Markdown extensions
 markdown_extensions:
