@@ -2,7 +2,7 @@
 
 > **Purpose**: A step-by-step operations manual for the **release operator** (the repository owner). It breaks down "publishing this project to GitHub + Read the Docs from scratch" into 6 items. Each item lists **user action / automatic action** step by step, provides a **decision table** and **acceptance criteria**, and appends a **repository description** and **release announcement drafts**.
 >
-> **Scope statement**: This document covers only **platform-level operations** — account registration, platform connection, repository creation, project import, webhook, domain, and so on. Code/configuration files such as `pyproject.toml`, `.readthedocs.yaml`, Sphinx `conf.py`, CI, etc. are **not implemented in this branch** (they are handled respectively by branches such as "multi-install packaging scaffold", "documentation build and readthedocs publishing pipeline", and "rtd build pipeline completion and local verification"). The repository/platform facts referenced by this document follow the project's current status (see [Project status](#0)).
+> **Scope statement**: This document covers only **platform-level operations** — account registration, platform connection, repository creation, project import, webhook, domain, and so on. Code/configuration files such as `pyproject.toml`, `.readthedocs.yaml`, Sphinx `conf.py`, CI, etc. are **not implemented in this branch** (they are handled respectively by branches such as "multi-install packaging scaffold", "documentation build and readthedocs publishing pipeline", and "rtd build pipeline completion and local verification"). The repository/platform facts referenced by this document follow the project's current status (see [Project status](#0-project-status-and-terminology)).
 
 ---
 
@@ -48,7 +48,7 @@ GitHub repo ──► RTD sign-up ──► Project import ──► webhook con
 
 - Stages A–B are **purely user actions** (no automatic step); C–E are a mix of "user action + platform automatic action"; F is **content production** (drafts are provided in Section 8 of this document).
 - The "actor" for each stage uses two markers: **👤 user action** (must be done manually; usually not automatable or too risky to automate) / **🤖 automatic action** (done automatically by the platform; the user only needs to verify).
-- The **pass criteria** for all stages are summarized in [Section 9 master acceptance checklist](#9).
+- The **pass criteria** for all stages are summarized in [Section 9 master acceptance checklist](#9-master-acceptance-checklist).
 
 ---
 
@@ -71,12 +71,12 @@ GitHub repo ──► RTD sign-up ──► Project import ──► webhook con
 | 1 | 👤 User | Sign in to GitHub → New repository: Owner (per D1), Repository name = `energytools`, **Public** (per D2), default branch `main` (per D2a); do **not** check auto-generated README/.gitignore/license (per D2b) | Repository `https://github.com/<owner>/energytools` created successfully | Opening the repository URL in a browser shows the empty repository page |
 | 2 | 🤖 Automatic | GitHub initializes the repository (empty repository, default branch `main`) | The repository page shows the "…or push an existing repository" guidance | The push guidance is visible on the repository page |
 | 3 | 👤 User | Push existing content from local: `git remote add origin git@github.com:<owner>/energytools.git`; `git push -u origin main` (push the local `main` content; merge the Chinese-named task branch per the team workflow before pushing) | Local files (pyproject.toml, README.md, docs/, src/, pixi.toml, etc.) appear on GitHub | The GitHub repository file list matches the local one |
-| 4 | 👤 User | Fill in the repository description (draft in [8.1](#81-github)) and Topics (see [8.1](#81-github)) | The repository page shows the description and topic tags | Description and topics are visible on the repository page |
+| 4 | 👤 User | Fill in the repository description (draft in [8.1](#81-github-repository-description-draft)) and Topics (see [8.1](#81-github-repository-description-draft)) | The repository page shows the description and topic tags | Description and topics are visible on the repository page |
 | 5 | 👤 User | (Optional) Settings → set the default branch to `main`, enable branch protection (require PR review) | `main` is protected | Settings → Branches shows the protection rule |
 
 ### 2.3 Notes
 
-- **Repository name is a prerequisite for the slug**: the RTD slug defaults to the repository name. If `energytools` is taken, RTD will warn about a slug conflict (see [4.3](#43)).
+- **Repository name is a prerequisite for the slug**: the RTD slug defaults to the repository name. If `energytools` is taken, RTD will warn about a slug conflict (see [4.3](#43-notes)).
 - GitHub description limit is **350 characters**; Topics limit is **20**.
 - End-of-stage marker: `https://github.com/<owner>/energytools` is reachable, content matches local, and description and topics are filled in.
 
@@ -103,7 +103,7 @@ GitHub repo ──► RTD sign-up ──► Project import ──► webhook con
 
 ### 3.3 Notes
 
-- OAuth scope: importing a project requires **reading the repository list**; RTD does not request write permission. The later automatic webhook creation depends on the permission to "install webhooks in the repository" (determined by the GitHub App / OAuth repo webhook permission; if the authorization is insufficient and webhook creation fails, fall back to the manual path in [Item 4](#5-webhook)).
+- OAuth scope: importing a project requires **reading the repository list**; RTD does not request write permission. The later automatic webhook creation depends on the permission to "install webhooks in the repository" (determined by the GitHub App / OAuth repo webhook permission; if the authorization is insufficient and webhook creation fails, fall back to the manual path in [Item 4](#5-item-4-webhook-configuration)).
 - End-of-stage marker: signed in to RTD and the GitHub account is connected.
 
 ---
@@ -144,7 +144,7 @@ GitHub repo ──► RTD sign-up ──► Project import ──► webhook con
 |---|---|---|---|---|
 | D5 | webhook source | A. Installed automatically by RTD at import (default)<br>B. Created manually on GitHub<br>C. Not configured (only manual "Build latest") | **A, with B as fallback** | A/B: pushing to `main` automatically triggers a documentation build; C: every release requires a manual build click, easy to miss, not recommended |
 | D6 | Pull request builds | A. Enable<br>B. Disable | **A (during team collaboration)** | When enabled, every PR generates a preview of the documentation for review; the cost is one extra build |
-| D6a | Build trigger events | push (default) ｜ tag can also be added (tagging auto-builds the version) | push + tag | Tag builds guarantee that `stable` points to the released version correctly (together with the tagging step in [8.3](#83-github-release-v010)) |
+| D6a | Build trigger events | push (default) ｜ tag can also be added (tagging auto-builds the version) | push + tag | Tag builds guarantee that `stable` points to the released version correctly (together with the tagging step in [8.3](#83-github-release-announcement-draft-v010)) |
 
 ### 5.2 Operation checklist
 
@@ -179,7 +179,7 @@ GitHub repo ──► RTD sign-up ──► Project import ──► webhook con
 | # | Actor | Action | Expected result | Acceptance check |
 |---|---|---|---|---|
 | 1 | 🤖 Automatic | RTD provides `https://energytools-refactored.readthedocs.io/` for the project (with automatic TLS) | The domain is reachable | Browser access passes and the address bar shows the security lock |
-| 2 | 👤 User | Put the default domain in the repository description and the README badge (drafts in [8.1](#81-github) / [8.2](#82-readme)) | External copy consistently points to the documentation address | The repository page description contains a clickable documentation link |
+| 2 | 👤 User | Put the default domain in the repository description and the README badge (drafts in [8.1](#81-github-repository-description-draft) / [8.2](#82-readme-badge-draft)) | External copy consistently points to the documentation address | The repository page description contains a clickable documentation link |
 
 ### 6.3 Operation checklist (custom domain, option B)
 
@@ -343,7 +343,7 @@ https://energytools-refactored.readthedocs.io/en/latest/
 
 | Symptom | Possible cause | Investigation / remedy |
 |---|---|---|
-| RTD does not auto-build after a push | webhook missing or stale | Check the entry in GitHub Settings → Webhooks; if missing, create it manually per [5.2 step 3](#52); resend a test via Recent Deliveries |
+| RTD does not auto-build after a push | webhook missing or stale | Check the entry in GitHub Settings → Webhooks; if missing, create it manually per [5.2 step 3](#52-operation-checklist); resend a test via Recent Deliveries |
 | First build fails | `.readthedocs.yaml` / `conf.py` not ready | A delivery prerequisite of the "documentation build" branch, not a defect of this branch; check dependency installation and the build log |
 | slug taken | `energytools-refactored.readthedocs.io` already used by someone else | Rename at import (e.g. `energytools-sia2024`) and update the URLs in 8.1/8.2 of this document accordingly |
 | Custom domain stuck on pending | CNAME not effective / interfered with by a CDN | Check the record with `nslookup docs.energytools.dev`; compare with the RTD dialog target; wait and refresh |
