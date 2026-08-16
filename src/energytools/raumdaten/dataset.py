@@ -32,6 +32,7 @@ from energytools.raumdaten.model import (
     ClimateData,
     ClimateStation,
     Dataset,
+    DesignDaySeries,
     FullLoadHoursTable,
     HourlyProfile,
     MonthlyProfile,
@@ -291,6 +292,7 @@ REQUIRED_SHEETS = (
     "Profile",
     "Monatswerte",
     "Winter_Auslegung",
+    "Aug_Auslegung",
     "Volll_Lüft",
     "Qhc_Klimastat",
     "Fläche-E",
@@ -454,7 +456,9 @@ class DatasetExtractor:
             wb_values["Eingabedaten"], catalog, by_nutzid
         )
         schedules = self._extract_schedules(wb_values["Eingabedaten"], by_nutzid)
-        climate = self._extract_climate(wb_values["Winter_Auslegung"], wb_values["Monatswerte"])
+        climate = self._extract_climate(
+            wb_values["Winter_Auslegung"], wb_values["Monatswerte"], wb_values["Aug_Auslegung"]
+        )
         full_load_hours = self._extract_full_load_hours(wb_values["Volll_Lüft"], by_code)
         qhc = self._extract_qhc(wb_values["Qhc_Klimastat"], by_code)
         hourly_profiles = self._extract_hourly_profiles(wb_values["Profile"])
@@ -896,7 +900,7 @@ class DatasetExtractor:
             return matches[0]
         return None
 
-    def _extract_climate(self, ws_winter: Any, ws_monatswerte: Any) -> ClimateData:
+    def _extract_climate(self, ws_winter: Any, ws_monatswerte: Any, ws_aug: Any) -> ClimateData:
         stations = []
         monthly_blocks: dict[str, dict[str, MonthlyProfile]] = {}
         # Monatswerte: 11-row blocks per station starting at rows 1, 12, 23, ...
@@ -939,7 +943,10 @@ class DatasetExtractor:
                         unit=_MONTHLY_BLOCK_UNITS[key],
                     )
 
-        winter = _read_matrix(ws_winter, 1, 44, 1, 15)
+        winter = _read_matrix(ws_winter, 1, 44, 1, 35)  # A..AI
+        design_day_blocks: dict[str, list[DesignDaySeries]] = {}
+        if ws_aug is not None:
+            design_day_blocks = self._extract_design_days(ws_aug)
         for index, row in enumerate(winter[4:44], start=5):  # sheet rows 5..44
             name = str(row[0] or "").strip()
             if not name:
@@ -951,6 +958,22 @@ class DatasetExtractor:
                 ("t_heating", 5, "°C"),  # F column: Heizung
                 ("t_ventilation", 6, "°C"),  # G column: Lüftung
                 ("radiation", 9, "W/m2"),  # J column: horizontal
+                ("radiation_east", 11, "W/m2"),  # L..O: kalt E/S/W/N
+                ("radiation_south", 12, "W/m2"),
+                ("radiation_west", 13, "W/m2"),
+                ("radiation_north", 14, "W/m2"),
+                ("wind_speed", 15, "m/s"),  # P: kalt wind speed
+                ("elevation", 2, "m"),  # C: Höhe m ü.M.
+                ("trub_temperature", 19, "°C"),  # T: trüb design temperature
+                ("trub_radiation", 21, "W/m2"),  # V: trüb horizontal
+                ("trub_radiation_east", 23, "W/m2"),  # X..AA: trüb E/S/W/N
+                ("trub_radiation_south", 24, "W/m2"),
+                ("trub_radiation_west", 25, "W/m2"),
+                ("trub_radiation_north", 26, "W/m2"),
+                ("trub_wind_speed", 27, "m/s"),  # AB: trüb wind speed
+                ("t_min_1h", 31, "°C"),  # AF: minimale 1-Stunden-Temperatur
+                ("humidity_ratio_min", 33, "g/kg"),  # AH: Feuchtegehalt
+                ("t_at_min", 34, "°C"),  # AI: zugehörige Temperatur
             ):
                 value = row[column]
                 if isinstance(value, (int, float)):
@@ -965,12 +988,16 @@ class DatasetExtractor:
                     summer_design={},
                     monthly=monthly_blocks.get(_normalize_station_name(name), {}),
                     hdd=hdd,
+                    canton=str(row[1] or "").strip() or None,  # B: Kanton
+                    wind_direction=str(row[17] or "").strip() or None,  # R: kalt 30°-Sektor
+                    trub_wind_direction=str(row[29] or "").strip() or None,  # AD: trüb 30°-Sektor
+                    design_days=tuple(design_day_blocks.get(_normalize_station_name(name), ())),
                     provenance=Provenance(
                         sources=(
                             SourceRef(
                                 workbook=os.path.basename(self.workbook_path),
                                 sheet="Winter_Auslegung",
-                                range=f"A{index}:O{index}",
+                                range=f"A{index}:AI{index}",
                             ),
                         )
                     ),
@@ -979,6 +1006,65 @@ class DatasetExtractor:
         return ClimateData(
             version="meteoschweiz-2024", stations=tuple(stations), source="MeteoSchweiz"
         )
+
+    def _extract_design_days(self, ws_aug: Any) -> dict[str, list[DesignDaySeries]]:
+        """``Aug_Auslegung``: June + August 96-hour design blocks per station.
+
+        Row 1 carries the 40 station names starting at column K, one
+        3-column group each (Aussenlufttemp. in 0.1 °C, rel. Luftfeuchte %,
+        Globalstrahlung W/m²).  Rows 4-99 are the June block, rows 100-195
+        the August block (4 x 24 h each).
+        """
+        blocks: dict[str, list[DesignDaySeries]] = {}
+        matrix = _read_matrix(ws_aug, 1, 195, 1, ws_aug.max_column or 1)
+        station_names: list[str] = []
+        for column in range(10, (ws_aug.max_column or 1) - 1, 3):  # K..DZ groups
+            name = str(matrix[0][column] or "").strip()
+            if not name:
+                break
+            station_names.append(name)
+        for month, start_row, end_row in ((6, 4, 100), (8, 100, 196)):
+            for station_index, name in enumerate(station_names):
+                base = 10 + 3 * station_index
+                if base + 2 >= (ws_aug.max_column or 1):
+                    continue
+                temperature = []
+                relative_humidity = []
+                radiation = []
+                for row_index in range(start_row, end_row):
+                    row_values = matrix[row_index - 1]
+                    t_value = row_values[base] if base < len(row_values) else None
+                    rh_value = row_values[base + 1] if base + 1 < len(row_values) else None
+                    r_value = row_values[base + 2] if base + 2 < len(row_values) else None
+                    temperature.append(
+                        float(t_value) / 10.0
+                        if isinstance(t_value, (int, float))
+                        else 0.0
+                    )
+                    relative_humidity.append(
+                        float(rh_value) if isinstance(rh_value, (int, float)) else 0.0
+                    )
+                    radiation.append(
+                        float(r_value) if isinstance(r_value, (int, float)) else 0.0
+                    )
+                blocks.setdefault(_normalize_station_name(name), []).append(
+                    DesignDaySeries(
+                        month=month,
+                        temperature=tuple(temperature),
+                        relative_humidity=tuple(relative_humidity),
+                        radiation=tuple(radiation),
+                        provenance=Provenance(
+                            sources=(
+                                SourceRef(
+                                    workbook=os.path.basename(self.workbook_path),
+                                    sheet="Aug_Auslegung",
+                                    range=f"K{start_row}:{_column_name(base + 3)}{end_row - 1}",
+                                ),
+                            )
+                        ),
+                    )
+                )
+        return blocks
 
     def _extract_full_load_hours(self, ws: Any, by_code: dict[str, RoomUse]) -> FullLoadHoursTable:
         rows: dict[tuple[int, str, str], float] = {}
@@ -1010,8 +1096,17 @@ class DatasetExtractor:
         )
 
     def _extract_qhc(self, ws: Any, by_code: dict[str, RoomUse]) -> QhcTable:
-        """``Qhc_Klimastat``: 12 columns per station block, E/I/M = annual cooling per kind."""
+        """``Qhc_Klimastat``: 12 columns per station block, E/I/M = annual cooling per kind.
+
+        Each 12-column station block carries four metrics per value kind
+        (offsets 0..3 within the kind): cooling power (W/m²), annual cooling
+        energy (kWh/m²a), heating design load (Norm-Heizlast, W/m²) and
+        annual heating energy (kWh/m²a).
+        """
         rows: dict[tuple[int, int, ValueKind], float] = {}
+        cooling_power: dict[tuple[int, int, ValueKind], float] = {}
+        heating_load: dict[tuple[int, int, ValueKind], float] = {}
+        heating_energy: dict[tuple[int, int, ValueKind], float] = {}
         matrix = _read_matrix(ws, 1, 51, 1, ws.max_column or 1)
         station_start = 4  # column D
         station_id = 1
@@ -1024,22 +1119,32 @@ class DatasetExtractor:
                 (ValueKind.ZIELWERT, 4),
                 (ValueKind.BESTAND, 8),
             ):
-                value_column = station_start + offset + 1  # E/I/M: annual cooling kWh/m2
+                metric_columns = (station_start + offset, station_start + offset + 1, station_start + offset + 2, station_start + offset + 3)
                 for row_index in range(7, 52):  # sheet rows 7..51
                     code = str(matrix[row_index - 1][0] or "").strip()
                     room_use = by_code.get(normalize_room_use_code(code))
                     if room_use is None:
                         continue
                     row_values = matrix[row_index - 1]
-                    if value_column - 1 >= len(row_values):
-                        continue  # block extends beyond the sheet (short sheets)
-                    value_cell = row_values[value_column - 1]
-                    if isinstance(value_cell, (int, float)):
-                        rows[(room_use.nutzid, station_id, kind)] = float(value_cell)
+                    for metric, column, target in (
+                        ("power", 0, cooling_power),
+                        ("cooling", 1, rows),
+                        ("load", 2, heating_load),
+                        ("heating", 3, heating_energy),
+                    ):
+                        value_column = metric_columns[column]
+                        if value_column - 1 >= len(row_values):
+                            continue  # block extends beyond the sheet (short sheets)
+                        value_cell = row_values[value_column - 1]
+                        if isinstance(value_cell, (int, float)):
+                            target[(room_use.nutzid, station_id, kind)] = float(value_cell)
             station_start += 12
             station_id += 1
         return QhcTable(
             rows={key: Quantity(value, "kWh/m2") for key, value in rows.items()},
+            cooling_power={key: Quantity(value, "W/m2") for key, value in cooling_power.items()},
+            heating_load={key: Quantity(value, "W/m2") for key, value in heating_load.items()},
+            heating_energy={key: Quantity(value, "kWh/m2") for key, value in heating_energy.items()},
             provenance=Provenance(
                 sources=(
                     SourceRef(
@@ -1048,7 +1153,12 @@ class DatasetExtractor:
                         range="A7:M51",
                     ),
                 ),
-                note="Jährlicher Klimakältebedarf (kWh/m2), E/I/M columns per station block",
+                note=(
+                    "Vier Metriken je Wertkategorie: Klimakälteleistungsbedarf (W/m2), "
+                    "Jährlicher Klimakältebedarf (kWh/m2), Norm-Heizlast (W/m2), "
+                    "Jährlicher Heizwärmebedarf (kWh/m2), D/H/L + E/I/M + F/J/N + G/K/O "
+                    "Spalten je Station"
+                ),
             ),
         )
 
@@ -1062,9 +1172,12 @@ class DatasetExtractor:
             ("lueftung_zweistufig", "ventilation", 6),
             ("lueftung_stufenlos", "ventilation", 8),
         )
-        matrix = _read_matrix(ws, 63, 86, 1, 10)
+        matrix = _read_matrix(ws, 63, 86, 1, 22)
         profiles = []
-        for profile_id, profile_type, column_index in columns:
+        for profile_id, profile_type, column_index in columns + (
+            ("beleuchtung_sommer", "lighting", 19),  # T column: Beleuchtung Sommer
+            ("beleuchtung_jahr", "lighting", 21),  # V column: Beleuchtung Jahr
+        ):
             values = [
                 float(row[column_index]) if isinstance(row[column_index], (int, float)) else 0.0
                 for row in matrix
@@ -1080,9 +1193,14 @@ class DatasetExtractor:
                             SourceRef(
                                 workbook=os.path.basename(self.workbook_path),
                                 sheet="Profile",
-                                range="A63:J86",
+                                range="A63:V86",
                             ),
-                        )
+                        ),
+                        note=(
+                            "Tagesprofile (63-86); Beleuchtung Sommer/Jahr sind die "
+                            "Tageslicht-regelungsabhängigen Beleuchtungsprofile des "
+                            "ausgewählten Raumnutzungs-Sichtblatts"
+                        ),
                     ),
                 )
             )
@@ -1234,6 +1352,15 @@ def _normalize_station_name(name: str) -> str:
     "Bern-Liebefeld" in ``Winter_Auslegung``; the join must tolerate that.
     """
     return re.sub(r"[\s-]+", "", name).lower()
+
+
+def _column_name(index: int) -> str:
+    """1-based column index -> Excel letters (4 -> "D", 120 -> "DP")."""
+    letters = ""
+    while index:
+        index, remainder = divmod(index - 1, 26)
+        letters = chr(65 + remainder) + letters
+    return letters
 
 
 def _read_matrix(ws: Any, min_row: int, max_row: int, min_col: int, max_col: int) -> list[list[Any]]:

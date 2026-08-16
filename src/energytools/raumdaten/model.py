@@ -671,6 +671,61 @@ def _schedule_from_dict(data: dict) -> RoomUseSchedule:
 
 
 @dataclass(frozen=True)
+class DesignDaySeries:
+    """One 96-hour summer design-day series (``Aug_Auslegung`` matrix block).
+
+    The workbook carries two blocks per station — June (rows 4-99) and
+    August (rows 100-195) — of 96 hourly values each (4 x 24 h) for the
+    outdoor temperature (0.1 °C resolution), relative humidity (%) and
+    global radiation (W/m²).  This is the only intact summer-design source
+    (the Datenblatt Kühlerauslegung cells are #REF! errors in the workbook).
+
+    Raises:
+        ValueError: if any series does not have 96 values.
+    """
+
+    month: int  # 6 or 8
+    temperature: tuple[float, ...]  # 96 h, °C
+    relative_humidity: tuple[float, ...]  # 96 h, %
+    radiation: tuple[float, ...]  # 96 h, W/m²
+    provenance: Provenance | None = None
+
+    def __post_init__(self) -> None:
+        if self.month not in (6, 8):
+            raise ValueError(f"design day month must be 6 or 8, got {self.month}")
+        for name, values in (
+            ("temperature", self.temperature),
+            ("relative_humidity", self.relative_humidity),
+            ("radiation", self.radiation),
+        ):
+            if len(values) != 96:
+                raise ValueError(
+                    f"design day {self.month}: {name} must have 96 values, got {len(values)}"
+                )
+
+    def as_dict(self) -> dict:
+        """JSON-ready dict."""
+        return {
+            "month": self.month,
+            "temperature": list(self.temperature),
+            "relative_humidity": list(self.relative_humidity),
+            "radiation": list(self.radiation),
+            "provenance": _provenance_dict(self.provenance),
+        }
+
+
+def _design_day_from_dict(data: dict) -> DesignDaySeries:
+    """Rebuild a :class:`DesignDaySeries` from its package dict."""
+    return DesignDaySeries(
+        month=int(data["month"]),
+        temperature=tuple(float(value) for value in data["temperature"]),
+        relative_humidity=tuple(float(value) for value in data["relative_humidity"]),
+        radiation=tuple(float(value) for value in data["radiation"]),
+        provenance=_provenance_from_dict(data.get("provenance")),
+    )
+
+
+@dataclass(frozen=True)
 class ClimateStation:
     """One of the 40 climate stations (assessment 1.2).
 
@@ -700,6 +755,10 @@ class ClimateStation:
     temperature_bins: tuple[TemperatureBin, ...] | None = None
     bin_humidity_ratio: tuple[float, ...] | None = None
     hdd: Quantity | None = None
+    canton: str | None = None
+    wind_direction: str | None = None
+    trub_wind_direction: str | None = None
+    design_days: tuple[DesignDaySeries, ...] = ()
     provenance: Provenance | None = None
 
     def __post_init__(self) -> None:
@@ -736,6 +795,10 @@ class ClimateStation:
                 None if self.bin_humidity_ratio is None else list(self.bin_humidity_ratio)
             ),
             "hdd": _quantity_dict(self.hdd),
+            "canton": self.canton,
+            "wind_direction": self.wind_direction,
+            "trub_wind_direction": self.trub_wind_direction,
+            "design_days": [day.as_dict() for day in self.design_days],
             "provenance": _provenance_dict(self.provenance),
         }
 
@@ -988,12 +1051,19 @@ class Sia3801Result:
 
 @dataclass(frozen=True)
 class QhcTable:
-    """Annual cooling energy Qhc per room use x climate station x value kind.
+    """Per-station room-heating/cooling results (``Qhc_Klimastat``, 40 stations x 45 uses).
 
-    The ``Qhc_Klimastat`` matrix (40 stations x 45 uses; assessment 1.2).
+    Each station block carries four metrics per value kind:
+    ``Klimakälteleistungsbedarf`` (cooling power, W/m²), ``Jährlicher
+    Klimakältebedarf`` (annual cooling energy, kWh/m²a — the ``rows``
+    table), ``Norm-Heizlast`` (heating design load, W/m²) and ``Jährlicher
+    Heizwärmebedarf`` (annual heating energy, kWh/m²a).
 
     Args:
         rows: ``(nutzid, station_id, kind)`` -> annual cooling energy.
+        cooling_power: ``(nutzid, station_id, kind)`` -> cooling power W/m².
+        heating_load: ``(nutzid, station_id, kind)`` -> heating design load W/m².
+        heating_energy: ``(nutzid, station_id, kind)`` -> annual heating kWh/m²a.
         provenance: Optional provenance.
         room_use_ids: Optional id set (passed by :class:`Dataset`);
             enables ``UnknownRoomUseError``.
@@ -1002,10 +1072,50 @@ class QhcTable:
     """
 
     rows: Mapping[tuple[int, int, ValueKind], Quantity]
+    cooling_power: Mapping[tuple[int, int, ValueKind], Quantity] = field(default_factory=dict)
+    heating_load: Mapping[tuple[int, int, ValueKind], Quantity] = field(default_factory=dict)
+    heating_energy: Mapping[tuple[int, int, ValueKind], Quantity] = field(default_factory=dict)
     provenance: Provenance | None = None
     room_use_ids: frozenset[int] | None = field(default=None, repr=False, compare=False)
     station_ids: frozenset[int] | None = field(default=None, repr=False, compare=False)
     release_id: str = field(default="?", repr=False, compare=False)
+
+    _METRICS = {
+        "cooling_energy": "rows",
+        "cooling_power": "cooling_power",
+        "heating_load": "heating_load",
+        "heating_energy": "heating_energy",
+    }
+
+    def metric(self, name: str, room_use_id: int, station_id: int, kind: ValueKind = ValueKind.STANDARD) -> Quantity:
+        """Look up one of the four per-station metrics.
+
+        ``name`` is one of ``"cooling_energy" | "cooling_power" |
+        "heating_load" | "heating_energy"``.
+
+        Raises:
+            ValueError: for an unknown metric name.
+            UnknownRoomUseError / UnknownClimateStationError: for unknown ids.
+            TableLookupError: when the combination is absent (KeyError-compatible).
+        """
+        attribute = self._METRICS.get(name)
+        if attribute is None:
+            raise ValueError(
+                f"unknown Qhc metric {name!r} (expected one of {', '.join(self._METRICS)})"
+            )
+        kind = kind if isinstance(kind, ValueKind) else ValueKind.parse(kind)
+        if self.room_use_ids is not None and room_use_id not in self.room_use_ids:
+            raise UnknownRoomUseError(room_use_id, self.release_id)
+        if self.station_ids is not None and station_id not in self.station_ids:
+            raise UnknownClimateStationError(station_id, self.release_id)
+        table = getattr(self, attribute)
+        try:
+            return table[(room_use_id, station_id, kind)]
+        except KeyError:
+            raise TableLookupError(
+                f"Qhc {name} for room use {room_use_id!r} / station {station_id!r} / "
+                f"kind {kind.value!r} not found in release '{self.release_id}'"
+            ) from None
 
     def qhc(
         self,
@@ -1033,15 +1143,22 @@ class QhcTable:
                 f"kind {kind.value!r} not found in release '{self.release_id}'"
             ) from None
 
+    @staticmethod
+    def _rows_keyed(rows: Mapping[tuple[int, int, ValueKind], Quantity]) -> dict:
+        return {
+            f"{nutzid}|{station_id}|{kind.value}": _quantity_dict(q)
+            for (nutzid, station_id, kind), q in rows.items()
+        }
+
     def as_dict(self) -> dict:
         """JSON-ready dict (rows keyed ``"nutzid|station_id|kind"``)."""
-        return {
-            "rows": {
-                f"{nutzid}|{station_id}|{kind.value}": _quantity_dict(q)
-                for (nutzid, station_id, kind), q in self.rows.items()
-            },
-            "provenance": _provenance_dict(self.provenance),
-        }
+        result = {"rows": self._rows_keyed(self.rows)}
+        for key in ("cooling_power", "heating_load", "heating_energy"):
+            table = getattr(self, key)
+            if table:
+                result[key] = self._rows_keyed(table)
+        result["provenance"] = _provenance_dict(self.provenance)
+        return result
 
 
 # ---------------------------------------------------------------------------
@@ -1583,6 +1700,27 @@ class Dataset:
                 )
                 for key, value in qhc_data["rows"].items()
             },
+            cooling_power={
+                _parse_qhc_key(key): Quantity(
+                    value.get("value"),
+                    value.get("unit", "-"),
+                )
+                for key, value in qhc_data.get("cooling_power", {}).items()
+            },
+            heating_load={
+                _parse_qhc_key(key): Quantity(
+                    value.get("value"),
+                    value.get("unit", "-"),
+                )
+                for key, value in qhc_data.get("heating_load", {}).items()
+            },
+            heating_energy={
+                _parse_qhc_key(key): Quantity(
+                    value.get("value"),
+                    value.get("unit", "-"),
+                )
+                for key, value in qhc_data.get("heating_energy", {}).items()
+            },
             provenance=_provenance_from_dict(qhc_data.get("provenance")),
         )
 
@@ -1834,6 +1972,12 @@ def _station_from_dict(data: dict, index: int) -> ClimateStation:
             None
             if data.get("bin_humidity_ratio") is None
             else tuple(float(value) for value in data["bin_humidity_ratio"])
+        ),
+        canton=data.get("canton"),
+        wind_direction=data.get("wind_direction"),
+        trub_wind_direction=data.get("trub_wind_direction"),
+        design_days=tuple(
+            _design_day_from_dict(item) for item in data.get("design_days", [])
         ),
         provenance=_provenance_from_dict(data.get("provenance")),
     )

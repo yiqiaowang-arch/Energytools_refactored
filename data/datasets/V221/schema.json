@@ -996,6 +996,128 @@
                 ],
                 "additionalProperties": false
               },
+              "canton": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "wind_direction": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "trub_wind_direction": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "design_days": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "month": {
+                      "enum": [
+                        6,
+                        8
+                      ]
+                    },
+                    "temperature": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 96,
+                      "maxItems": 96
+                    },
+                    "relative_humidity": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 96,
+                      "maxItems": 96
+                    },
+                    "radiation": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 96,
+                      "maxItems": 96
+                    },
+                    "provenance": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "sources": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "workbook": {
+                                "type": "string"
+                              },
+                              "sheet": {
+                                "type": "string"
+                              },
+                              "range": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "formula": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "cached_value": {
+                                "type": [
+                                  "number",
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "extraction_hash": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "workbook",
+                              "sheet"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "note": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "month",
+                    "temperature",
+                    "relative_humidity",
+                    "radiation"
+                  ],
+                  "additionalProperties": false
+                }
+              },
               "provenance": {
                 "type": [
                   "object",
@@ -1172,6 +1294,87 @@
       "type": "object",
       "properties": {
         "rows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean",
+                  "null"
+                ]
+              },
+              "unit": {
+                "type": "string"
+              },
+              "provenance": {
+                "$ref": "#/$defs/provenance"
+              }
+            },
+            "required": [
+              "value",
+              "unit"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "cooling_power": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean",
+                  "null"
+                ]
+              },
+              "unit": {
+                "type": "string"
+              },
+              "provenance": {
+                "$ref": "#/$defs/provenance"
+              }
+            },
+            "required": [
+              "value",
+              "unit"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "heating_load": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": [
+                  "number",
+                  "string",
+                  "boolean",
+                  "null"
+                ]
+              },
+              "unit": {
+                "type": "string"
+              },
+              "provenance": {
+                "$ref": "#/$defs/provenance"
+              }
+            },
+            "required": [
+              "value",
+              "unit"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "heating_energy": {
           "type": "object",
           "additionalProperties": {
             "type": "object",

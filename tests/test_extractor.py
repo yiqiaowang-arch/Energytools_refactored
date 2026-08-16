@@ -103,6 +103,13 @@ def _write_synthetic_workbook(path: Path) -> None:
     ws["D3"], ws["P3"] = "Adelboden", "Aigle"
     ws["A7"], ws["E7"], ws["I7"], ws["M7"] = "1.01", 0.0, 0.0, 0.0
     ws["A8"], ws["E8"], ws["I8"], ws["M8"] = "1.02", 27.16, 15.55, 123.2
+    # D/F/G columns of the block carry the three further metrics per kind
+    ws["D7"], ws["D8"] = 15.5, 20.0  # cooling power W/m2 (Adelboden Standard)
+    ws["F7"], ws["F8"] = 30.0, 42.5  # Norm-Heizlast W/m2
+    ws["G7"], ws["G8"] = 90.0, 140.0  # annual heating kWh/m2
+
+    # --- Aug_Auslegung: empty design-day matrix (no station blocks) ---
+    wb.create_sheet("Aug_Auslegung")
 
     # --- Fläche-E / GEPAMOD ---
     ws = wb.create_sheet("Fläche-E")
@@ -161,7 +168,7 @@ class TestDatasetExtractor:
         assert dataset.full_load_hours().hours(1, "2-stufig", "prSIA 2024-C1:2024") == 7540.0
         assert dataset.qhc().qhc(2, 1).value == 27.16  # E8 = annual cooling of 1.02 at Adelboden
         assert dataset.qhc().qhc(1, 1).value == 0.0
-        assert len(dataset.hourly_profiles) == 6
+        assert len(dataset.hourly_profiles) == 8
         assert len(dataset.sia3801_results()) == 12
 
     def test_missing_required_sheet_raises(self, tmp_path: Path) -> None:

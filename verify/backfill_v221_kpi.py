@@ -113,9 +113,6 @@ STATION_COLS: dict[str, tuple[str, str]] = {
     "Zermatt": ("CT", "CS"),
 }
 
-#: Res columns that reference ``Qhc_Klimastat`` (station-dependent).
-CLIMATE_RES_COLS = frozenset({6, 7, 14, 15, 22, 23, 32, 33, 39, 40, 46, 47})
-
 
 def _dump_cells(path: Path) -> dict[tuple[str, int], float]:
     """Cell address -> numeric cached value of a workbook dump TSV."""

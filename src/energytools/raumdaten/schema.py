@@ -239,6 +239,34 @@ _temperature_bin = {
     "additionalProperties": False,
 }
 
+_design_day_series = {
+    "type": "object",
+    "properties": {
+        "month": {"enum": [6, 8]},
+        "temperature": {
+            "type": "array",
+            "items": {"type": "number"},
+            "minItems": 96,
+            "maxItems": 96,
+        },
+        "relative_humidity": {
+            "type": "array",
+            "items": {"type": "number"},
+            "minItems": 96,
+            "maxItems": 96,
+        },
+        "radiation": {
+            "type": "array",
+            "items": {"type": "number"},
+            "minItems": 96,
+            "maxItems": 96,
+        },
+        "provenance": _provenance,
+    },
+    "required": ["month", "temperature", "relative_humidity", "radiation"],
+    "additionalProperties": False,
+}
+
 _climate_station = {
     "type": "object",
     "properties": {
@@ -257,6 +285,10 @@ _climate_station = {
             "minItems": 1,
         },
         "hdd": _quantity,
+        "canton": {"type": ["string", "null"]},
+        "wind_direction": {"type": ["string", "null"]},
+        "trub_wind_direction": {"type": ["string", "null"]},
+        "design_days": {"type": "array", "items": _design_day_series},
         "provenance": _provenance,
     },
     "required": ["id", "name", "winter_design", "summer_design", "monthly"],
@@ -293,6 +325,9 @@ _qhc = {
     "type": "object",
     "properties": {
         "rows": {"type": "object", "additionalProperties": _quantity},
+        "cooling_power": {"type": "object", "additionalProperties": _quantity},
+        "heating_load": {"type": "object", "additionalProperties": _quantity},
+        "heating_energy": {"type": "object", "additionalProperties": _quantity},
         "provenance": _provenance,
     },
     "required": ["rows"],

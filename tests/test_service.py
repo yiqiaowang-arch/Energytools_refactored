@@ -108,7 +108,7 @@ class TestClimate:
 class TestProfilesAndTables:
     def test_list_profiles(self, service) -> None:
         data = service.list_profiles("V221")
-        assert len(data["hourly"]) == 6
+        assert len(data["hourly"]) == 8
         assert len(data["hourly"][0]["values"]) == 24
         assert len(data["monthly"]) == 360  # 40 stations x 9 monthly series
         assert len(data["weekly"]) == 0
