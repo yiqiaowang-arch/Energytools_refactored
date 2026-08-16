@@ -424,6 +424,22 @@ _coefficients = {
     "additionalProperties": False,
 }
 
+_category_table = {
+    "type": "object",
+    "properties": {
+        "kind": {"type": "string", "minLength": 1},
+        "variant": {"type": "string", "minLength": 1},
+        "unit": {"type": "string"},
+        "rows": {
+            "type": "object",
+            "additionalProperties": {"type": "object", "additionalProperties": _quantity},
+        },
+        "provenance": _provenance,
+    },
+    "required": ["kind", "variant", "unit", "rows"],
+    "additionalProperties": False,
+}
+
 PACKAGE_SCHEMA: dict = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://energytools.refactored.ch/schemas/raumdaten-package-1.0.schema.json",
@@ -453,6 +469,7 @@ PACKAGE_SCHEMA: dict = {
         "mappings": {"type": "array", "items": _mapping},
         "area_tables": {"type": "array", "items": _area_table},
         "sia3801_coefficients": {"type": "array", "items": _coefficients},
+        "category_tables": {"type": "array", "items": _category_table},
     },
     "required": [
         "schema_version",

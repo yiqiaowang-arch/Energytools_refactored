@@ -65,6 +65,7 @@ nav:
       - Package & Symbol Inventory: architecture+api-reference/01-package-inventory.md
       - Completeness Check: architecture+api-reference/08-completeness-check.md
       - Document-Tree Consistency Report: verification/doc-tree-consistency-report.md
+      - Background Tasks & Subagent Audit Report: verification/background-task-audit-report.md
   - Calculation Model:
       - Introduction: textbook/README.md
       - Chapter 1 — Moist-Air Physics: textbook/ch01-moist-air-physics.md

@@ -29,6 +29,7 @@ from energytools.common.versioning import ChangelogEntry, DatasetRelease
 from energytools.raumdaten.model import (
     AreaTable,
     BuildingCategoryMapping,
+    CategoryTable,
     ClimateData,
     ClimateStation,
     Dataset,
@@ -332,6 +333,134 @@ _MONTHLY_BLOCK_UNITS = {
     "absolute_humidity": "g/m3",
 }
 
+# ---------------------------------------------------------------------------
+# Per-category reference tables (batch C)
+# ---------------------------------------------------------------------------
+
+#: Per-category blocks of the ``Fläche-E`` family (rows 3-47, one metric row
+#: each, block boundaries follow the row-1 title cells).  Columns are
+#: 1-based; ``kind`` is the produced :class:`CategoryTable` kind (``None`` for
+#: the AE block whose kind depends on the sheet variant).  Blocks whose rows
+#: continue with a redundant sub-block stop at the first section header
+#: (``stop_at_section_header``): the AE block's "SIA 2024 Zielwerte/Bestand"
+#: sub-sections duplicate the Fläche-ZW / Fläche-Best sheets, and the DB
+#: block's "SIA 390:2021" sub-section is a different standard.
+_FLAECHE_BLOCKS = (
+    # label, unit, first category column, last category column, kind, stop_at_header
+    (29, 30, 31, 52, None, True),  # AC/AD, AE..AZ — SIA 2024 Standardwerte
+    (55, 56, 57, 78, "sia3801_tab27", False),  # BC/BD, BE..BZ — SIA 380/1 Tab. 27
+    (80, 81, 82, 103, "harmonized", False),  # CB/CC, CD..CY
+    (106, 107, 108, 127, "sia2040", True),  # DB/DC, DD..DW
+    (130, 131, 132, 152, "weighted_energy", False),  # DZ/EA, EB..EV — Minergie 2017
+    (154, 155, 156, 177, "minergie", False),  # EX/EY, EZ..FU — Minergie Kennzahlen
+    (179, 180, 181, 202, "electric_energy", False),  # FW/FX, FY..GT — Elektrische Energie
+    (204, 205, 206, 227, "strommodell", False),  # GV/GW, GX..HS
+)
+
+#: Sheet suffix -> value-kind variant of the ``Fläche-E`` family.
+_FLAECHE_VARIANTS = (
+    ("Fläche-E", "standard"),
+    ("Fläche-ZW", "zielwert"),
+    ("Fläche-Best", "bestand"),
+    ("Fläche-L", "power"),
+)
+
+#: Provenance notes per per-category block kind (batch C).
+_FLAECHE_BLOCK_NOTES = {
+    "energy_standard": (
+        "SIA 2024 Standardwerte (NGF/EBF, Faktor 0.8): Energiekennzahlen und "
+        "Auslegungsparameter je Gebäudekategorie (Zeilen 3-47, Beschriftung "
+        "Spalte AC, Einheit Spalte AD)"
+    ),
+    "energy_zielwert": (
+        "SIA 2024 Zielwerte: Energiekennzahlen je Gebäudekategorie "
+        "(Fläche-ZW, Beschriftung Spalte AC)"
+    ),
+    "energy_bestand": (
+        "SIA 2024 Bestand: Energiekennzahlen je Gebäudekategorie "
+        "(Fläche-Best, Beschriftung Spalte AC)"
+    ),
+    "energy_power": (
+        "SIA 2024 Leistungswerte: Leistungsbedarf je Gebäudekategorie "
+        "(Fläche-L, Beschriftung Spalte AC)"
+    ),
+    "sia3801_tab27": (
+        "SIA 380/1 Tabelle 27 je Gebäudekategorie (Beschriftung Spalte BC, "
+        "Einheit Spalte BD); Zeilen 15-17/35-38/43-45 sind die internen "
+        "Wärmeeintragsleistungs-/Elektrizitätsbedarfs-/Reduktionsfaktor-Vergleiche "
+        "desselben Blocks"
+    ),
+    "harmonized": (
+        "Vorschlag harmonisierte Standardwerte, abgeleitet aus SIA 2024:2019 "
+        "Anhang E (gerundete Werte; Beschriftung Spalte CB, Einheit Spalte CC)"
+    ),
+    "sia2040": (
+        "SIA 2040:2017 je Gebäudekategorie (Beschriftung Spalte DB, Einheit "
+        "Spalte DC); die SIA-390:2021-Untertabelle (Zeilen 21-31) ist nicht Teil "
+        "dieser Tabelle"
+    ),
+    "weighted_energy": (
+        "Minergie 2017, Gewichtete Energie (Beschriftung Spalte DZ, Einheit "
+        "Spalte EA)"
+    ),
+    "minergie": (
+        "Minergie 2017 Kennzahlen, umgerechnet in elektrische Energie "
+        "(Beschriftung Spalte EX, Einheit Spalte EY)"
+    ),
+    "electric_energy": (
+        "SIA 2024:2021, Elektrische Energie (Heizung/Warmwasser mit Wärmepumpe "
+        "JAZ 4.0; Beschriftung Spalte FW, Einheit Spalte FX)"
+    ),
+    "strommodell": (
+        "Strommodell für Zweckbauten: Geräte, Beleuchtung und Allgemeine "
+        "Gebäudetechnik der Gebäude(haupt)nutzung (Beschriftung Spalte GV, "
+        "Einheit Spalte GW)"
+    ),
+}
+
+#: Row-1/row-label section headers (normalized) that start a redundant
+#: sub-block inside the shared rows 3-47 (see ``_FLAECHE_BLOCKS``).
+_SECTION_HEADER_LABELS = frozenset(
+    {"sia 2024 zielwerte", "sia 2024 bestand", "sia 390:2021"}
+)
+
+#: Comparison sections of the rows 54-220 region (BC..BY columns, title in
+#: BC): normalized title -> category-table kind.  The "Wärmeeinträge
+#: Elektrizität" section (rows 60-63) has no matching kind and is not
+#: extracted (documented scope decision).
+_COMPARISON_KINDS = {
+    "wärmebedarf warmwasser": "ww_demand",
+    "aussenluft-volumenstrom": "ventilation_flow",
+    "wärmeeinträge personen": "person_gain",
+    "personenfläche": "person_area",
+    "raumtemperatur": "room_temperature",
+}
+
+#: Unit-cell spelling variants (after superscript/dash normalization) mapped
+#: onto registry symbols; the parenthesised flow spellings of the SIA 380/1
+#: blocks differ from the registry entries.
+_TABLE_UNIT_ALIASES = {
+    "m3/(h·m2)": "m3/m2h",
+    "m3/(m2h)": "m3/m2h",
+    "m3/(h·P)": "m3/(Ph)",
+}
+
+_SUPERSCRIPT_TRANSLATION = str.maketrans(
+    {
+        "⁰": "0",
+        "¹": "1",
+        "²": "2",
+        "³": "3",
+        "⁴": "4",
+        "⁵": "5",
+        "⁶": "6",
+        "⁷": "7",
+        "⁸": "8",
+        "⁹": "9",
+        "⁻": "-",
+    }
+)
+
 
 class DatasetExtractor:
     """Stage-0 extraction pipeline (assessment 7.1).
@@ -468,6 +597,13 @@ class DatasetExtractor:
         mappings, area_tables = self._extract_mappings_and_areas(
             wb_values["Fläche-E"], wb_values["GEPAMOD"], by_code
         )
+        category_tables = self._extract_category_tables(
+            wb_values["Fläche-E"],
+            wb_values["Fläche-ZW"] if "Fläche-ZW" in wb_values.sheetnames else None,
+            wb_values["Fläche-Best"] if "Fläche-Best" in wb_values.sheetnames else None,
+            wb_values["Fläche-L"] if "Fläche-L" in wb_values.sheetnames else None,
+            wb_values["GEPAMOD"],
+        )
         sia3801, sia3801_coefficients = self._extract_sia3801(
             wb_values, by_nutzid, selected_nutzid, climate
         )
@@ -525,6 +661,7 @@ class DatasetExtractor:
             "mappings": [mapping.as_dict() for mapping in mappings],
             "area_tables": [table.as_dict() for table in area_tables],
             "sia3801_coefficients": [coefficients.as_dict() for coefficients in sia3801_coefficients],
+            "category_tables": [table.as_dict() for table in category_tables],
         }
 
     def _to_dataset(self, package: dict) -> Dataset:
@@ -1375,6 +1512,328 @@ class DatasetExtractor:
         )
         return mappings, [area_table]
 
+    def _extract_category_tables(
+        self,
+        ws_flaeche_e: Any,
+        ws_flaeche_zw: Any | None,
+        ws_flaeche_best: Any | None,
+        ws_flaeche_l: Any | None,
+        ws_gepamod: Any,
+    ) -> list[CategoryTable]:
+        """Per-category reference tables of the Fläche family + GEPAMOD (batch C).
+
+        Reads the cached values of the per-category blocks (rows 3-47 of each
+        Fläche sheet, one metric per row with a private label column) and the
+        SIA 380/1 vs SIA 2024 comparison rows (rows 54-220), plus the GEPAMOD
+        subcategory / EBF / end-energy rows.  Formula cells without a cached
+        value are skipped; missing sheets (synthetic workbooks) are skipped.
+        """
+        tables: list[CategoryTable] = []
+        for sheet_name, variant in _FLAECHE_VARIANTS:
+            ws = {
+                "Fläche-E": ws_flaeche_e,
+                "Fläche-ZW": ws_flaeche_zw,
+                "Fläche-Best": ws_flaeche_best,
+                "Fläche-L": ws_flaeche_l,
+            }[sheet_name]
+            if ws is None:
+                continue
+            tables.extend(self._extract_flaeche_category_tables(ws, sheet_name, variant))
+        tables.extend(self._extract_gepamod_tables(ws_gepamod))
+        return tables
+
+    def _extract_flaeche_category_tables(
+        self, ws: Any, sheet_name: str, variant: str
+    ) -> list[CategoryTable]:
+        """The per-category blocks and comparison rows of one Fläche sheet."""
+        matrix = _read_matrix(ws, 1, 220, 1, ws.max_column or 1)
+        tables: list[CategoryTable] = []
+        for label_col, unit_col, first_cat, last_cat, kind, stop_at_header in _FLAECHE_BLOCKS:
+            if kind is None:
+                kind = f"energy_{variant}"
+            categories, metric_rows = _category_block_rows(
+                matrix, label_col, unit_col, first_cat, last_cat, stop_at_header
+            )
+            if not categories or not metric_rows:
+                continue
+            rows_map = {}
+            used_labels: set[str] = set()
+            units: set[str] = set()
+            for row_number, label, unit, values in metric_rows:
+                if label in used_labels:
+                    label = f"{label} (row {row_number})"
+                used_labels.add(label)
+                units.add(unit)
+                for col, value in values:
+                    rows_map[(categories[col], label)] = Quantity(float(value), unit)
+            tables.append(
+                CategoryTable(
+                    kind=kind,
+                    variant=variant,
+                    rows=rows_map,
+                    unit=next(iter(units)) if len(units) == 1 else "-",
+                    provenance=Provenance(
+                        sources=(
+                            SourceRef(
+                                workbook=os.path.basename(self.workbook_path),
+                                sheet=sheet_name,
+                                range=(
+                                    f"{_column_name(label_col)}3:"
+                                    f"{_column_name(last_cat)}47"
+                                ),
+                            ),
+                        ),
+                        note=_FLAECHE_BLOCK_NOTES.get(kind),
+                    ),
+                )
+            )
+        tables.extend(self._extract_flaeche_comparisons(matrix, sheet_name))
+        return tables
+
+    def _extract_flaeche_comparisons(self, matrix: list[list[Any]], sheet_name: str) -> list[CategoryTable]:
+        """The SIA 380/1 vs SIA 2024 comparison rows (rows 54-220, BC..BY).
+
+        Sections start with a title row (BC label, no values); the per-person
+        air-flow rows (unit ``m3/(Ph)``) carry no title and are classified by
+        their unit.  The "Wärmeeinträge Elektrizität" section (rows 60-63) has
+        no matching kind and is skipped.
+        """
+        label_col, unit_col, first_cat, last_cat = 55, 56, 57, 78
+        categories = _category_codes(matrix, first_cat, last_cat)
+        if not categories:
+            return []
+        sections: list[tuple[str, int, int, list]] = []
+        current_kind: str | None = None
+        current_rows: list = []
+        current_start = 0
+        current_unit: str | None = None
+
+        def flush() -> None:
+            nonlocal current_kind, current_rows, current_start, current_unit
+            if current_kind and current_rows:
+                sections.append(
+                    (current_kind, current_start, current_rows[-1][0], current_rows)
+                )
+            current_kind, current_rows, current_start, current_unit = None, [], 0, None
+
+        for row_number in range(54, 221):
+            row = matrix[row_number - 1] if row_number - 1 < len(matrix) else [None] * 1
+            label = row[label_col - 1] if label_col - 1 < len(row) else None
+            if label is None or not str(label).strip():
+                continue
+            values = [
+                (col, row[col - 1])
+                for col in range(first_cat, last_cat + 1)
+                if col - 1 < len(row) and isinstance(row[col - 1], (int, float))
+            ]
+            unit = _category_table_unit(row[unit_col - 1] if unit_col - 1 < len(row) else None)
+            if not values:
+                # title row: a section boundary
+                flush()
+                current_kind = _COMPARISON_KINDS.get(_normalize_label(str(label).strip()))
+                current_start = row_number
+                continue
+            if current_kind is None:
+                # value rows without a preceding title (per-person air flow):
+                # classified by their unit
+                if unit == "m3/(Ph)":
+                    current_kind = "ventilation_flow"
+                    current_start = row_number
+                else:
+                    continue
+            if current_rows and unit != current_rows[-1][2]:
+                # a unit change separates two unnamed sections (the per-area and
+                # per-person air-flow rows share no title rows)
+                flush()
+                if unit == "m3/(Ph)":
+                    current_kind = "ventilation_flow"
+                    current_start = row_number
+                else:
+                    continue
+            current_rows.append((row_number, str(label).strip(), unit, values))
+        flush()
+
+        tables: list[CategoryTable] = []
+        for kind, start, end, metric_rows in sections:
+            rows_map = {}
+            used_labels: set[str] = set()
+            units: set[str] = set()
+            for row_number, label, unit, values in metric_rows:
+                if label in used_labels:
+                    label = f"{label} (row {row_number})"
+                used_labels.add(label)
+                units.add(unit)
+                for col, value in values:
+                    rows_map[(categories[col], label)] = Quantity(float(value), unit)
+            tables.append(
+                CategoryTable(
+                    kind=kind,
+                    variant="reference",
+                    rows=rows_map,
+                    unit=next(iter(units)) if len(units) == 1 else "-",
+                    provenance=Provenance(
+                        sources=(
+                            SourceRef(
+                                workbook=os.path.basename(self.workbook_path),
+                                sheet=sheet_name,
+                                range=f"BC{start}:BY{end}",
+                            ),
+                        ),
+                        note=(
+                            "SIA 380/1 vs SIA 2024 Vergleichswerte je Gebäudekategorie "
+                            "(BC..BY, Zeilen 54-220); Raumtemperatur-Vergleich führt die "
+                            "Arbeitsmappe-Einheit 'm2' (Arbeitsmappen-Quirk)"
+                        ),
+                    ),
+                )
+            )
+        return tables
+
+    def _extract_gepamod_tables(self, ws_gepamod: Any) -> list[CategoryTable]:
+        """GEPAMOD subcategory / subsubsector / EBF / end-energy tables (rows 3-14)."""
+        if ws_gepamod is None:
+            return []
+        matrix = _read_matrix(ws_gepamod, 1, 14, 1, 41)
+        gepamod_categories = _category_codes(matrix, 4, 17)  # D..Q (SIA 380/1 subcodes)
+        sia2024_categories = _category_codes(matrix, 21, 41)  # U..AO (SIA 2024 codes)
+        tables: list[CategoryTable] = []
+
+        # rows 3-4: Unterkategorie labels + Subsubsektor id lists (strings)
+        subcategory_rows: dict[tuple[str, str], Quantity] = {}
+        for row_number, metric in (
+            (3, "Unterkategorie"),
+            (4, "Subsubsektor Gebaeudeparkmodell"),
+        ):
+            row = matrix[row_number - 1]
+            for col, code in gepamod_categories.items():
+                cell = row[col - 1] if col - 1 < len(row) else None
+                if cell is not None and str(cell).strip():
+                    subcategory_rows[(code, metric)] = Quantity(str(cell).strip(), "-")
+        if subcategory_rows:
+            tables.append(
+                CategoryTable(
+                    kind="gepamod_subcategory",
+                    variant="reference",
+                    rows=subcategory_rows,
+                    unit="-",
+                    provenance=Provenance(
+                        sources=(
+                            SourceRef(
+                                workbook=os.path.basename(self.workbook_path),
+                                sheet="GEPAMOD",
+                                range="A3:Q4",
+                            ),
+                        ),
+                        note=(
+                            "Unterkategorie-Bezeichnungen und Subsubsektor-IDs des "
+                            "Gebäudeparkmodells je SIA-380/1-Subkategorie (D:Q)"
+                        ),
+                    ),
+                )
+            )
+
+        # row 5: EBF (Modell 2010, 1000 m2)
+        row = matrix[4]
+        ebf_rows: dict[tuple[str, str], Quantity] = {}
+        for col, code in gepamod_categories.items():
+            cell = row[col - 1] if col - 1 < len(row) else None
+            if isinstance(cell, (int, float)):
+                ebf_rows[(code, "EBF")] = Quantity(float(cell), "1000m2")
+        if ebf_rows:
+            tables.append(
+                CategoryTable(
+                    kind="gepamod_ebf",
+                    variant="reference",
+                    rows=ebf_rows,
+                    unit="1000m2",
+                    provenance=Provenance(
+                        sources=(
+                            SourceRef(
+                                workbook=os.path.basename(self.workbook_path),
+                                sheet="GEPAMOD",
+                                range="A5:Q5",
+                            ),
+                        ),
+                        note="Energiebezugsfläche EBF, Modell 2010 (1000 m2) je Subkategorie",
+                    ),
+                )
+            )
+
+        # rows 6-14: Neubau-2010 Endenergie / Nutzenergie intensities.  The
+        # GEPAMOD columns (D:Q) carry their own row labels (column B); the SIA
+        # 2024 side columns (U:AO) use the column-S labels, which are offset
+        # from column B in rows 9/10 (workbook layout), so the two sides are
+        # extracted as separate tables.
+        def _end_energy_rows(
+            label_col: int, categories: dict[int, str], first_cat: int, last_cat: int
+        ) -> dict[tuple[str, str], Quantity]:
+            result: dict[tuple[str, str], Quantity] = {}
+            section = "Endenergie"
+            for row_number in range(6, 15):
+                row = matrix[row_number - 1]
+                section_cell = row[0] if len(row) > 0 else None
+                if section_cell is not None and str(section_cell).strip():
+                    section = (
+                        re.sub(r"^Neubau\s+2010\s+", "", str(section_cell).strip()) or section
+                    )
+                label_cell = row[label_col - 1] if label_col - 1 < len(row) else None
+                if label_cell is None or not str(label_cell).strip():
+                    continue
+                metric = f"{section} / {str(label_cell).strip()}"
+                for col, code in categories.items():
+                    cell = row[col - 1] if col - 1 < len(row) else None
+                    if isinstance(cell, (int, float)):
+                        result[(code, metric)] = Quantity(float(cell), "kWh/m2")
+            return result
+
+        gepamod_end = _end_energy_rows(2, gepamod_categories, 4, 17)  # column B, D..Q
+        if gepamod_end:
+            tables.append(
+                CategoryTable(
+                    kind="gepamod_end_energy",
+                    variant="reference",
+                    rows=gepamod_end,
+                    unit="kWh/m2",
+                    provenance=Provenance(
+                        sources=(
+                            SourceRef(
+                                workbook=os.path.basename(self.workbook_path),
+                                sheet="GEPAMOD",
+                                range="A6:Q14",
+                            ),
+                        ),
+                        note=(
+                            "Neubau-2010 Endenergie/Nutzenergie je Subkategorie "
+                            "(GEPAMOD Modell 2010, Spalten D:Q; Zeilenbeschriftung Spalte B)"
+                        ),
+                    ),
+                )
+            )
+        sia2024_end = _end_energy_rows(19, sia2024_categories, 21, 41)  # column S, U..AO
+        if sia2024_end:
+            tables.append(
+                CategoryTable(
+                    kind="gepamod_end_energy",
+                    variant="reference",
+                    rows=sia2024_end,
+                    unit="kWh/m2",
+                    provenance=Provenance(
+                        sources=(
+                            SourceRef(
+                                workbook=os.path.basename(self.workbook_path),
+                                sheet="GEPAMOD",
+                                range="A6:AO14",
+                            ),
+                        ),
+                        note=(
+                            "Neubau-2010 Endenergie/Nutzenergie je SIA-2024-Kategorie "
+                            "(Spalten U:AO; Zeilenbeschriftung Spalte S)"
+                        ),
+                    ),
+                )
+            )
+        return tables
+
     def _extract_sia3801(
         self, wb: Any, by_nutzid: dict[int, RoomUse], selected_nutzid: int, climate: ClimateData
     ) -> tuple[list[Sia3801Result], list[Sia3801Coefficients]]:
@@ -1552,6 +2011,86 @@ def _read_matrix(ws: Any, min_row: int, max_row: int, min_col: int, max_col: int
         width = max_col - min_col + 1
         matrix.extend([None] * width for _ in range(expected - len(matrix)))
     return matrix
+
+
+def _category_codes(matrix: list[list[Any]], first_col: int, last_col: int) -> dict[int, str]:
+    """Row-1 category codes of a block's columns -> ``{column: code}``."""
+    codes: dict[int, str] = {}
+    for col in range(first_col, last_col + 1):
+        cell = matrix[0][col - 1] if col - 1 < len(matrix[0]) else None
+        if cell is not None and str(cell).strip():
+            codes[col] = str(cell).strip()
+    return codes
+
+
+def _category_block_rows(
+    matrix: list[list[Any]],
+    label_col: int,
+    unit_col: int,
+    first_cat: int,
+    last_cat: int,
+    stop_at_header: bool,
+) -> tuple[dict[int, str], list[tuple[int, str, str, list[tuple[int, float]]]]]:
+    """Metric rows 3-47 of one per-category block.
+
+    Returns the block's category codes (row 1) and one entry per metric row:
+    ``(row_number, label, unit, [(category_col, value), ...])``.  Rows without
+    at least one cached numeric value are skipped (section headers, note
+    rows); when ``stop_at_header`` is set the scan stops at the first
+    redundant section header (e.g. "SIA 2024 Zielwerte").
+    """
+    categories = _category_codes(matrix, first_cat, last_cat)
+    if not categories:
+        return {}, []
+    metric_rows: list[tuple[int, str, str, list[tuple[int, float]]]] = []
+    for row_number in range(3, 48):
+        row = matrix[row_number - 1] if row_number - 1 < len(matrix) else [None] * 1
+        label_cell = row[label_col - 1] if label_col - 1 < len(row) else None
+        if (
+            stop_at_header
+            and label_cell is not None
+            and str(label_cell).strip()
+            and _normalize_label(str(label_cell)) in _SECTION_HEADER_LABELS
+        ):
+            break
+        values = [
+            (col, row[col - 1])
+            for col in categories
+            if col - 1 < len(row) and isinstance(row[col - 1], (int, float))
+        ]
+        if not values:
+            continue
+        label = str(label_cell).strip() if label_cell is not None and str(label_cell).strip() else f"row{row_number}"
+        unit = _category_table_unit(row[unit_col - 1] if unit_col - 1 < len(row) else None)
+        metric_rows.append((row_number, label, unit, values))
+    return categories, metric_rows
+
+
+def _category_table_unit(raw: Any) -> str:
+    """One unit cell of a category table -> a registry symbol (``"-"`` fallback).
+
+    Unknown spellings (paren variants of the flow units, error cells) fall
+    back to ``"-"`` after a small alias table; the workbook's rich-text
+    superscripts are handled by :class:`Unit` itself.
+    """
+    if raw is None:
+        return "-"
+    text = str(raw).strip()
+    if not text or text in _ERROR_VALUE_STRINGS or text in ("-", "–", "—", "−"):
+        return "-"
+    try:
+        return Unit(text).symbol
+    except UnitError:
+        pass
+    normalized = (
+        text.translate(_SUPERSCRIPT_TRANSLATION)
+        .replace("−", "-")
+        .replace("–", "-")
+        .replace("×", "x")
+        .replace(" ", "")
+        .replace("\u00a0", "")
+    )
+    return _TABLE_UNIT_ALIASES.get(normalized, "-")
 
 
 def _cell(ws: Any, row: int, column: int) -> Any:

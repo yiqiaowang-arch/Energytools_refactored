@@ -172,6 +172,9 @@ class TestDatasetExtractor:
         assert dataset.qhc().qhc(1, 1).value == 0.0
         assert len(dataset.hourly_profiles) == 8
         assert len(dataset.sia3801_results()) == 12
+        # batch C: the synthetic workbook has no per-category reference blocks
+        # (and no Fläche-ZW/Best/L sheets at all) -> no category tables
+        assert dataset.category_tables() == ()
 
     def test_missing_required_sheet_raises(self, tmp_path: Path) -> None:
         workbook = tmp_path / "broken.xlsm"

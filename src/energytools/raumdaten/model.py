@@ -37,6 +37,7 @@ from energytools.raumdaten.accessors import (
 __all__ = [
     "AreaTable",
     "BuildingCategoryMapping",
+    "CategoryTable",
     "ClimateData",
     "ClimateStation",
     "Dataset",
@@ -1109,6 +1110,85 @@ class AreaTable:
 
 
 @dataclass(frozen=True)
+class CategoryTable:
+    """One per-category reference table (batch C: ``Fläche-E/-ZW/-Best/-L`` + ``GEPAMOD``).
+
+    The SIA 2024 workbook carries, next to the area-% matrix, a family of
+    per-building-category reference tables: the "SIA 2024 Standardwerte"
+    energy/design-parameter blocks (one per sheet variant: Standard /
+    Zielwert / Bestand / Leistung), the "SIA 380/1 Tabelle 27" block, the
+    harmonized standard values, SIA 2040, the Minergie weighted / electric
+    energy blocks, the Strommodell block, the SIA 380/1 vs SIA 2024
+    comparison rows (WW demand, ventilation, person gains, person area, room
+    temperature) and the GEPAMOD subcategory / EBF / end-energy tables.
+
+    ``rows`` maps ``(category_code, metric_label)`` to a value; ``metric_label``
+    is the workbook's row label (unit column, design parameter name, standard
+    version tag, ...), falling back to ``"rowN"`` when a row has values but no
+    label.  Duplicate labels within one table are disambiguated with a
+    ``" (row N)"`` suffix.  Category codes are taken from the block's row-1
+    header and are **not** required to match the building-category mappings
+    (the GEPAMOD columns use the SIA 380/1 subcategory codes ``I.1 ... X``).
+
+    Args:
+        kind: Table family id, e.g. ``"energy_standard"``, ``"sia3801_tab27"``,
+            ``"harmonized"``, ``"sia2040"``, ``"weighted_energy"``,
+            ``"electric_energy"``, ``"minergie"``, ``"strommodell"``,
+            ``"ww_demand"``, ``"ventilation_flow"``, ``"person_gain"``,
+            ``"person_area"``, ``"room_temperature"``, ``"gepamod_end_energy"``,
+            ``"gepamod_ebf"``, ``"gepamod_subcategory"``.
+        variant: Sheet/value variant: ``"standard" | "zielwert" | "bestand" |
+            "power" | "reference"``.
+        rows: ``(category_code, metric_label)`` -> value.
+        unit: Table-level unit; ``"-"`` when the rows carry mixed units (each
+            :class:`Quantity` still carries its own unit).
+        provenance: Optional provenance.
+    """
+
+    kind: str
+    rows: Mapping[tuple[str, str], Quantity]
+    variant: str = "reference"
+    unit: str = "-"
+    provenance: Provenance | None = None
+
+    def __post_init__(self) -> None:
+        if not self.kind:
+            raise ValueError("category table kind must not be empty")
+        if not self.variant:
+            raise ValueError("category table variant must not be empty")
+        if self.unit is None:
+            object.__setattr__(self, "unit", "-")
+
+    def metric(self, metric_label: str, category_code: str | None = None) -> Quantity:
+        """Look up one value by metric label (optionally restricted to one category).
+
+        Raises:
+            KeyError-compatible :class:`TableLookupError` when the combination
+                is absent.
+        """
+        for (category, metric), quantity in self.rows.items():
+            if metric == metric_label and (category_code is None or category == category_code):
+                return quantity
+        raise TableLookupError(
+            f"category-table '{self.kind}' has no value for metric "
+            f"{metric_label!r}" + (f" / category {category_code!r}" if category_code else "")
+        )
+
+    def as_dict(self) -> dict:
+        """JSON-ready dict (rows keyed ``category -> metric -> quantity``)."""
+        nested: dict[str, dict[str, dict]] = {}
+        for (category, metric), quantity in self.rows.items():
+            nested.setdefault(category, {})[metric] = _quantity_dict(quantity)
+        return {
+            "kind": self.kind,
+            "variant": self.variant,
+            "unit": self.unit,
+            "rows": nested,
+            "provenance": _provenance_dict(self.provenance),
+        }
+
+
+@dataclass(frozen=True)
 class Sia3801Coefficients:
     """Per-category SIA 380/1 coefficients.
 
@@ -1301,9 +1381,9 @@ class Dataset:
     ``room_uses``, ``parameters``, ``profiles``, ..., ``mappings``, ...).
     Tables whose name also exists as an accessor method (``room_uses``,
     ``parameters``, ``climate``, ``full_load_hours``, ``qhc``, ``mappings``,
-    ``area_tables``, ``sia3801_coefficients``) are stored under private
-    attributes and read exclusively through the accessor methods -- the
-    accessors are the attribute API.
+    ``area_tables``, ``sia3801_coefficients``, ``category_tables``) are stored
+    under private attributes and read exclusively through the accessor methods
+    -- the accessors are the attribute API.
 
     Raises:
         ValueError: on inconsistent content (e.g. profile count != room-use
@@ -1331,6 +1411,7 @@ class Dataset:
     _sia3801_coefficients: tuple[Sia3801Coefficients, ...] = field(
         init=False, repr=False, compare=False
     )
+    _category_tables: tuple[CategoryTable, ...] = field(init=False, repr=False, compare=False)
     _catalog: dict[str, Parameter] = field(init=False, repr=False, compare=False)
     _room_use_by_nutzid: dict[int, RoomUse] = field(init=False, repr=False, compare=False)
     _room_use_by_code: dict[str, RoomUse] = field(init=False, repr=False, compare=False)
@@ -1356,6 +1437,7 @@ class Dataset:
         mappings: tuple[BuildingCategoryMapping, ...] = (),
         area_tables: tuple[AreaTable, ...] = (),
         sia3801_coefficients: tuple[Sia3801Coefficients, ...] = (),
+        category_tables: tuple[CategoryTable, ...] = (),
     ) -> None:
         """See the class docstring; ``release``, ``room_uses``, ``parameters`` and
         ``profiles`` are required, the remaining tables default to empty."""
@@ -1375,6 +1457,7 @@ class Dataset:
         object.__setattr__(self, "_mappings", tuple(mappings))
         object.__setattr__(self, "_area_tables", tuple(area_tables))
         object.__setattr__(self, "_sia3801_coefficients", tuple(sia3801_coefficients))
+        object.__setattr__(self, "_category_tables", tuple(category_tables))
         self.__post_init__()
 
     def __post_init__(self) -> None:
@@ -1453,6 +1536,7 @@ class Dataset:
             self._mappings,
             self._area_tables,
             self._sia3801_coefficients,
+            self._category_tables,
         )
 
     def __repr__(self) -> str:
@@ -1556,6 +1640,10 @@ class Dataset:
     def sia3801_coefficients(self) -> tuple[Sia3801Coefficients, ...]:
         """The per-category SIA 380/1 coefficients of the release."""
         return self._sia3801_coefficients
+
+    def category_tables(self) -> tuple[CategoryTable, ...]:
+        """The per-category reference tables of the release (batch C)."""
+        return self._category_tables
 
     # -- validation ---------------------------------------------------------
 
@@ -1754,6 +1842,7 @@ class Dataset:
             "sia3801_coefficients": [
                 coefficients.as_dict() for coefficients in self._sia3801_coefficients
             ],
+            "category_tables": [table.as_dict() for table in self._category_tables],
         }
 
     @classmethod
@@ -1956,6 +2045,22 @@ class Dataset:
                     provenance=_provenance_from_dict(item.get("provenance")),
                 )
                 for item in data["sia3801_coefficients"]
+            ),
+            category_tables=tuple(
+                CategoryTable(
+                    kind=item["kind"],
+                    variant=item.get("variant", "reference"),
+                    unit=item.get("unit", "-"),
+                    rows={
+                        (category, metric): Quantity(
+                            value.get("value"), value.get("unit", "-")
+                        )
+                        for category, metrics in item.get("rows", {}).items()
+                        for metric, value in metrics.items()
+                    },
+                    provenance=_provenance_from_dict(item.get("provenance")),
+                )
+                for item in data.get("category_tables", [])
             ),
         )
 

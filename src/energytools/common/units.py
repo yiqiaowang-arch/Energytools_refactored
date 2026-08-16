@@ -155,6 +155,15 @@ _UNIT_REGISTRY: dict[str, tuple[str, float, float, str | None]] = {
     "MJ/(m2K)": ("energy_per_area_temperature", 1000000.0, 0.0, None),
     "MJ/(m2*K)": ("energy_per_area_temperature", 1000000.0, 0.0, None),
     "m2/P": ("area_per_person", 1.0, 0.0, None),
+    # per-person power/energy of the per-category reference tables
+    # (``Fläche-E`` "Wärmeabgabe pro Person" W/P, "Warmwasser pro Person"
+    # kWh/P) and the per-person air flow of the SIA 380/1 Tab. 27 comparison
+    # rows (``m3/(Ph)`` = m3 per person-hour); "1000m2" is the GEPAMOD EBF
+    # column unit (energy reference area in 1000 m2, workbook cell ``EBF!C5``).
+    "W/P": ("power_per_person", 1.0, 0.0, "W·P⁻¹"),
+    "kWh/P": ("energy_per_person", 3_600_000.0, 0.0, "kWh·P⁻¹"),
+    "m3/(Ph)": ("volume_flow_per_person", 1.0, 0.0, "m³·P⁻¹·h⁻¹"),
+    "1000m2": ("area", 1000.0, 0.0, None),
     "l/d": ("volume_per_time", 1.1574074074074074e-08, 0.0, None),
     "W/(m3/h)": ("power_per_volumetric_flow", 3600.0, 0.0, None),
     "W/(m3xh)": ("power_per_volumetric_flow", 3600.0, 0.0, None),
