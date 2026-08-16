@@ -228,8 +228,38 @@ _room_use_schedule = {
     "additionalProperties": False,
 }
 
-_temperature_bin = {
+_room_use_inputs = {
     "type": "object",
+    "properties": {
+        "room_use_id": {"type": "integer", "minimum": 1},
+        "fensteranteil": {"type": "number"},
+        "solar_reduction_factor": {"type": "number"},
+        "shading_radiation_threshold": {"type": "number"},
+        "klimatisierung": {"type": "boolean"},
+        "klimatisierung_kategorie": {"type": "string"},
+        "schallschutz_key": {"type": "number"},
+        "schallschutz_geraete_db": {"type": "number"},
+        "schallschutz_nutzung_db": {"type": "number"},
+        "sensible_waerme_kuehlfall": {"type": "number"},
+        "sensible_waerme_heizfall": {"type": "number"},
+        "k0_korrektur": {"type": "number"},
+        "praesenzart": {"type": "string"},
+        "ida_kategorie": {"type": "string"},
+        "aussenluft_volumenstrom": {"type": "number"},
+        "cooling_necessity": {"type": "string"},
+        "tagesprofil_typ": {"type": "string"},
+        "monatsprofil_typ": {"type": "string"},
+        "qh_li0": {"type": "number"},
+        "dqh_li": {"type": "number"},
+        "huellzahl": {"type": "number"},
+        "qh_lim": {"type": "number"},
+        "provenance": _provenance,
+    },
+    "required": ["room_use_id"],
+    "additionalProperties": False,
+}
+
+_temperature_bin = {    "type": "object",
     "properties": {
         "lower": {"type": "number"},
         "upper": {"type": "number"},
@@ -315,6 +345,14 @@ _full_load_hours = {
         # predate the field stay valid (their single version is used instead).
         "default_standard_version": {"type": "string"},
         "rows": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0}},
+        "electrical": {
+            "type": "object",
+            "additionalProperties": {"type": "number", "minimum": 0},
+        },
+        "stage_hours": {
+            "type": "object",
+            "additionalProperties": {"type": "number", "minimum": 0},
+        },
         "provenance": _provenance,
     },
     "required": ["standard_versions", "regulations", "rows"],
@@ -404,6 +442,7 @@ PACKAGE_SCHEMA: dict = {
         "parameters": {"type": "array", "items": _parameter, "minItems": 1},
         "profiles": {"type": "array", "items": _profile, "minItems": 1},
         "room_use_schedules": {"type": "array", "items": _room_use_schedule},
+        "room_use_inputs": {"type": "array", "items": _room_use_inputs},
         "hourly_profiles": {"type": "array", "items": _hourly_profile},
         "monthly_profiles": {"type": "array", "items": _monthly_profile},
         "weekly_profiles": {"type": "array", "items": _weekly_profile},

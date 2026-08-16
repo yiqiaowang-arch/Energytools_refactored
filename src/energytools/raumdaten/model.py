@@ -671,6 +671,110 @@ def _schedule_from_dict(data: dict) -> RoomUseSchedule:
 
 
 @dataclass(frozen=True)
+class RoomUseInputs:
+    """Per-room-use input columns of the ``Eingabedaten`` matrix without catalog labels.
+
+    The parameter matrix (columns D..DN) is captured through the catalog
+    label matching of the profile extractor; the columns below carry design
+    inputs whose row-6 labels do not match a catalog parameter, so they were
+    silently dropped before the proofread audit.  All values are the literal
+    workbook cells (``K9:IE53``); ``None`` where the cell is blank.
+
+    The SIA 380/1 system-requirement block (``Qh,li0`` / ``dQh,li`` /
+    ``Hüllzahl`` / ``Qh,lim``, columns HZ..IE) is included here because the
+    catalog parameters ``QH,li0`` / ``DQH,li`` exist but carry no values
+    (label mismatch), and ``Hüllzahl`` / ``Qh,lim`` are not in the catalog.
+    """
+
+    room_use_id: int
+    fensteranteil: float | None = None  # K: Fensteranteil, Bruttofassade %
+    solar_reduction_factor: float | None = None  # Y
+    shading_radiation_threshold: float | None = None  # Z: W/m2
+    klimatisierung: bool | None = None  # AF: 'x' markers
+    klimatisierung_kategorie: str | None = None  # AG
+    schallschutz_key: float | None = None  # AK (0/1/2)
+    schallschutz_geraete_db: float | None = None  # AL: dB
+    schallschutz_nutzung_db: float | None = None  # AM: dB
+    sensible_waerme_kuehlfall: float | None = None  # AT: W
+    sensible_waerme_heizfall: float | None = None  # AU: W
+    k0_korrektur: float | None = None  # BM
+    praesenzart: str | None = None  # BO: DP/NP
+    ida_kategorie: str | None = None  # BW: IDA class
+    aussenluft_volumenstrom: float | None = None  # CB: m3/(h m2)
+    cooling_necessity: str | None = None  # CX: nicht notwendig/erwünscht/notwendig
+    tagesprofil_typ: str | None = None  # DO
+    monatsprofil_typ: str | None = None  # HB: Arbeit/Schule
+    qh_li0: float | None = None  # HZ: Heizwärmebedarf Basiswert SIA 380/1
+    dqh_li: float | None = None  # IA: Steigungsfaktor
+    huellzahl: float | None = None  # ID
+    qh_lim: float | None = None  # IE: = HZ + IA * ID
+    provenance: Provenance | None = None
+
+    def as_dict(self) -> dict:
+        """JSON-ready dict (``None`` fields are omitted)."""
+        result = {"room_use_id": self.room_use_id}
+        for name in (
+            "fensteranteil",
+            "solar_reduction_factor",
+            "shading_radiation_threshold",
+            "klimatisierung",
+            "klimatisierung_kategorie",
+            "schallschutz_key",
+            "schallschutz_geraete_db",
+            "schallschutz_nutzung_db",
+            "sensible_waerme_kuehlfall",
+            "sensible_waerme_heizfall",
+            "k0_korrektur",
+            "praesenzart",
+            "ida_kategorie",
+            "aussenluft_volumenstrom",
+            "cooling_necessity",
+            "tagesprofil_typ",
+            "monatsprofil_typ",
+            "qh_li0",
+            "dqh_li",
+            "huellzahl",
+            "qh_lim",
+        ):
+            value = getattr(self, name)
+            if value is not None:
+                result[name] = value
+        result["provenance"] = _provenance_dict(self.provenance)
+        return result
+
+
+def _inputs_from_dict(data: dict) -> RoomUseInputs:
+    """Rebuild a :class:`RoomUseInputs` from its package dict."""
+    return RoomUseInputs(
+        room_use_id=int(data["room_use_id"]),
+        **{name: data.get(name) for name in (
+            "fensteranteil",
+            "solar_reduction_factor",
+            "shading_radiation_threshold",
+            "klimatisierung",
+            "klimatisierung_kategorie",
+            "schallschutz_key",
+            "schallschutz_geraete_db",
+            "schallschutz_nutzung_db",
+            "sensible_waerme_kuehlfall",
+            "sensible_waerme_heizfall",
+            "k0_korrektur",
+            "praesenzart",
+            "ida_kategorie",
+            "aussenluft_volumenstrom",
+            "cooling_necessity",
+            "tagesprofil_typ",
+            "monatsprofil_typ",
+            "qh_li0",
+            "dqh_li",
+            "huellzahl",
+            "qh_lim",
+        )},
+        provenance=_provenance_from_dict(data.get("provenance")),
+    )
+
+
+@dataclass(frozen=True)
 class DesignDaySeries:
     """One 96-hour summer design-day series (``Aug_Auslegung`` matrix block).
 
@@ -864,6 +968,12 @@ class FullLoadHoursTable:
 
     Args:
         rows: ``(nutzid, regulation, standard_version)`` -> hours.
+        electrical: ``(nutzid, regulation, standard_version)`` -> electrical
+            full-load hours (``Volllaststunden elektrische Energie``, columns
+            E/I/Q of the sheet).
+        stage_hours: ``(nutzid, regulation, stage, standard_version)`` ->
+            operating hours of one volume-flow stage (``Betriebsstunden
+            Volumenstrom``, columns G/H for 2-stufig, K..P for stufenlos).
         standard_versions: Installed standard versions (e.g. ``"prSIA 2024-C1:2024"``).
         regulations: Regulation types (e.g. ``{"1-stufig", "2-stufig", "stufenlos"}``).
         default_standard_version: The default (final/latest) standard version
@@ -878,6 +988,8 @@ class FullLoadHoursTable:
     rows: Mapping[tuple[int, str, str], float]
     standard_versions: frozenset[str]
     regulations: frozenset[str]
+    electrical: Mapping[tuple[int, str, str], float] = field(default_factory=dict)
+    stage_hours: Mapping[tuple[int, str, float, str], float] = field(default_factory=dict)
     default_standard_version: str | None = None
     provenance: Provenance | None = None
     room_use_ids: frozenset[int] | None = field(default=None, repr=False, compare=False)
@@ -923,7 +1035,7 @@ class FullLoadHoursTable:
 
     def as_dict(self) -> dict:
         """JSON-ready dict (rows keyed ``"nutzid|regulation|standard_version"``)."""
-        return {
+        result = {
             "standard_versions": sorted(self.standard_versions),
             "regulations": sorted(self.regulations),
             "default_standard_version": self.default_standard_version,
@@ -933,6 +1045,17 @@ class FullLoadHoursTable:
             },
             "provenance": _provenance_dict(self.provenance),
         }
+        if self.electrical:
+            result["electrical"] = {
+                f"{nutzid}|{regulation}|{standard_version}": hours
+                for (nutzid, regulation, standard_version), hours in self.electrical.items()
+            }
+        if self.stage_hours:
+            result["stage_hours"] = {
+                f"{nutzid}|{regulation}|{stage}|{standard_version}": hours
+                for (nutzid, regulation, stage, standard_version), hours in self.stage_hours.items()
+            }
+        return result
 
 
 @dataclass(frozen=True)
@@ -1190,6 +1313,7 @@ class Dataset:
     release: DatasetRelease
     profiles: Mapping[int, RoomUseProfile]
     schedules: Mapping[int, RoomUseSchedule]
+    inputs: Mapping[int, RoomUseInputs]
     hourly_profiles: tuple[HourlyProfile, ...]
     monthly_profiles: tuple[MonthlyProfile, ...]
     weekly_profiles: tuple[WeeklyProfile, ...]
@@ -1221,6 +1345,7 @@ class Dataset:
         parameters: tuple[Parameter, ...],
         profiles: Mapping[int, RoomUseProfile],
         schedules: Mapping[int, RoomUseSchedule] | None = None,
+        inputs: Mapping[int, RoomUseInputs] | None = None,
         hourly_profiles: tuple[HourlyProfile, ...] = (),
         monthly_profiles: tuple[MonthlyProfile, ...] = (),
         weekly_profiles: tuple[WeeklyProfile, ...] = (),
@@ -1239,6 +1364,7 @@ class Dataset:
         object.__setattr__(self, "_parameters", tuple(parameters))
         object.__setattr__(self, "profiles", profiles)
         object.__setattr__(self, "schedules", dict(schedules or {}))
+        object.__setattr__(self, "inputs", dict(inputs or {}))
         object.__setattr__(self, "hourly_profiles", tuple(hourly_profiles))
         object.__setattr__(self, "monthly_profiles", tuple(monthly_profiles))
         object.__setattr__(self, "weekly_profiles", tuple(weekly_profiles))
@@ -1545,6 +1671,9 @@ class Dataset:
         for schedule_id in self.schedules:
             if schedule_id not in set(nutzids):
                 errors.append(f"room-use schedule references unknown room use {schedule_id}")
+        for inputs_id in self.inputs:
+            if inputs_id not in set(nutzids):
+                errors.append(f"room-use inputs reference unknown room use {inputs_id}")
 
         known_codes = set(codes)
         for mapping in self._mappings:
@@ -1570,7 +1699,7 @@ class Dataset:
                     )
 
         for coefficients in self._sia3801_coefficients:
-            if coefficients.category not in category_ids:
+            if coefficients.category and coefficients.category not in category_ids:
                 errors.append(
                     f"coefficients '{coefficients.variant}' reference unknown category "
                     f"'{coefficients.category}'"
@@ -1612,6 +1741,7 @@ class Dataset:
             "room_use_schedules": [
                 self.schedules[nutzid].as_dict() for nutzid in sorted(self.schedules)
             ],
+            "room_use_inputs": [self.inputs[nutzid].as_dict() for nutzid in sorted(self.inputs)],
             "hourly_profiles": [profile.as_dict() for profile in self.hourly_profiles],
             "monthly_profiles": [profile.as_dict() for profile in self.monthly_profiles],
             "weekly_profiles": [profile.as_dict() for profile in self.weekly_profiles],
@@ -1685,6 +1815,16 @@ class Dataset:
                 for key, value in flh_data["rows"].items()
                 for nutzid, regulation, standard_version in [_parse_row_key(key, 3)]
             },
+            electrical={
+                (int(nutzid), regulation, standard_version): float(value)
+                for key, value in flh_data.get("electrical", {}).items()
+                for nutzid, regulation, standard_version in [_parse_row_key(key, 3)]
+            },
+            stage_hours={
+                (int(nutzid), regulation, float(stage), standard_version): float(value)
+                for key, value in flh_data.get("stage_hours", {}).items()
+                for nutzid, regulation, stage, standard_version in [_parse_row_key(key, 4)]
+            },
             standard_versions=flh_versions,
             regulations=frozenset(flh_data["regulations"]),
             default_standard_version=flh_default,
@@ -1732,6 +1872,10 @@ class Dataset:
             schedules={
                 int(item["room_use_id"]): _schedule_from_dict(item)
                 for item in data.get("room_use_schedules", [])
+            },
+            inputs={
+                int(item["room_use_id"]): _inputs_from_dict(item)
+                for item in data.get("room_use_inputs", [])
             },
             hourly_profiles=tuple(
                 HourlyProfile(

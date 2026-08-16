@@ -122,6 +122,8 @@ def _write_synthetic_workbook(path: Path) -> None:
     ws["D2"], ws["E2"] = "Wohnen MFH", "Hotel"
 
     # --- SIA 380-1: station B68 + Qh per kind (P134/P166/P196), 4 variant sheets ---
+    ws = wb.create_sheet("Eigene Nutzung")
+    ws["G1"] = 1  # selected station index (Adelboden)
     for sheet_name in ("SIA 380-1", "SIA 380-1_Qc", "SIA 380-1_EN", "SIA 380-1_Qc_EN"):
         ws = wb.create_sheet(sheet_name)
         ws["B68"] = "Zürich-MeteoSchweiz"  # unknown station -> falls back to the first station

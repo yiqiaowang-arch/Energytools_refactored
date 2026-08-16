@@ -40,8 +40,10 @@ from energytools.raumdaten.model import (
     ParameterValue,
     QhcTable,
     RoomUse,
+    RoomUseInputs,
     RoomUseProfile,
     RoomUseSchedule,
+    Sia3801Coefficients,
     Sia3801Result,
     ValueKind,
     normalize_room_use_code,
@@ -456,6 +458,7 @@ class DatasetExtractor:
             wb_values["Eingabedaten"], catalog, by_nutzid
         )
         schedules = self._extract_schedules(wb_values["Eingabedaten"], by_nutzid)
+        room_use_inputs = self._extract_room_use_inputs(wb_values["Eingabedaten"], by_nutzid)
         climate = self._extract_climate(
             wb_values["Winter_Auslegung"], wb_values["Monatswerte"], wb_values["Aug_Auslegung"]
         )
@@ -465,7 +468,9 @@ class DatasetExtractor:
         mappings, area_tables = self._extract_mappings_and_areas(
             wb_values["Fläche-E"], wb_values["GEPAMOD"], by_code
         )
-        sia3801 = self._extract_sia3801(wb_values, by_nutzid, selected_nutzid, climate)
+        sia3801, sia3801_coefficients = self._extract_sia3801(
+            wb_values, by_nutzid, selected_nutzid, climate
+        )
 
         return {
             "schema_version": "1.0",
@@ -505,6 +510,7 @@ class DatasetExtractor:
                 for nutzid, profile in sorted(profiles.items())
             ],
             "room_use_schedules": [schedule.as_dict() for schedule in schedules],
+            "room_use_inputs": [inputs.as_dict() for inputs in room_use_inputs],
             "hourly_profiles": [profile.as_dict() for profile in hourly_profiles],
             "monthly_profiles": [
                 profile.as_dict()
@@ -518,7 +524,7 @@ class DatasetExtractor:
             "sia3801": [result.as_dict() for result in sia3801],
             "mappings": [mapping.as_dict() for mapping in mappings],
             "area_tables": [table.as_dict() for table in area_tables],
-            "sia3801_coefficients": [],
+            "sia3801_coefficients": [coefficients.as_dict() for coefficients in sia3801_coefficients],
         }
 
     def _to_dataset(self, package: dict) -> Dataset:
@@ -872,6 +878,60 @@ class DatasetExtractor:
             )
         return schedules
 
+    def _extract_room_use_inputs(self, ws: Any, by_nutzid: dict[int, RoomUse]) -> list[RoomUseInputs]:
+        """``Eingabedaten`` rows 9-53: design-input columns without catalog labels.
+
+        Columns K, Y, Z, AF:AG, AK:AM, AT:AU, BM, BO, BW, CB, CX, DO, HB and
+        the SIA 380/1 system-requirement block HZ:IE (see :class:`RoomUseInputs`
+        for the exact mapping).  Missing cells stay ``None``.
+        """
+        # 1-based columns -> 0-based offsets within K(11)..IE(239)
+        matrix = _read_matrix(ws, 9, 53, 11, 239)
+        columns = {
+            "fensteranteil": (0, float),  # K
+            "solar_reduction_factor": (14, float),  # Y
+            "shading_radiation_threshold": (15, float),  # Z
+            "klimatisierung": (21, "x"),  # AF
+            "klimatisierung_kategorie": (22, str),  # AG
+            "schallschutz_key": (26, float),  # AK
+            "schallschutz_geraete_db": (27, float),  # AL
+            "schallschutz_nutzung_db": (28, float),  # AM
+            "sensible_waerme_kuehlfall": (35, float),  # AT
+            "sensible_waerme_heizfall": (36, float),  # AU
+            "k0_korrektur": (54, float),  # BM
+            "praesenzart": (56, str),  # BO
+            "ida_kategorie": (64, str),  # BW
+            "aussenluft_volumenstrom": (69, float),  # CB
+            "cooling_necessity": (91, str),  # CX
+            "tagesprofil_typ": (109, str),  # DO
+            "monatsprofil_typ": (199, str),  # HB
+            "qh_li0": (223, float),  # HZ
+            "dqh_li": (224, float),  # IA
+            "huellzahl": (227, float),  # ID
+            "qh_lim": (228, float),  # IE
+        }
+        inputs = []
+        for nutzid in sorted(by_nutzid):
+            row = matrix[nutzid - 1]
+            values: dict[str, object] = {}
+            for name, (offset, kind) in columns.items():
+                cell = row[offset] if offset < len(row) else None
+                if cell is None:
+                    continue
+                if kind is float:
+                    if isinstance(cell, (int, float)):
+                        values[name] = float(cell)
+                elif kind is str:
+                    text = str(cell).strip()
+                    if text:
+                        values[name] = text
+                elif kind == "x":
+                    values[name] = str(cell).strip() != ""
+            if not values:
+                continue
+            inputs.append(RoomUseInputs(room_use_id=nutzid, **values))
+        return inputs
+
     @staticmethod
     def _match_parameter(
         matches: list[Parameter],
@@ -1068,8 +1128,18 @@ class DatasetExtractor:
 
     def _extract_full_load_hours(self, ws: Any, by_code: dict[str, RoomUse]) -> FullLoadHoursTable:
         rows: dict[tuple[int, str, str], float] = {}
+        electrical: dict[tuple[int, str, str], float] = {}
+        stage_hours: dict[tuple[int, str, float, str], float] = {}
         regulations = ("1-stufig", "2-stufig", "stufenlos")
-        for row in ws.iter_rows(min_row=7, max_row=51, min_col=1, max_col=10):
+        # D/F/J: Volllaststunden Volumenstrom; E/I/Q: Volllaststunden
+        # elektrische Energie; G/H: Betriebsstunden 2-stufig 67/100 %;
+        # K..P: Betriebsstunden stufenlos 25/40/50/60/80/100 %.
+        electrical_columns = {"1-stufig": 4, "2-stufig": 8, "stufenlos": 16}  # 1-based E/I/Q
+        stage_columns = {
+            "2-stufig": ((67.0, 6), (100.0, 7)),  # G/H
+            "stufenlos": ((25.0, 10), (40.0, 11), (50.0, 12), (60.0, 13), (80.0, 14), (100.0, 15)),
+        }
+        for row in ws.iter_rows(min_row=7, max_row=51, min_col=1, max_col=17):
             code = str(row[0].value or "").strip()
             room_use = by_code.get(normalize_room_use_code(code))
             if room_use is None:
@@ -1078,8 +1148,21 @@ class DatasetExtractor:
                 value = row[column_index].value
                 if value is not None and isinstance(value, (int, float)):
                     rows[(room_use.nutzid, regulation, self.standard_version)] = float(value)
+                electrical_value = row[electrical_columns[regulation]].value
+                if electrical_value is not None and isinstance(electrical_value, (int, float)):
+                    electrical[
+                        (room_use.nutzid, regulation, self.standard_version)
+                    ] = float(electrical_value)
+                for stage, column_index in stage_columns.get(regulation, ()):
+                    stage_value = row[column_index].value
+                    if stage_value is not None and isinstance(stage_value, (int, float)):
+                        stage_hours[
+                            (room_use.nutzid, regulation, stage, self.standard_version)
+                        ] = float(stage_value)
         return FullLoadHoursTable(
             rows=rows,
+            electrical=electrical,
+            stage_hours=stage_hours,
             standard_versions=frozenset({self.standard_version}),
             regulations=frozenset(regulations),
             default_standard_version=self.standard_version,
@@ -1088,10 +1171,14 @@ class DatasetExtractor:
                     SourceRef(
                         workbook=os.path.basename(self.workbook_path),
                         sheet="Volll_Lüft",
-                        range="A7:J51",
+                        range="A7:Q51",
                     ),
                 ),
-                note=f"Volllaststunden Volumenstrom; standard version {self.standard_version}",
+                note=(
+                    "Volllaststunden Volumenstrom (D/F/J) und elektrische Energie (E/I/Q), "
+                    "Betriebsstunden Volumenstrom je Stufe (G/H, K..P); "
+                    f"standard version {self.standard_version}"
+                ),
             ),
         )
 
@@ -1290,33 +1377,69 @@ class DatasetExtractor:
 
     def _extract_sia3801(
         self, wb: Any, by_nutzid: dict[int, RoomUse], selected_nutzid: int, climate: ClimateData
-    ) -> list[Sia3801Result]:
-        """``SIA 380-1`` + ``_Qc`` / ``_EN`` / ``_Qc_EN``: Qh per value kind (P134/P166/P196)."""
+    ) -> tuple[list[Sia3801Result], list[Sia3801Coefficients]]:
+        """``SIA 380-1`` family: Qh/Qc per value kind + the coefficient block.
+
+        The four sheets are one calculation with a variant axis.  Qh (kWh/m²a)
+        lives at P134/P166/P196 (yearly row ``P133/3.6``), except the ``_Qc_EN``
+        sheet where those rows are absent — there the yearly totals P133/P165/
+        P195 (MJ/m²a) are converted.  The cooling demand ``Qc`` (kWh/m²a) lives
+        at P137/P167/P197.  Each sheet names its own climate station in B68
+        (formula ``Monatswerte!A1`` on the EN sheets, resolved through
+        ``Eigene Nutzung!G1`` -> ``Winter_Auslegung`` row).  The coefficient
+        block (rows 42-63, column D) is read per variant; ``Thetai`` (r58) is
+        formula-derived and left to the engine.
+        """
         variants = {
             "SIA 380-1": "de",
             "SIA 380-1_EN": "en",
             "SIA 380-1_Qc": "de+qc",
             "SIA 380-1_Qc_EN": "en+qc",
         }
-        station_matrix = _read_matrix(wb["SIA 380-1"], 1, 196, 1, 16)
-        station_name = str(station_matrix[67][1] or "").strip()
-        station_id = next(
-            (station.id for station in climate.stations if station.name.de == station_name),
-            climate.stations[0].id,
-        )
-        results = []
+        # The EN sheets reference the selected station through
+        # Eigene Nutzung!G1 -> Winter_Auslegung rows 5..44.
+        station_by_name = {station.name.de: station.id for station in climate.stations}
+        eigene_g1 = _cell(wb["Eigene Nutzung"], 1, 7)  # G1: selected station index
+        winter_matrix = _read_matrix(wb["Winter_Auslegung"], 5, 44, 1, 1)
+        selected_station_name = None
+        if isinstance(eigene_g1, (int, float)) and 1 <= int(eigene_g1) <= 40:
+            cell = winter_matrix[int(eigene_g1) - 1][0]
+            if cell:
+                selected_station_name = str(cell).strip()
+
+        results: list[Sia3801Result] = []
+        coefficients: list[Sia3801Coefficients] = []
         for sheet_name, variant in variants.items():
             if sheet_name not in wb.sheetnames:
                 continue
             ws = wb[sheet_name]
-            matrix = _read_matrix(ws, 1, 196, 1, 16)
-            for kind, row_number in (
-                (ValueKind.STANDARD, 134),
-                (ValueKind.ZIELWERT, 166),
-                (ValueKind.BESTAND, 196),
+            matrix = _read_matrix(ws, 1, 197, 1, 16)
+            station_name = str(matrix[67][1] or "").strip()  # B68
+            if station_name in station_by_name:
+                station_id = station_by_name[station_name]
+            elif selected_station_name in station_by_name:
+                # EN/Qc_EN B68 is the formula Monatswerte!A1 (no cached text)
+                station_id = station_by_name[selected_station_name]
+            else:
+                station_id = climate.stations[0].id
+            for kind, qh_row, fallback_row, qc_row in (
+                (ValueKind.STANDARD, 134, 133, 137),
+                (ValueKind.ZIELWERT, 166, 165, 167),
+                (ValueKind.BESTAND, 196, 195, 197),
             ):
-                value_cell = matrix[row_number - 1][15]
+                values: dict[str, Quantity] = {}
+                value_cell = matrix[qh_row - 1][15]  # P134/P166/P196
                 if not isinstance(value_cell, (int, float)):
+                    # Qc_EN lacks those rows; convert the yearly total P133/3.6
+                    total_cell = matrix[fallback_row - 1][15]
+                    if isinstance(total_cell, (int, float)):
+                        value_cell = float(total_cell) / 3.6
+                if isinstance(value_cell, (int, float)):
+                    values["Qh"] = Quantity(float(value_cell), "kWh/m2a")
+                qc_cell = matrix[qc_row - 1][15]  # P137/P167/P197 (MJ/m2a)
+                if isinstance(qc_cell, (int, float)):
+                    values["Qc"] = Quantity(float(qc_cell) / 3.6, "kWh/m2a")
+                if not values:
                     continue
                 results.append(
                     Sia3801Result(
@@ -1324,21 +1447,67 @@ class DatasetExtractor:
                         station_id=station_id,
                         kind=kind,
                         variant=variant,
-                        values={"Qh": Quantity(value_cell, "kWh/m2a")},
+                        values=values,
                         provenance=Provenance(
                             sources=(
                                 SourceRef(
                                     workbook=os.path.basename(self.workbook_path),
                                     sheet=sheet_name,
-                                    range=f"P{row_number}",
+                                    range=(
+                                        f"P{qh_row}/P{qc_row}"
+                                        if "Qc" in values
+                                        else f"P{qh_row}"
+                                    ),
                                 ),
                             ),
-                            note="Heizwärmebedarf Qh, eff (kWh/m2a), "
-                            "Energiebilanz mit mechanischer Lüftung",
+                            note=(
+                                "Heizwärmebedarf Qh, eff (kWh/m2a) und Klimakältebedarf "
+                                "Qc (kWh/m2a), Energiebilanz mit mechanischer Lüftung"
+                            ),
                         ),
                     )
                 )
-        return results
+            # Coefficient block (rows 42-63, column D); Thetai (r58) excluded
+            coeff_rows = {
+                "fE": (42, "-"),
+                "a0": (44, "-"),
+                "tau0": (45, "h"),
+                "b_erdreich_boden": (55, "-"),
+                "b_unbeheizt_boden": (56, "-"),
+                "b_erdreich_wand": (57, "-"),
+                "delta_thetah_max": (59, "°C"),
+                "hue_m": (60, "m"),
+                "f_horizont": (61, "-"),
+                "q_vorlauf_max": (62, "°C"),
+                "dq_regelung": (63, "°C"),
+            }
+            coeff_values: dict[str, Quantity] = {}
+            for key, (row_number, unit) in coeff_rows.items():
+                value = matrix[row_number - 1][3]  # D column
+                if isinstance(value, (int, float)):
+                    coeff_values[key] = Quantity(float(value), unit)
+            if coeff_values:
+                coefficients.append(
+                    Sia3801Coefficients(
+                        variant=variant,
+                        category="",
+                        coefficients=coeff_values,
+                        provenance=Provenance(
+                            sources=(
+                                SourceRef(
+                                    workbook=os.path.basename(self.workbook_path),
+                                    sheet=sheet_name,
+                                    range="D42:D63",
+                                ),
+                            ),
+                            note=(
+                                "SIA 380/1 Randbedingungen (fE, a0, tau0, b, "
+                                "deltaThetahmax, HueM, F, q, Dq); Thetai formelabhängig"
+                            ),
+                        ),
+                    )
+                )
+        return results, coefficients
 
 
 def _normalize_label(label: str) -> str:

@@ -480,6 +480,144 @@
         "additionalProperties": false
       }
     },
+    "room_use_inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "room_use_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "fensteranteil": {
+            "type": "number"
+          },
+          "solar_reduction_factor": {
+            "type": "number"
+          },
+          "shading_radiation_threshold": {
+            "type": "number"
+          },
+          "klimatisierung": {
+            "type": "boolean"
+          },
+          "klimatisierung_kategorie": {
+            "type": "string"
+          },
+          "schallschutz_key": {
+            "type": "number"
+          },
+          "schallschutz_geraete_db": {
+            "type": "number"
+          },
+          "schallschutz_nutzung_db": {
+            "type": "number"
+          },
+          "sensible_waerme_kuehlfall": {
+            "type": "number"
+          },
+          "sensible_waerme_heizfall": {
+            "type": "number"
+          },
+          "k0_korrektur": {
+            "type": "number"
+          },
+          "praesenzart": {
+            "type": "string"
+          },
+          "ida_kategorie": {
+            "type": "string"
+          },
+          "aussenluft_volumenstrom": {
+            "type": "number"
+          },
+          "cooling_necessity": {
+            "type": "string"
+          },
+          "tagesprofil_typ": {
+            "type": "string"
+          },
+          "monatsprofil_typ": {
+            "type": "string"
+          },
+          "qh_li0": {
+            "type": "number"
+          },
+          "dqh_li": {
+            "type": "number"
+          },
+          "huellzahl": {
+            "type": "number"
+          },
+          "qh_lim": {
+            "type": "number"
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "room_use_id"
+        ],
+        "additionalProperties": false
+      }
+    },
     "hourly_profiles": {
       "type": "array",
       "items": {
@@ -1217,6 +1355,20 @@
           "type": "string"
         },
         "rows": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "electrical": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "stage_hours": {
           "type": "object",
           "additionalProperties": {
             "type": "number",
