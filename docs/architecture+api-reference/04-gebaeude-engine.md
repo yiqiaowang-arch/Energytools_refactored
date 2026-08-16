@@ -46,8 +46,11 @@ The engine itself needs no extras. The dataset it calculates against comes from 
 ### 2. Build the input
 
 `BuildingInput` is the validated, immutable calculation request. Rooms reference the 45
-standard room uses by **nutzid (1–45) or SIA code** (`"1.01"`); ventilation systems use the
-workbook's `LA01`–`LA16` ids; the climate station is 1–40.
+standard room uses by **nutzid (1–45) or SIA code** (`"3.01"`); ventilation systems use the
+workbook's `LA01`–`LA16` ids; the climate station is 1–40. The real-field names follow the
+workbook sheets: `ebf`/`ngf` (Gebäude C/D), `lueftung_system` (L), `gekuehlt`/`beheizt`
+(P/S), `wrg`/`kuehlfall_t`/`heizfall_t` (Lüftung L/M/N), `catalog_code`/`coverage`/`losses`
+(Erzeugung A/F/H).
 
 ```python
 from datetime import date
@@ -60,21 +63,24 @@ project = BuildingInput(
     author="Max Muster",
     date=date(2025, 1, 15),
     climate_station_id=40,                      # Zürich-MeteoSchweiz
+    value_kind="zielwert",                      # Standard | Zielwert | Bestand
     rooms=(
-        RoomRow(name="Büro 1", room_use_id="1.01", ebf=True, ngf=1200.0,
-                geraete=8.0, beleuchtung=10.0, gekuehlt=True,
-                lueftung_system="LA03", lueftung_volume_flow=4000.0),
-        RoomRow(name="Sitzungszimmer", room_use_id=2, ebf=True, ngf=300.0,
-                share=0.5, geraete=5.0),
+        RoomRow(name="Büro 1", room_use_id="3.01", ebf=True, ngf=1200.0,
+                lueftung_system="LA03", gekuehlt=True, beheizt=True),
+        RoomRow(name="Sitzungszimmer", room_use_id="3.03", ebf=True, ngf=300.0,
+                share=0.5, beheizt=True),
     ),
     ventilation=(
-        VentilationSystem(id="LA03", room_use="1.01", regulation="2-stufig",
+        VentilationSystem(id="LA03", room_use="3.01", regulation="2-stufig",
                           volume_flow_standard=4000.0, sfp=1.8,
-                          fan_power=7.5, full_load_hours=3900.0, wrg=0.7),
+                          fan_power=7.5, full_load_hours=3290.0, wrg=0.7,
+                          kuehlfall_t=20.0, heizfall_t=21.0),
     ),
     generation=(
-        GenerationSystem(id="KE1", kind="cooling", catalog_code="KE01",
-                         coverage=1.0, losses=0.05, nominal_power=120.0),
+        GenerationSystem(id="WE2", kind="heating", catalog_code="WE02",
+                         coverage=0.5, losses=0.1, nominal_power=60.0),
+        GenerationSystem(id="W2", kind="ww", catalog_code="W13",
+                         coverage=1.0, losses=0.4),
     ),
 )
 
@@ -85,35 +91,40 @@ print(project.total_ngf())          # 1350.0  (m²)
 ### 3. Calculate
 
 ```python
-from energytools.engine import Engine, StubBackend
+from energytools.engine import Engine, NativeBackend
 
 engine = Engine()                                   # in-memory result store
-result = engine.calculate(project, "V221", "1.0.0")
+result = engine.calculate(project, "V221", "1.0.0",
+                          backend=NativeBackend())  # real physics, real dataset
 ```
 
 `calculate` validates the input first, then runs the backend and **stores** the result. The
-default backend is `StubBackend` (deterministic structural aggregation — no physics yet; the
-Excel/native physics backends arrive in later milestones, see [05](05-versioning-export.md)).
-You can pass a backend explicitly:
+default backend is `StubBackend` (deterministic structural aggregation — energy placeholders,
+no physics); pass `NativeBackend()` for the real calculation: psychrometrics, the AHU
+temperature-bin engine (``Berechnung LU``), the building aggregation and the `Resultate`
+summary over the V221 dataset. (The reference `ExcelBackend` arrives in a later milestone.)
 
 ```python
-result = engine.calculate(project, "V221", "1.0.0", backend=StubBackend())
+result = engine.calculate(project, "V221", "1.0.0")  # default: StubBackend
 ```
 
 ### 4. Read the results
 
 ```python
 print(result.totals)
-# {'ngf_m2': 1350.0, 'ebf_m2': 1350.0, 'rooms': 2,
-#  'ventilation_systems': 1, 'installed_electric_kw': 29.85}
+# {'ngf_m2': 1500.0, 'ebf_m2': 1650.0, 'rooms': 2, 'ventilation_systems': 1,
+#  'geraete_mwh': 22.644, 'fan_energy_mwh': 24.675, 'endenergie_total_mwh': 64.675, ...}
 
-print(result.per_carrier)            # {'el': 29.85}  (stub: installed electric power, kW)
-print(result.backend)                # 'stub@0.1.0'
+print(result.per_carrier)            # {'el': 51.883, 'erdgas': 12.792}  (MWh/a, real energies)
+print(result.backend)                # 'native@0.1.0'
 print(result.versions.as_dict())
 # {'dataset': 'V221', 'model': '1.0.0', 'implementation': '0.1.0', 'climate': 'meteoschweiz-2024'}
-print(result.warnings[0])
-# 'stub backend: energy values are placeholders (structural values only).'
+print(result.assumptions[0])         # documents the native-engine defaults
 ```
+
+> The workbook's `ngf_m2` total is the **raw** NGF sum (Gebäude!D35 = SUM(D12:D32)); the
+> model helper `project.total_ngf()` applies `share` (the effective area). The aggregation
+> reproduces the workbook. Values above are the actual output of this Quickstart input.
 
 Every result is reproducible and explainable:
 
@@ -331,8 +342,20 @@ class MyBackend(EngineBase):
 `class StubBackend(EngineBase)` — the deterministic structural backend (`name = "stub"`).
 It computes **no physics**: it aggregates per-room effective areas and installed electric
 power, per-system effective volume flows and building totals so the engine I/O contract and
-the explain trace can be exercised without Excel or the ported model. Energy values are
-placeholders — stated explicitly in `assumptions`/`warnings`.
+the explain trace can be exercised without the model. Energy values are placeholders —
+stated explicitly in `assumptions`/`warnings`.
+
+### `NativeBackend` ⚙ (internal — the real pure-Python runtime)
+
+`class NativeBackend(EngineBase)` — the real calculation backend (`name = "native"`). It
+plugs the verified native model — psychrometrics, the AHU temperature-bin engine
+(`Berechnung LU`), the building aggregation and the `Resultate` summary — into the engine
+and consumes the **real V221 dataset**: the room KPI intensities come from the dataset
+profiles (the `Res` matrix), each ventilation system drives one `AhuInput` with the station
+climate (temperature-bin hours, humidity, pressure) from `ds.climate` and the full-load
+hours from the `Volll_Lüft` table, and the generators resolve through the built-in
+`Nutzungsgrad` catalogue. Construct it with `NativeBackend()` (dataset dir defaults to
+`data/datasets`) and pass it to `Engine.calculate(..., backend=...)`.
 
 <a id="44-calculationstore"></a>
 ### `CalculationStore` ⚙ (internal)
@@ -373,7 +396,7 @@ the canonical minimal example (the tests use the same shape via `tests/helpers.p
 ## Native module (advanced)
 
 `energytools.engine.native` is the pure-Python port of the workbook's physical model — the
-future `NativeBackend` runtime. These are **low-level physics / computation primitives**,
+runtime of the `NativeBackend`. These are **low-level physics / computation primitives**,
 usually called by the engine internally; advanced users can call them directly. All functions
 are verified against the Excel-oracle golden files in `data/golden/`.
 
@@ -475,8 +498,9 @@ and the final-energy matrix by Energieträger (`Resultate!D7:U15`).
 | `AggregationResult` | `@dataclass(frozen=True)` | Rooms, totals, ventilation, generation, Resultate matrix + weighted indicators. |
 | `KpiLookup` | `class` | The room-KPI interface (`Res` matrix + `Std` table); implement or use `ResMatrixKpiProvider` / `DatasetResLookup`. |
 | `ResMatrixKpiProvider` | `@dataclass(frozen=True)` | Dict-backed `KpiLookup` implementation. |
-| `DatasetResLookup` | `class` | Dataset-backed `KpiLookup` over a V221 package. |
+| `DatasetResLookup` | `class` | Dataset-backed `KpiLookup` over a V221 package (full `Res` matrix + `Std` intensities). |
 | `GenerationCatalog` | `class` | The `Nutzungsgrad` catalogue lookup (by group kind + name). |
+| `NutzungsgradCatalog` / `NUTZUNGSGRAD_CATALOG` | `class` / `const` | The built-in catalogue (KE01–06, WE01–16, W01–13 with η and Energieträger, from `Nutzungsgrad!C3:G42`). |
 | `RESULTATE_CARRIERS` / `RESULTATE_USES` / `RES_SELECTORS` / `DEFAULT_WEIGHTS` | constants | Workbook matrix conventions (carrier rows, use columns, Res column selectors, NEGF/PEne/THGE weights). |
 
 ```python
@@ -500,6 +524,7 @@ from energytools.engine import (
     RoomRow,
     VentilationSystem,
     GenerationSystem,
+    NativeBackend,         # the real (native) calculation backend
     Results,               # what calculate() returns
     CalculationTrace,      # explain() payload
     ValueKind,             # standard / zielwert / bestand

@@ -40,6 +40,7 @@ from energytools.raumdaten.model import (
     QhcTable,
     RoomUse,
     RoomUseProfile,
+    RoomUseSchedule,
     Sia3801Result,
     ValueKind,
     normalize_room_use_code,
@@ -452,6 +453,7 @@ class DatasetExtractor:
         profiles, merged_catalog = self._extract_profiles(
             wb_values["Eingabedaten"], catalog, by_nutzid
         )
+        schedules = self._extract_schedules(wb_values["Eingabedaten"], by_nutzid)
         climate = self._extract_climate(wb_values["Winter_Auslegung"], wb_values["Monatswerte"])
         full_load_hours = self._extract_full_load_hours(wb_values["Volll_Lüft"], by_code)
         qhc = self._extract_qhc(wb_values["Qhc_Klimastat"], by_code)
@@ -498,6 +500,7 @@ class DatasetExtractor:
                 }
                 for nutzid, profile in sorted(profiles.items())
             ],
+            "room_use_schedules": [schedule.as_dict() for schedule in schedules],
             "hourly_profiles": [profile.as_dict() for profile in hourly_profiles],
             "monthly_profiles": [
                 profile.as_dict()
@@ -811,6 +814,59 @@ class DatasetExtractor:
                 parameter_catalog=catalog_dict,
             )
         return profiles, list(catalog_dict.values())
+
+    def _extract_schedules(self, ws: Any, by_nutzid: dict[int, RoomUse]) -> list[RoomUseSchedule]:
+        """``Eingabedaten`` rows 9-53: per-room-use time schedules.
+
+        Matrix blocks (openpyxl column indices, 1-based): ``DP:EM`` person
+        fraction (24 h), ``EN:FK`` device fraction (24 h), ``FM:FX`` annual
+        profile (12 months), ``HC:HN`` previous annual profile (12 months),
+        ``HS:HY`` weekly profile (7 days, day 1 = Saturday), ``FY`` rest days
+        per week.  Empty cells are zero occupation (the workbook leaves them
+        blank).  ``Nutzungstage pro Jahr`` (``365 - 52 * rest days``) and
+        ``Jahresgleichzeitigkeit`` (mean of the 12 previous-month values) are
+        derived from the workbook formulas, which carry no cached results.
+        """
+        # DP(120) .. HY(233); offsets: DP=0 EN=24 FM=49 FY=61 HC=91 HS=107
+        matrix = _read_matrix(ws, 9, 53, 120, 233)
+        schedules = []
+        for nutzid in sorted(by_nutzid):
+            row = matrix[nutzid - 1]
+            person = tuple(_schedule_cell(row[col]) for col in range(0, 24))
+            device = tuple(_schedule_cell(row[col]) for col in range(24, 48))
+            monthly = tuple(_schedule_cell(row[col]) for col in range(49, 61))
+            rest_days = _schedule_cell(row[61])  # FY
+            monthly_previous = tuple(_schedule_cell(row[col]) for col in range(91, 103))
+            weekly = tuple(_schedule_cell(row[col]) for col in range(107, 114))
+            schedules.append(
+                RoomUseSchedule(
+                    room_use_id=nutzid,
+                    person_fraction=person,
+                    device_fraction=device,
+                    weekly_fraction=weekly,
+                    monthly_fraction=monthly,
+                    monthly_previous_fraction=monthly_previous,
+                    rest_days_per_week=rest_days,
+                    working_days_per_year=365.0 - 52.0 * rest_days,
+                    annual_simultaneity=sum(monthly_previous) / 12.0,
+                    provenance=Provenance(
+                        sources=(
+                            SourceRef(
+                                workbook=os.path.basename(self.workbook_path),
+                                sheet="Eingabedaten",
+                                range="DP9:HY53",
+                            ),
+                        ),
+                        note=(
+                            "Personen-/Geräteprofil (Nutzungstag) 24 h, Wochenprofil 7 d, "
+                            "Jahresprofil/Monatsprofil (bisher) 12 m, Ruhetage pro Woche; "
+                            "Nutzungstage pro Jahr and Jahresgleichzeitigkeit derived "
+                            "(365-52*rest_days, mean of Monatsprofil bisher)"
+                        ),
+                    ),
+                )
+            )
+        return schedules
 
     @staticmethod
     def _match_parameter(
@@ -1266,6 +1322,28 @@ def _clean_cell_value(value: Any) -> float | int | str | bool | None:
             return None
         return stripped
     return value
+
+
+def _schedule_cell(value: Any) -> float:
+    """One schedule matrix cell -> fraction (missing/blank = 0.0, ``"80%"`` -> 0.8)."""
+    if value is None:
+        return 0.0
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped or stripped in _ERROR_VALUE_STRINGS:
+            return 0.0
+        if stripped.endswith("%"):
+            try:
+                return float(stripped[:-1]) / 100.0
+            except ValueError:
+                return 0.0
+        try:
+            return float(stripped)
+        except ValueError:
+            return 0.0
+    if isinstance(value, (int, float)):
+        return float(value)
+    return 0.0
 
 
 def _month_value(value: Any) -> float | None:

@@ -37,10 +37,12 @@ from energytools.engine.model import (
     VentilationSystem,
     VersionInfo,
 )
+from energytools.engine.native.backend import NativeBackend
 from energytools.engine.result import CalculationTrace, Results, TraceStep
 from energytools.engine.store import CalculationStore
 
 __all__ = [
+    "DEFAULT_MODEL",
     "BackendError",
     "BuildingInput",
     "CalculationEngine",
@@ -48,7 +50,6 @@ __all__ = [
     "CalculationInputError",
     "CalculationStore",
     "CalculationTrace",
-    "DEFAULT_MODEL",
     "EndUse",
     "EnergyCarrier",
     "EnergyToolsError",
@@ -57,6 +58,7 @@ __all__ = [
     "GenerationSystem",
     "ModelRelease",
     "ModelVersionMismatchError",
+    "NativeBackend",
     "Results",
     "RoomRow",
     "StubBackend",

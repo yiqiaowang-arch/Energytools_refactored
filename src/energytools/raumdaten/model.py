@@ -568,6 +568,109 @@ class WeeklyProfile:
 
 
 @dataclass(frozen=True)
+class RoomUseSchedule:
+    """Per-room-use time schedules from the ``Eingabedaten`` matrix (rows 9-53).
+
+    One entry per room use (nutzid).  The workbook stores the daily person
+    fraction (``Personenprofil (Nutzungstag)``, ``Eingabedaten!DP9:EM53``),
+    the daily device fraction (``Geräteprofil (Nutzungstag)``,
+    ``Eingabedaten!EN9:FK53``), the weekly fraction (``Wochenprofil``,
+    ``Eingabedaten!HS9:HY53``, day 1 = Saturday), and two monthly variants
+    (``Jahresprofil`` ``FM9:FX53`` and ``Monatsprofil (bisher)``
+    ``HC9:HN53``, 12 months each).  Empty matrix cells mean zero occupation
+    (the workbook leaves them blank).
+
+    ``rest_days_per_week`` is the literal ``Ruhetage pro Woche`` column
+    (``FY9:FY53``); ``working_days_per_year`` and ``annual_simultaneity`` are
+    derived from the workbook formulas (``Nutzungstage pro Jahr`` =
+    ``365 - 52 * rest_days`` and ``Jahresgleichzeitigkeit (berechnet)`` =
+    mean of the 12 ``Monatsprofil (bisher)`` values), so packages carry them
+    without depending on the workbook's cached formula results.
+
+    Raises:
+        ValueError: on wrong profile lengths or a negative fraction.
+    """
+
+    room_use_id: int
+    person_fraction: tuple[float, ...]  # 24 h, 0..1
+    device_fraction: tuple[float, ...]  # 24 h, 0..1
+    weekly_fraction: tuple[float, ...]  # 7 days, day 1 = Saturday
+    monthly_fraction: tuple[float, ...]  # 12 months (Jahresprofil)
+    monthly_previous_fraction: tuple[float, ...]  # 12 months (Monatsprofil bisher)
+    rest_days_per_week: float
+    working_days_per_year: float | None = None
+    annual_simultaneity: float | None = None
+    provenance: Provenance | None = None
+
+    def __post_init__(self) -> None:
+        for name, values, expected in (
+            ("person_fraction", self.person_fraction, 24),
+            ("device_fraction", self.device_fraction, 24),
+            ("weekly_fraction", self.weekly_fraction, 7),
+            ("monthly_fraction", self.monthly_fraction, 12),
+            ("monthly_previous_fraction", self.monthly_previous_fraction, 12),
+        ):
+            if len(values) != expected:
+                raise ValueError(
+                    f"room use {self.room_use_id}: {name} must have {expected} values, "
+                    f"got {len(values)}"
+                )
+        for name, values in (
+            ("person_fraction", self.person_fraction),
+            ("device_fraction", self.device_fraction),
+            ("weekly_fraction", self.weekly_fraction),
+            ("monthly_fraction", self.monthly_fraction),
+            ("monthly_previous_fraction", self.monthly_previous_fraction),
+        ):
+            if any(value < 0 for value in values):
+                raise ValueError(f"room use {self.room_use_id}: {name} must not be negative")
+        if not 0 <= self.rest_days_per_week <= 7:
+            raise ValueError(
+                f"room use {self.room_use_id}: rest_days_per_week {self.rest_days_per_week} "
+                f"outside 0..7"
+            )
+
+    def as_dict(self) -> dict:
+        """JSON-ready dict."""
+        return {
+            "room_use_id": self.room_use_id,
+            "person_fraction": list(self.person_fraction),
+            "device_fraction": list(self.device_fraction),
+            "weekly_fraction": list(self.weekly_fraction),
+            "monthly_fraction": list(self.monthly_fraction),
+            "monthly_previous_fraction": list(self.monthly_previous_fraction),
+            "rest_days_per_week": self.rest_days_per_week,
+            "working_days_per_year": self.working_days_per_year,
+            "annual_simultaneity": self.annual_simultaneity,
+            "provenance": _provenance_dict(self.provenance),
+        }
+
+
+def _schedule_from_dict(data: dict) -> RoomUseSchedule:
+    """Rebuild a :class:`RoomUseSchedule` from its package dict."""
+    return RoomUseSchedule(
+        room_use_id=int(data["room_use_id"]),
+        person_fraction=tuple(float(value) for value in data["person_fraction"]),
+        device_fraction=tuple(float(value) for value in data["device_fraction"]),
+        weekly_fraction=tuple(float(value) for value in data["weekly_fraction"]),
+        monthly_fraction=tuple(float(value) for value in data["monthly_fraction"]),
+        monthly_previous_fraction=tuple(
+            float(value) for value in data["monthly_previous_fraction"]
+        ),
+        rest_days_per_week=float(data["rest_days_per_week"]),
+        working_days_per_year=(
+            None
+            if data.get("working_days_per_year") is None
+            else float(data["working_days_per_year"])
+        ),
+        annual_simultaneity=(
+            None if data.get("annual_simultaneity") is None else float(data["annual_simultaneity"])
+        ),
+        provenance=_provenance_from_dict(data.get("provenance")),
+    )
+
+
+@dataclass(frozen=True)
 class ClimateStation:
     """One of the 40 climate stations (assessment 1.2).
 
@@ -575,8 +678,18 @@ class ClimateStation:
     (``Aug_Auslegung``), monthly values (``Monatswerte``), heating degree days
     and temperature-bin hours (``Klimadaten`` in the Gebaeude-Tool).
 
+    The Gebaeude-Tool's ``Klimadaten`` block additionally carries the
+    per-temperature-bin hours (``bin_hours``, the ``temperature_bins`` hours
+    summed over the 61 bins of −25…+35 °C), the absolute-humidity ratio per
+    bin (``bin_humidity_ratio``, g/kg, ``AbsFeuchte`` of the workbook) and the
+    station air pressure (``winter_design["pressure"]``, mbar) — the inputs of
+    the AHU temperature-bin engine (:mod:`energytools.engine.native.ahu`).
+    Packages without them leave the fields ``None``.
+
     Raises:
-        ValueError: on an empty ``name`` or an ``id`` outside 1-40.
+        ValueError: on an empty ``name``, an ``id`` outside 1-40, or a
+            ``bin_humidity_ratio`` whose length differs from
+            ``temperature_bins``.
     """
 
     id: int
@@ -585,6 +698,7 @@ class ClimateStation:
     summer_design: dict[str, Quantity]
     monthly: dict[str, MonthlyProfile]
     temperature_bins: tuple[TemperatureBin, ...] | None = None
+    bin_humidity_ratio: tuple[float, ...] | None = None
     hdd: Quantity | None = None
     provenance: Provenance | None = None
 
@@ -593,6 +707,17 @@ class ClimateStation:
             raise ValueError(f"station id must be an int in 1..40, got {self.id!r}")
         if not self.name.de:
             raise ValueError(f"station {self.id} name must not be empty")
+        if self.bin_humidity_ratio is not None:
+            if any(value < 0 for value in self.bin_humidity_ratio):
+                raise ValueError(f"station {self.id}: bin_humidity_ratio must not be negative")
+            if self.temperature_bins is not None and len(self.bin_humidity_ratio) != len(
+                self.temperature_bins
+            ):
+                raise ValueError(
+                    f"station {self.id}: bin_humidity_ratio length "
+                    f"{len(self.bin_humidity_ratio)} differs from temperature_bins "
+                    f"length {len(self.temperature_bins)}"
+                )
 
     def as_dict(self) -> dict:
         """JSON-ready station dict."""
@@ -606,6 +731,9 @@ class ClimateStation:
                 None
                 if self.temperature_bins is None
                 else [bin_.as_dict() for bin_ in self.temperature_bins]
+            ),
+            "bin_humidity_ratio": (
+                None if self.bin_humidity_ratio is None else list(self.bin_humidity_ratio)
             ),
             "hdd": _quantity_dict(self.hdd),
             "provenance": _provenance_dict(self.provenance),
@@ -867,8 +995,10 @@ class QhcTable:
     Args:
         rows: ``(nutzid, station_id, kind)`` -> annual cooling energy.
         provenance: Optional provenance.
-        room_use_ids / station_ids: Optional id sets (passed by :class:`Dataset`);
-            enable ``UnknownRoomUseError`` / ``UnknownClimateStationError``.
+        room_use_ids: Optional id set (passed by :class:`Dataset`);
+            enables ``UnknownRoomUseError``.
+        station_ids: Optional id set (passed by :class:`Dataset`);
+            enables ``UnknownClimateStationError``.
     """
 
     rows: Mapping[tuple[int, int, ValueKind], Quantity]
@@ -942,6 +1072,7 @@ class Dataset:
 
     release: DatasetRelease
     profiles: Mapping[int, RoomUseProfile]
+    schedules: Mapping[int, RoomUseSchedule]
     hourly_profiles: tuple[HourlyProfile, ...]
     monthly_profiles: tuple[MonthlyProfile, ...]
     weekly_profiles: tuple[WeeklyProfile, ...]
@@ -972,26 +1103,29 @@ class Dataset:
         room_uses: tuple[RoomUse, ...],
         parameters: tuple[Parameter, ...],
         profiles: Mapping[int, RoomUseProfile],
-        hourly_profiles: tuple[HourlyProfile, ...],
-        monthly_profiles: tuple[MonthlyProfile, ...],
-        weekly_profiles: tuple[WeeklyProfile, ...],
-        climate: ClimateData,
-        full_load_hours: FullLoadHoursTable,
-        qhc: QhcTable,
-        sia3801: tuple[Sia3801Result, ...],
-        mappings: tuple[BuildingCategoryMapping, ...],
-        area_tables: tuple[AreaTable, ...],
-        sia3801_coefficients: tuple[Sia3801Coefficients, ...],
+        schedules: Mapping[int, RoomUseSchedule] | None = None,
+        hourly_profiles: tuple[HourlyProfile, ...] = (),
+        monthly_profiles: tuple[MonthlyProfile, ...] = (),
+        weekly_profiles: tuple[WeeklyProfile, ...] = (),
+        climate: ClimateData | None = None,
+        full_load_hours: FullLoadHoursTable | None = None,
+        qhc: QhcTable | None = None,
+        sia3801: tuple[Sia3801Result, ...] = (),
+        mappings: tuple[BuildingCategoryMapping, ...] = (),
+        area_tables: tuple[AreaTable, ...] = (),
+        sia3801_coefficients: tuple[Sia3801Coefficients, ...] = (),
     ) -> None:
-        """See the class docstring; every argument is required (no defaults)."""
+        """See the class docstring; ``release``, ``room_uses``, ``parameters`` and
+        ``profiles`` are required, the remaining tables default to empty."""
         object.__setattr__(self, "release", release)
         object.__setattr__(self, "_room_uses", tuple(room_uses))
         object.__setattr__(self, "_parameters", tuple(parameters))
         object.__setattr__(self, "profiles", profiles)
+        object.__setattr__(self, "schedules", dict(schedules or {}))
         object.__setattr__(self, "hourly_profiles", tuple(hourly_profiles))
         object.__setattr__(self, "monthly_profiles", tuple(monthly_profiles))
         object.__setattr__(self, "weekly_profiles", tuple(weekly_profiles))
-        object.__setattr__(self, "_climate", climate)
+        object.__setattr__(self, "_climate", climate or ClimateData(version="", stations=()))
         object.__setattr__(self, "_full_load_hours", full_load_hours)
         object.__setattr__(self, "_qhc", qhc)
         object.__setattr__(self, "sia3801", tuple(sia3801))
@@ -1270,24 +1404,30 @@ class Dataset:
                     if bin_.lower > bin_.upper or bin_.hours < 0:
                         errors.append(f"station {station.id}: invalid temperature bin {bin_}")
 
-        for (nutzid, regulation, standard_version), hours in self._full_load_hours.rows.items():
-            if nutzid not in set(nutzids):
-                errors.append(f"full-load hours reference unknown room use {nutzid}")
-            if hours < 0:
-                errors.append(
-                    f"full-load hours for {nutzid}/{regulation}/{standard_version} are negative"
-                )
-        unknown_versions = self._full_load_hours.standard_versions - {
-            v for (_, _, v) in self._full_load_hours.rows
-        }
-        if unknown_versions:
-            warnings.append(f"standard versions without rows: {sorted(unknown_versions)}")
+        if self._full_load_hours:
+            for (nutzid, regulation, standard_version), hours in self._full_load_hours.rows.items():
+                if nutzid not in set(nutzids):
+                    errors.append(f"full-load hours reference unknown room use {nutzid}")
+                if hours < 0:
+                    errors.append(
+                        f"full-load hours for {nutzid}/{regulation}/{standard_version} are negative"
+                    )
+            unknown_versions = self._full_load_hours.standard_versions - {
+                v for (_, _, v) in self._full_load_hours.rows
+            }
+            if unknown_versions:
+                warnings.append(f"standard versions without rows: {sorted(unknown_versions)}")
 
-        for nutzid, station_id, kind in self._qhc.rows:
-            if nutzid not in set(nutzids):
-                errors.append(f"Qhc references unknown room use {nutzid}")
-            if station_id not in set(station_ids):
-                errors.append(f"Qhc references unknown climate station {station_id}")
+        if self._qhc:
+            for nutzid, station_id, kind in self._qhc.rows:
+                if nutzid not in set(nutzids):
+                    errors.append(f"Qhc references unknown room use {nutzid}")
+                if station_id not in set(station_ids):
+                    errors.append(f"Qhc references unknown climate station {station_id}")
+
+        for schedule_id in self.schedules:
+            if schedule_id not in set(nutzids):
+                errors.append(f"room-use schedule references unknown room use {schedule_id}")
 
         known_codes = set(codes)
         for mapping in self._mappings:
@@ -1351,6 +1491,9 @@ class Dataset:
                     },
                 }
                 for nutzid, profile in sorted(self.profiles.items())
+            ],
+            "room_use_schedules": [
+                self.schedules[nutzid].as_dict() for nutzid in sorted(self.schedules)
             ],
             "hourly_profiles": [profile.as_dict() for profile in self.hourly_profiles],
             "monthly_profiles": [profile.as_dict() for profile in self.monthly_profiles],
@@ -1448,6 +1591,10 @@ class Dataset:
             room_uses=room_uses,
             parameters=parameters,
             profiles=profiles,
+            schedules={
+                int(item["room_use_id"]): _schedule_from_dict(item)
+                for item in data.get("room_use_schedules", [])
+            },
             hourly_profiles=tuple(
                 HourlyProfile(
                     id=item["id"],
@@ -1682,6 +1829,11 @@ def _station_from_dict(data: dict, index: int) -> ClimateStation:
             None
             if data.get("hdd") is None
             else Quantity(data["hdd"].get("value"), data["hdd"].get("unit", "-"))
+        ),
+        bin_humidity_ratio=(
+            None
+            if data.get("bin_humidity_ratio") is None
+            else tuple(float(value) for value in data["bin_humidity_ratio"])
         ),
         provenance=_provenance_from_dict(data.get("provenance")),
     )

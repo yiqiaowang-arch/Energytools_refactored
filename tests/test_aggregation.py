@@ -1310,9 +1310,10 @@ def test_kpi_lookup_missing_raises() -> None:
 def test_dataset_lookup_parameter_mapping() -> None:
     """The dataset-backed lookup: Res columns ↔ V221 parameter ids (ch02).
 
-    The V221 profiles carry only a subset of the KPI values; the present
-    values are resolved (Geräte power 1.1.3.3), missing ones raise with the
-    documented correspondence.
+    The V221 profiles carry the full backfilled KPI matrix (the ``Res``
+    columns of all three value kinds, mapped to the parameter ids of ch02)
+    plus the ``Std`` intensities — hygienic/process fresh air directly and the
+    WW demand derived as ``1.1.8.4 / 1.1.2.9`` (``Std!I = Std!H / Std!C``).
     """
     if not DATASET_PKG.exists():
         pytest.skip("data/datasets/V221/package.json not present")
@@ -1322,15 +1323,24 @@ def test_dataset_lookup_parameter_mapping() -> None:
     assert lookup.res_value("Einzel-, Gruppenbüro", 28) == pytest.approx(11.0)
     assert lookup.res_value("Einzel-, Gruppenbüro", 35) == pytest.approx(6.0)
     assert lookup.res_value("Einzel-, Gruppenbüro", 42) == pytest.approx(18.0)
-    # hygienic fresh air 1.1.5.2 is present for Einzelbüro
+    # backfilled energy KPIs: Geräte energy 32.01/17.46/52.38 kWh/m² (Res 2/10/18)
+    assert lookup.res_value("Einzel-, Gruppenbüro", 2) == pytest.approx(32.01)
+    assert lookup.res_value("Einzel-, Gruppenbüro", 10) == pytest.approx(17.46)
+    assert lookup.res_value("Einzel-, Gruppenbüro", 18) == pytest.approx(52.38)
+    # Beleuchtung power (Res 30/37/44) and energy (Res 4/12/20)
+    assert lookup.res_value("Einzel-, Gruppenbüro", 30) == pytest.approx(9.722222222222223)
+    assert lookup.res_value("Einzel-, Gruppenbüro", 37) == pytest.approx(6.232193732193732)
+    assert lookup.res_value("Einzel-, Gruppenbüro", 4) == pytest.approx(13.445833333333333)
+    # room uses resolve by name, SIA code or nutzid string alike
+    assert lookup.res_value("3.01", 28) == pytest.approx(11.0)
+    assert lookup.res_value("5", 28) == pytest.approx(11.0)
+    # hygienic/process fresh air (Std!D/E)
     assert lookup.hygienic_fresh_air("Einzel-, Gruppenbüro") == pytest.approx(2.0714285714285716)
-    # the energy KPIs (e.g. Geräte energy 1.1.3.8) are not extracted yet
-    with pytest.raises(KpiLookupError):
-        lookup.res_value("Einzel-, Gruppenbüro", 2)
-    with pytest.raises(KpiLookupError):
-        lookup.process_fresh_air("Einzel-, Gruppenbüro")
-    with pytest.raises(KpiLookupError):
-        lookup.ww_demand("Einzel-, Gruppenbüro")
+    assert lookup.process_fresh_air("Einzel-, Gruppenbüro") == 0.0
+    # WW demand per m² = 1.1.8.4 / 1.1.2.9 = Std!H / Std!C (3 l/d ÷ 14 m²/P)
+    assert lookup.ww_demand("Einzel-, Gruppenbüro") == pytest.approx(0.21428571428571427)
+    # a use without a WW demand reads 0 (empty Std cell → VLOOKUP 0)
+    assert lookup.ww_demand("Parkhaus") == 0.0
     with pytest.raises(KpiLookupError):
         lookup.res_value("Unbekannte Nutzung", 2)
 

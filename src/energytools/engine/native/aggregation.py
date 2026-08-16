@@ -45,8 +45,8 @@ values through a :class:`KpiLookup` interface (the ``Res`` matrix is partly
 climate-dependent — the Klimakälte/Heizwärme columns reference
 ``Qhc_Klimastat`` — so the matrix is not a static dataset table; the
 dataset-backed :class:`DatasetResLookup` maps the Res columns to the V221
-parameter ids established in ch02 but raises for the values the current
-dataset package does not yet carry).
+parameter ids established in ch02 and reads the backfilled profile values,
+which carry the Zürich default of the station-dependent columns).
 """
 
 from __future__ import annotations
@@ -65,6 +65,7 @@ from energytools.engine.native.ahu import (
 __all__ = [
     "CARRIER_LABEL_TO_ROW",
     "DEFAULT_WEIGHTS",
+    "NUTZUNGSGRAD_CATALOG",
     "RESULTATE_CARRIERS",
     "RESULTATE_USES",
     "RES_SELECTORS",
@@ -79,6 +80,7 @@ __all__ = [
     "GeneratorSpec",
     "KpiLookup",
     "KpiLookupError",
+    "NutzungsgradCatalog",
     "ResMatrixKpiProvider",
     "RoomResult",
     "RoomTotals",
@@ -294,22 +296,37 @@ class DatasetResLookup(KpiLookup):
     :data:`_RES_COL_ENERGY_PARAM` / :data:`_RES_COL_POWER_PARAM` (the matrix
     blocks repeat the same parameters across the three value kinds).
 
-    The V221 extraction currently carries only a small subset of these
-    parameter values in ``profiles`` (e.g. the Geräte power ``1.1.3.3`` and
-    the hygienic fresh air ``1.1.5.2``); every other requested value raises
-    :class:`KpiLookupError`.  A future dataset milestone backfills the full
-    KPI matrix (including the climate-dependent Klimakälte/Heizwärme, which
-    also need the ``qhc`` block and the station selection).
+    The V221 package carries the full KPI matrix (backfilled from the
+    ``KZ_Raum_2024`` workbook matrix) and the ``Std`` intensities: the
+    hygienic fresh air ``1.1.5.2`` and the process fresh air ``1.1.5.3`` read
+    the Standard profile values, and the hot-water demand is derived as
+    ``1.1.8.4 / 1.1.2.9`` (``Std!I = Std!H / Std!C``).  Room uses resolve by
+    dataset name, SIA code or nutzid string.
     """
 
     def __init__(self, package: Mapping) -> None:
         room_uses = {u["nutzid"]: u["name"]["de"] for u in package["room_uses"]}
         self._name_by_nutzid = room_uses
         self._nutzid_by_name = {name: n for n, name in room_uses.items()}
+        self._nutzid_by_code = {u["code"]: u["nutzid"] for u in package["room_uses"]}
+        self._nutzid_by_str = {str(n): n for n in room_uses}
         self._profiles: dict[int, Mapping] = {
             p["nutzid"]: p["values"] for p in package["profiles"]
         }
         self._params: dict[str, Mapping] = {p["id"]: p for p in package["parameters"]}
+
+    def _resolve_nutzid(self, room_use: str | int) -> int:
+        """Room use → nutzid: dataset name, SIA code, or nutzid string."""
+        if isinstance(room_use, int):
+            return room_use
+        key = str(room_use).strip()
+        if key in self._nutzid_by_name:
+            return self._nutzid_by_name[key]
+        if key in self._nutzid_by_code:
+            return self._nutzid_by_code[key]
+        if key in self._nutzid_by_str:
+            return self._nutzid_by_str[key]
+        raise KpiLookupError(f"room use {room_use!r} not in dataset")
 
     def _param_id(self, res_col: int) -> str:
         if res_col in _RES_COL_ENERGY_PARAM:
@@ -319,10 +336,7 @@ class DatasetResLookup(KpiLookup):
         raise KpiLookupError(f"Res column {res_col} has no dataset parameter mapping")
 
     def _profile_value(self, room_use: str, param_id: str, value_kind: str) -> float:
-        try:
-            nutzid = self._nutzid_by_name[room_use]
-        except KeyError:
-            raise KpiLookupError(f"room use {room_use!r} not in dataset") from None
+        nutzid = self._resolve_nutzid(room_use)
         values = self._profiles.get(nutzid, {})
         entry = values.get(param_id)
         if entry is None or value_kind not in entry:
@@ -352,14 +366,17 @@ class DatasetResLookup(KpiLookup):
         return self._profile_value(room_use, "1.1.5.3", "standard")
 
     def ww_demand(self, room_use: str) -> float:
-        # Std!I = Std!H / Std!C (l/(d·P) ÷ m²/P).  The V221 dataset does not
-        # carry the Personenfläche (Std!C) — the ANGF parameter is the
-        # Anforderungsfläche and does not match — so the derived value cannot
-        # be reproduced from the dataset.
-        raise KpiLookupError(
-            f"room use {room_use!r}: the dataset has no Std!I equivalent "
-            "(Personenfläche Std!C is not extracted)"
-        )
+        # Std!I = Std!H / Std!C (l/(d·P) ÷ m²/P).  The dataset carries the WW
+        # demand per person (1.1.8.4 = Std!H) and the Personenfläche
+        # (1.1.2.9 = Std!C); a use without either has no hot-water demand
+        # (the workbook's VLOOKUP over an empty Std cell returns 0).
+        nutzid = self._resolve_nutzid(room_use)
+        values = self._profiles.get(nutzid, {})
+        ww_per_person = values.get("1.1.8.4", {}).get("standard")
+        persons_area = values.get("1.1.2.9", {}).get("standard")
+        if ww_per_person is None or persons_area is None or float(persons_area["value"]) == 0.0:
+            return 0.0
+        return float(ww_per_person["value"]) / float(persons_area["value"])
 
 
 # ---------------------------------------------------------------------------
@@ -394,6 +411,93 @@ class GenerationCatalog:
             KeyError: for unknown group/name combinations.
         """
         raise NotImplementedError
+
+
+#: The ``Nutzungsgrad`` catalogue (``Nutzungsgrad!C3:G8`` / ``C11:G27`` /
+#: ``C29:G42`` of the Gebaeude-Tool) — generator names (with the workbook's
+#: trailing spaces verbatim), catalogue codes, standard Nutzungsgrad/COP
+#: (``E``; an empty cell reads 0 — e.g. Solarenergie has no Nutzungsgrad) and
+#: the Energieträger label (``F``).  Extracted from
+#: ``.analysis/dumps/gebaeude/sheet_15_Nutzungsgrad.tsv``; the helper-energy
+#: share (``G``, Hilfsenergie %) is not part of the aggregation port.
+NUTZUNGSGRAD_CATALOG: dict[str, tuple[tuple[str, str, float, str], ...]] = {
+    "cooling": (
+        ("KE01", "Kompaktkältemaschine 7°C", 3.0, "Elektrizität"),
+        ("KE02", "Kompaktkältemaschine 14°C", 4.0, "Elektrizität"),
+        ("KE03", "Kältemaschine 7°C", 4.0, "Elektrizität"),
+        ("KE04", "Kältemaschine 14°C", 7.5, "Elektrizität"),
+        ("KE05", "Direktkühlung Erdreich", 15.0, "Elektrizität"),
+        ("KE06", "Direktkühlung Grundwasser", 15.0, "Elektrizität"),
+    ),
+    "heating": (
+        ("WE01", "Ölfeuerung kondensierend ", 0.8, "Heizöl EL"),
+        ("WE02", "Gasfeuerung kondensierend ", 0.8, "Erdgas"),
+        ("WE03", "Stückholzfeuerung", 0.6, "Holz"),
+        ("WE04", "Hackschnitzelfeuerung ", 0.7, "Holzschnitzel"),
+        ("WE05", "Pelletfeuerung ", 0.7, "Pellets"),
+        ("WE06", "Fernwärme (CH-Durchschnitt) ", 0.98, "Fernwärme"),
+        ("WE07", "Elektrospeicher-Zentralheizung ", 0.93, "Elektrizität"),
+        ("WE08", "Elektro direkt ", 1.0, "Elektrizität"),
+        ("WE09", "WKK, thermischer Nutzungsgrad ", 0.5, "Erdgas"),
+        ("WE10", "Solarenergie thermisch", 0.0, "Sonne"),
+        ("WE11", "Wärmepumpe Aussenluft 35°C", 3.0, "Elektrizität"),
+        ("WE12", "Wärmepumpe Aussenluft 50°C", 2.2, "Elektrizität"),
+        ("WE13", "Wärmepumpe Erdsonden 35°C", 4.3, "Elektrizität"),
+        ("WE14", "Wärmepumpe Erdsonden 50°C", 3.1, "Elektrizität"),
+        ("WE15", "Wärmepumpe Grundwasser 35°C", 4.3, "Elektrizität"),
+        ("WE16", "Wärmepumpe Grundwasser 50°C", 3.1, "Elektrizität"),
+    ),
+    "ww": (
+        ("W01", "Ölfeuerung kondensierend ", 0.75, "Heizöl EL"),
+        ("W02", "Gasfeuerung kondensierend ", 0.75, "Erdgas"),
+        ("W03", "Stückholzfeuerung", 0.55, "Holz"),
+        ("W04", "Hackschnitzelfeuerung ", 0.6, "Holzschnitzel"),
+        ("W05", "Pelletfeuerung ", 0.65, "Pellets"),
+        ("W06", "Fernwärme (CH-Durchschnitt) ", 1.0, "Fernwärme"),
+        ("W07", "Elekro-Wassererwärmer ", 1.0, "Elektrizität"),
+        ("W08", "Gas-Wassererwärmer ", 0.65, "Erdgas"),
+        ("W09", "Solarenergie thermisch", 0.0, "Sonne"),
+        ("W10", "WKK, thermischer Nutzungsgrad ", 0.5, "Erdgas"),
+        ("W11", "Wärmepumpe Aussenluft", 2.2, "Elektrizität"),
+        ("W12", "Wärmepumpe Erdsonden", 2.4, "Elektrizität"),
+        ("W13", "Wärmepumpe Grundwasser", 1.9, "Elektrizität"),
+    ),
+}
+
+
+class NutzungsgradCatalog(GenerationCatalog):
+    """Dataset-independent :class:`GenerationCatalog` over
+    :data:`NUTZUNGSGRAD_CATALOG`.
+
+    The ``Nutzungsgrad`` table is a Gebaeude model constant (not Raumdaten
+    data), so the catalogue is built in — the same constants the workbook's
+    ``Erzeugung`` VLOOKUPs read from ``Nutzungsgrad!C3:G42``.  ``lookup``
+    matches the exact workbook name first and falls back to the catalogue
+    code, so callers may pass either (the ``Erzeugung`` sheet keys by name,
+    the input model ``catalog_code`` by code).
+    """
+
+    def __init__(self) -> None:
+        self._by_name: dict[tuple[str, str], GeneratorSpec] = {}
+        self._by_code: dict[tuple[str, str], GeneratorSpec] = {}
+        for kind, rows in NUTZUNGSGRAD_CATALOG.items():
+            for code, name, eta, carrier in rows:
+                spec = GeneratorSpec(name=name, code=code, eta_standard=eta, energy_carrier=carrier)
+                self._by_name[(kind, name)] = spec
+                self._by_code[(kind, code)] = spec
+
+    def lookup(self, kind: str, name: str) -> GeneratorSpec:
+        try:
+            return self._by_name[(kind, name)]
+        except KeyError:
+            pass
+        try:
+            return self._by_code[(kind, name)]
+        except KeyError:
+            raise KeyError(
+                f"unknown generator {name!r} in group {kind!r} "
+                f"(Nutzungsgrad codes: {sorted(code for code, _ in self._by_code if code[0] == kind)})"
+            ) from None
 
 
 @dataclass(frozen=True)

@@ -329,6 +329,157 @@
       },
       "minItems": 1
     },
+    "room_use_schedules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "room_use_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "person_fraction": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "minItems": 24,
+            "maxItems": 24
+          },
+          "device_fraction": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "minItems": 24,
+            "maxItems": 24
+          },
+          "weekly_fraction": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "minItems": 7,
+            "maxItems": 7
+          },
+          "monthly_fraction": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "minItems": 12,
+            "maxItems": 12
+          },
+          "monthly_previous_fraction": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "minItems": 12,
+            "maxItems": 12
+          },
+          "rest_days_per_week": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 7
+          },
+          "working_days_per_year": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "annual_simultaneity": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 1
+          },
+          "provenance": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "workbook": {
+                      "type": "string"
+                    },
+                    "sheet": {
+                      "type": "string"
+                    },
+                    "range": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "formula": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "cached_value": {
+                      "type": [
+                        "number",
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "extraction_hash": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "workbook",
+                    "sheet"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "note": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "room_use_id",
+          "person_fraction",
+          "device_fraction",
+          "weekly_fraction",
+          "monthly_fraction",
+          "monthly_previous_fraction",
+          "rest_days_per_week"
+        ],
+        "additionalProperties": false
+      }
+    },
     "hourly_profiles": {
       "type": "array",
       "items": {
@@ -809,6 +960,17 @@
                   ],
                   "additionalProperties": false
                 }
+              },
+              "bin_humidity_ratio": {
+                "type": [
+                  "array",
+                  "null"
+                ],
+                "items": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "minItems": 1
               },
               "hdd": {
                 "type": "object",

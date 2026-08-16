@@ -177,6 +177,57 @@ _weekly_profile = {
     "additionalProperties": False,
 }
 
+_room_use_schedule = {
+    "type": "object",
+    "properties": {
+        "room_use_id": {"type": "integer", "minimum": 1},
+        "person_fraction": {
+            "type": "array",
+            "items": {"type": "number", "minimum": 0, "maximum": 1},
+            "minItems": 24,
+            "maxItems": 24,
+        },
+        "device_fraction": {
+            "type": "array",
+            "items": {"type": "number", "minimum": 0, "maximum": 1},
+            "minItems": 24,
+            "maxItems": 24,
+        },
+        "weekly_fraction": {
+            "type": "array",
+            "items": {"type": "number", "minimum": 0, "maximum": 1},
+            "minItems": 7,
+            "maxItems": 7,
+        },
+        "monthly_fraction": {
+            "type": "array",
+            "items": {"type": "number", "minimum": 0, "maximum": 1},
+            "minItems": 12,
+            "maxItems": 12,
+        },
+        "monthly_previous_fraction": {
+            "type": "array",
+            "items": {"type": "number", "minimum": 0, "maximum": 1},
+            "minItems": 12,
+            "maxItems": 12,
+        },
+        "rest_days_per_week": {"type": "number", "minimum": 0, "maximum": 7},
+        "working_days_per_year": {"type": ["number", "null"], "minimum": 0},
+        "annual_simultaneity": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "provenance": _provenance,
+    },
+    "required": [
+        "room_use_id",
+        "person_fraction",
+        "device_fraction",
+        "weekly_fraction",
+        "monthly_fraction",
+        "monthly_previous_fraction",
+        "rest_days_per_week",
+    ],
+    "additionalProperties": False,
+}
+
 _temperature_bin = {
     "type": "object",
     "properties": {
@@ -199,6 +250,11 @@ _climate_station = {
         "temperature_bins": {
             "type": ["array", "null"],
             "items": _temperature_bin,
+        },
+        "bin_humidity_ratio": {
+            "type": ["array", "null"],
+            "items": {"type": "number", "minimum": 0},
+            "minItems": 1,
         },
         "hdd": _quantity,
         "provenance": _provenance,
@@ -312,6 +368,7 @@ PACKAGE_SCHEMA: dict = {
         "room_uses": {"type": "array", "items": _room_use, "minItems": 1},
         "parameters": {"type": "array", "items": _parameter, "minItems": 1},
         "profiles": {"type": "array", "items": _profile, "minItems": 1},
+        "room_use_schedules": {"type": "array", "items": _room_use_schedule},
         "hourly_profiles": {"type": "array", "items": _hourly_profile},
         "monthly_profiles": {"type": "array", "items": _monthly_profile},
         "weekly_profiles": {"type": "array", "items": _weekly_profile},

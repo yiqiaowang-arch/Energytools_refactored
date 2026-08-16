@@ -16,6 +16,7 @@ Example:
 
 from energytools.engine.native.aggregation import (
     DEFAULT_WEIGHTS,
+    NUTZUNGSGRAD_CATALOG,
     RES_SELECTORS,
     RESULTATE_CARRIERS,
     AggregationInput,
@@ -29,6 +30,7 @@ from energytools.engine.native.aggregation import (
     GeneratorSpec,
     KpiLookup,
     KpiLookupError,
+    NutzungsgradCatalog,
     ResMatrixKpiProvider,
     RoomResult,
     RoomTotals,
@@ -49,6 +51,7 @@ from energytools.engine.native.ahu import (
     compute_bin_hours,
     compute_fan_model,
 )
+from energytools.engine.native.backend import NativeBackend
 from energytools.engine.native.psychrometrics import (
     absolute_humidity,
     dew_point,
@@ -63,6 +66,7 @@ from energytools.engine.native.psychrometrics import (
 
 __all__ = [
     "DEFAULT_WEIGHTS",
+    "NUTZUNGSGRAD_CATALOG",
     "RESULTATE_CARRIERS",
     "RES_SELECTORS",
     "AggregationInput",
@@ -80,6 +84,8 @@ __all__ = [
     "GeneratorSpec",
     "KpiLookup",
     "KpiLookupError",
+    "NativeBackend",
+    "NutzungsgradCatalog",
     "ResMatrixKpiProvider",
     "RoomResult",
     "RoomTotals",
