@@ -1504,6 +1504,9 @@ class Dataset:
             "_qhc",
             QhcTable(
                 rows=self._qhc.rows,
+                cooling_power=self._qhc.cooling_power,
+                heating_load=self._qhc.heating_load,
+                heating_energy=self._qhc.heating_energy,
                 provenance=self._qhc.provenance,
                 room_use_ids=frozenset(room_use_by_nutzid),
                 station_ids=frozenset(stations),
