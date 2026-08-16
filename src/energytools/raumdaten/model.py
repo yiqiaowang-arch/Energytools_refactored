@@ -26,6 +26,13 @@ from energytools.common.units import Quantity, Unit
 from energytools.common.validation import ValidationReport
 from energytools.common.valuekind import ValueKind
 from energytools.common.versioning import DatasetRelease
+from energytools.raumdaten._generated import ParameterProperties
+from energytools.raumdaten.accessors import (
+    ParameterAccessor,
+    ParameterCatalog,
+    RoomUseCatalog,
+    parameter_slug,
+)
 
 __all__ = [
     "AreaTable",
@@ -293,11 +300,16 @@ class ParameterValue:
 
 
 @dataclass
-class RoomUseProfile:
+class RoomUseProfile(ParameterProperties):
     """The full parameter-value set of one room use, for all value kinds.
 
     The digital equivalent of the rendered ``Datenblatt`` sheet for ``nutzid``.
     Immutable after construction by convention; built by :class:`Dataset`.
+
+    Supports attribute access to parameter values::
+
+        profile.personnel_area.standard.value   # 14 m2 for 3.01
+        profile.Uw.zielwert.value               # window U-value, Zielwert
 
     Args:
         room_use: The room use this profile belongs to.
@@ -321,6 +333,22 @@ class RoomUseProfile:
                     f"profile of room use {self.room_use.nutzid} references unknown parameter "
                     f"'{parameter_id}'"
                 )
+
+    def _parameter_by_slug(self, slug: str) -> ParameterAccessor:
+        """Resolve a generated parameter property to its value accessor."""
+        parameter = self.parameter_catalog.get(slug)
+        if parameter is None:
+            # slug may be an alias or a symbol-derived slug; build the map lazily.
+            by_slug = {
+                parameter_slug(p.id, p.symbol, p.label.de if p.label else ""): p
+                for p in self.parameter_catalog.values()
+            }
+            parameter = by_slug.get(slug)
+        if parameter is None:
+            raise AttributeError(f"no parameter named {slug!r} in this profile")
+        values = self.values.get(parameter.id, {})
+        label = parameter.label.de if parameter.label else parameter.id
+        return ParameterAccessor(parameter.id, values, label)
 
     def value(self, parameter_id: str, kind: ValueKind = ValueKind.STANDARD) -> ParameterValue:
         """Look up one value.
@@ -935,6 +963,8 @@ class Dataset:
     _room_use_by_nutzid: dict[int, RoomUse] = field(init=False, repr=False, compare=False)
     _room_use_by_code: dict[str, RoomUse] = field(init=False, repr=False, compare=False)
     _stations: set[int] = field(init=False, repr=False, compare=False)
+    _room_use_catalog: "RoomUseCatalog" = field(init=False, repr=False, compare=False)
+    _parameter_catalog: "ParameterCatalog" = field(init=False, repr=False, compare=False)
 
     def __init__(
         self,
@@ -982,6 +1012,18 @@ class Dataset:
         object.__setattr__(self, "_room_use_by_nutzid", room_use_by_nutzid)
         object.__setattr__(self, "_room_use_by_code", room_use_by_code)
         object.__setattr__(self, "_stations", stations)
+        # Attribute-access catalogs (generated @property mixins; also callable
+        # for backwards compatibility with ds.room_uses() / ds.parameters()).
+        object.__setattr__(
+            self,
+            "_room_use_catalog",
+            RoomUseCatalog(list(self._room_uses)),
+        )
+        object.__setattr__(
+            self,
+            "_parameter_catalog",
+            ParameterCatalog(list(self._parameters)),
+        )
         # Re-bind lookup tables so the Unknown* errors carry this release id and
         # validate against the release.
         object.__setattr__(
@@ -1064,9 +1106,13 @@ class Dataset:
             raise UnknownRoomUseError(room_use_id, self.release.id)
         return room_use
 
-    def room_uses(self) -> tuple[RoomUse, ...]:
-        """All room uses in sheet order (nutzid 1-45)."""
-        return self._room_uses
+    @property
+    def room_uses(self) -> "RoomUseCatalog":
+        """All 45 room uses with attribute access: ``ds.room_uses.group_office``.
+
+        Also callable for compatibility: ``ds.room_uses()`` returns the tuple.
+        """
+        return self._room_use_catalog
 
     def parameter(self, parameter_id: str) -> Parameter:
         """Look up one catalog parameter.
@@ -1079,9 +1125,13 @@ class Dataset:
             raise UnknownParameterError(parameter_id, self.release.id)
         return parameter
 
-    def parameters(self) -> tuple[Parameter, ...]:
-        """All catalog parameters in sheet order (``Datenblatt`` rows)."""
-        return self._parameters
+    @property
+    def parameters(self) -> "ParameterCatalog":
+        """The parameter catalog with attribute access: ``ds.parameters.personnel_area``.
+
+        Also callable for compatibility: ``ds.parameters()`` returns the tuple.
+        """
+        return self._parameter_catalog
 
     def profile(self, room_use_id: int, kind: ValueKind | None = None) -> RoomUseProfile:
         """The full profile of one room use (all value kinds).
