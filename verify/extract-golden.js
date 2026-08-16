@@ -51,16 +51,24 @@ function dumpRange(ws, r1, c1, r2, c2, prefix) {
     const erz = wb.getWorksheet('Erzeugung');
     const res = wb.getWorksheet('Resultate');
     const blu = wb.getWorksheet('Berechnung LU');
+    const klima = wb.getWorksheet('Klimadaten');
 
     const golden = {
       case: f.replace('.xlsm', ''),
       source: 'Excel workbook recalculated by user in Excel (authoritative reference)',
       inputs: {
-        Gebaeude: dumpRange(geb, 2, 2, 2, 4, '') // D2..J2 header area
-          .concat ? null : dumpRange(geb, 5, 2, 5, 2, ''),
+        Gebaeude: {
+          ...dumpRange(geb, 2, 2, 2, 4, ''),
+          ...dumpRange(geb, 5, 2, 5, 2, ''),
+          ...dumpRange(geb, 8, 5, 9, 23, ''),
+        },
         rooms: dumpRange(geb, 12, 2, 32, 23, ''), // B12:W32 full block
         Lueftung: dumpRange(luef, 7, 2, 22, 26, ''), // B7:Z22
         Erzeugung: dumpRange(erz, 7, 1, 27, 18, ''), // A7:R27
+        Klimadaten: dumpRange(klima, 4, 2, 65, 6, ''), // B4:F65 (station names, heights, pressure, HDD, design temps)
+        Klimadaten_hours: dumpRange(klima, 5, 15, 65, 98, ''), // O5:CT65 (per-station humidity + bin hours)
+        BerechnungLU_input: dumpRange(blu, 6, 1, 55, 22, ''), // A6:V55 (IST/SOLL input block)
+        BerechnungLU_constants: dumpRange(blu, 86, 1, 115, 22, ''), // A86:V115 (stage/fan/efficiency constants)
       },
       outputs: {
         Gebaeude_totals: dumpRange(geb, 33, 5, 36, 23, ''), // E33:W36
@@ -70,13 +78,6 @@ function dumpRange(ws, r1, c1, r2, c2, prefix) {
         BerechnungLU: dumpRange(blu, 251, 1, 263, 22, ''), // A251:V263 (result block)
       },
     };
-    // fix inputs.Gebaeude merge
-    golden.inputs.Gebaeude = {
-      ...dumpRange(geb, 2, 2, 2, 4, ''),
-      ...dumpRange(geb, 5, 2, 5, 2, ''),
-      ...dumpRange(geb, 8, 5, 9, 23, ''),
-    };
-
     const json = JSON.stringify(golden, null, 1);
     const outFile = path.join(outDir, `${golden.case}.json`);
     fs.writeFileSync(outFile, json, 'utf8');
