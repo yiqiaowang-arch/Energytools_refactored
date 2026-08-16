@@ -24,6 +24,7 @@ from datetime import date
 from enum import Enum
 from typing import Any
 
+from energytools.common.versioning import ModelRelease, VersionInfo
 from energytools.engine.errors import UnknownValueKindError
 
 _SIA_CODE_RE = re.compile(r"^\d{1,2}(\.\d{1,2})?$")
@@ -420,51 +421,6 @@ class GenerationSystem:
     def from_dict(cls, data: dict[str, Any]) -> GenerationSystem:
         """Reconstruct from :meth:`as_dict` output."""
         return cls(**data)
-
-
-@dataclass(frozen=True)
-class ModelRelease:
-    """Immutable metadata of the declarative Gebäude model (doc part 02 §2.2).
-
-    Version, the dataset releases it is compatible with, the climate data
-    versions it accepts, and the publication date.
-    """
-
-    id: str
-    compatible_dataset_releases: frozenset[str]
-    compatible_climate_versions: frozenset[str]
-    publication_date: date
-
-    def __post_init__(self) -> None:
-        if not _SEMVER_RE.fullmatch(self.id):
-            raise ValueError(f"malformed semantic version {self.id!r}")
-        if not self.compatible_dataset_releases:
-            raise ValueError("compatible_dataset_releases must not be empty")
-        if not self.compatible_climate_versions:
-            raise ValueError("compatible_climate_versions must not be empty")
-
-
-@dataclass(frozen=True)
-class VersionInfo:
-    """The version quadruple every result carries (doc part 02 §2.3).
-
-    Dataset release, model release, implementation (library) version and
-    climate data version — makes results reproducible and comparable.
-    """
-
-    dataset: str
-    model: str
-    implementation: str
-    climate: str
-
-    def as_dict(self) -> dict[str, str]:
-        """JSON-ready representation."""
-        return {
-            "dataset": self.dataset,
-            "model": self.model,
-            "implementation": self.implementation,
-            "climate": self.climate,
-        }
 
 
 @dataclass(frozen=True)

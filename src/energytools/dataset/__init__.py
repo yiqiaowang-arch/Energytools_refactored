@@ -1,24 +1,21 @@
-"""energytools.dataset — the Raumdaten data service.
+"""energytools.dataset — the Raumdaten data service (deprecated alias).
 
-The canonical, versioned, machine-readable Raumdaten dataset
-(docs/architecture+api-reference/03-raumdaten-service.md, there named
-``energytools.raumdaten``) as a data service package: immutable data models
-(:mod:`energytools.dataset.model`), loading from JSON packages with single-file
-and directory discovery (:mod:`energytools.dataset.loader`), profile comparison
-(:mod:`energytools.dataset.compare`), validation and JSON/CSV export.
+.. deprecated:: 0.2.0
+   Use :mod:`energytools.raumdaten` instead. This package was the first-wave
+   implementation of the Raumdaten data service (docs/architecture+
+   api-reference/03-raumdaten-service.md). The canonical package is now
+   ``energytools.raumdaten`` with the full model (incl. hourly/monthly/weekly
+   profiles, full-load-hours/Qhc/SIA 380-1 tables), the extraction pipeline
+   (``DatasetExtractor``), the release-scoped ``RaumdatenService`` and the
+   JSON-Schema-validated loader. This alias keeps the first-wave public
+   surface importable for backward compatibility; new code must import from
+   ``energytools.raumdaten``.
 
-The three value kinds keep their German workbook names (Standard, Zielwert,
-Bestand); labels are trilingual (DE/FR/IT) via
-:class:`~energytools.common.language.TrilingualText`.
-
-Example:
-    from energytools.dataset import load_dataset
-
-    ds = load_dataset("tests/fixtures/dataset_sample/V221.json")
-    ds.list_room_uses()                      # RoomUse objects in sheet order
-    profile = ds.get_room_use_profile("1.01")
-    diff = ds.compare_room_use_profiles(1, 3)
+Example (new code):
+    from energytools.raumdaten import load_dataset, RaumdatenService
 """
+
+import warnings as _warnings
 
 from energytools.dataset.compare import ParameterDiff, ProfileDiff, compare_profiles
 from energytools.dataset.errors import (
@@ -85,3 +82,10 @@ __all__ = [
     "load_datasets",
     "parse_dataset",
 ]
+
+_warnings.warn(
+    "energytools.dataset is deprecated; use energytools.raumdaten instead "
+    "(the canonical Raumdaten data-service package).",
+    DeprecationWarning,
+    stacklevel=2,
+)
