@@ -213,7 +213,7 @@ $$
 p_s(T) = 2.8858\,(T/100 + 1.098)^{8.02} \quad[\mathrm{mbar}]
 $$
 
-Its inverse is the formula above. Check: $T=0$: $p_s=2.8858\cdot1.098^{8.02}\approx6.02$ mbar (true value 6.11, deviation 1.5 %); $T=20$: ≈24.9 mbar (true value 23.4, deviation 6 %). Within the HVAC dew-point range (−20…+30 °C) this fit is an engineering approximation, less accurate than the Glück polynomial, and it is inconsistent with the other functions in the module (two $p_s$ models coexist).
+Its inverse is the formula above. Check: $T=0$: $p_s=2.8858\cdot1.098^{8.02}\approx6.11$ mbar (Glück value 6.11, deviation <0.1 %); $T=20$: ≈23.4 mbar (Glück value 23.4, deviation <0.1 %). At the anchor points the fit coincides almost exactly with the Glück polynomial (engineering-wise the same model re-parameterised); over the intermediate temperature range the two $p_s$ models still coexist and are not self-consistent, so ported code should use the Glück polynomial and drop this power-law fit.
 
 **Assumptions**: ideal gas; $p_s$ uses the power-law fit above; humidity ratio in g/kg.
 
@@ -280,7 +280,7 @@ EnthalpieR = cpl * T + x * (r0 + cpw * T)
 **Consistency-check findings** (verified item by item against the dumped cached values):
 - `Klimadaten!Q20 = AbsFeuchte(−10, 0.8817, 948.2) = 1.5015 g/kg`: with the Glück polynomial $p_s(-10°C)\approx2.60$ mbar, $622×0.8817×2.60/(948.2−0.8817×2.60) = 1.505$ ✓ (cached 1.5015, difference 0.2 %, from the accuracy of the $p_s$ polynomial).
 - `Berechnung LU!N121 = EnthalpieA(L121,M121,p)·E35 + (1−E35)·EnthalpieA(BU121,BW121,p) = 12.2406 kJ/kg`: a weighted average of the MIL enthalpy (WRG efficiency E35); see Chapter 4.
-- `AN121 = TemperaturH(AP121, AO121) = 21.27 °C`: inverted from enthalpy 12.24 kJ/kg and humidity ratio ~8.19 g/kg ✓ ($T=(12.24-8.19×2.5016)/(1.006+1.86×0.00819)\approx21.3$).
+- `AN121 = TemperaturH(AP121, AO121) = 21.27 °C`: where `AP121 = BM121 = EnthalpieA(BJ121, BL121) = 21.3979 kJ/kg` (room-state enthalpy) and `AO121 = 0 g/kg` (dry case). Check: $T=(21.3979-0\times2.5016)/(1.006+1.86\times0)=21.27$ ✓. **Pitfall**: do not feed the pre-coil MIL enthalpy `N121 = 12.24 kJ/kg` into `TemperaturH` — `AN` is the post-heating-coil supply temperature whose enthalpy base is the room state (`BM` column), a different state point from the MIL enthalpy (`N` column).
 
 ## 1.11 Porting and Testing Recommendations
 
