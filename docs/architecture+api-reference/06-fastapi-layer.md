@@ -1,328 +1,152 @@
-# Part 06 — API Reference: FastAPI Layer (`energytools.api`)
+# API Reference — FastAPI Service Layer
 
-**Document set 02** · Target-state design specification · Back to [index](README.md) ·
-Inventory: [01-package-inventory.md](01-package-inventory.md) · Foundation:
-[02-common-foundation.md](02-common-foundation.md) · Data:
-[03-raumdaten-service.md](03-raumdaten-service.md) · Engine:
-[04-gebaeude-engine.md](04-gebaeude-engine.md)
+**Module:** `energytools.api` (planned) · **Doc set 02 (API Reference)** · Back to
+[index](README.md) · Data: [03-raumdaten-service.md](03-raumdaten-service.md) · Engine:
+[04-gebaeude-engine.md](04-gebaeude-engine.md) · MCP: [07-mcp-layer.md](07-mcp-layer.md)
 
-The stable domain API (assessment §6, OpenAPI 3 + JSON Schema) as a FastAPI application. The
-layer is **thin**: endpoints delegate to `RaumdatenService` / `CalculationEngine` / export
-facades; all domain exceptions map to HTTP errors via one exception handler. Domain concepts
-only — **no cell addresses** (assessment §5.3 rule 1).
+The HTTP API exposes the same `RaumdatenService` / `Engine` operations as REST endpoints
+(OpenAPI 3 + JSON Schema). The layer is **thin**: endpoints delegate to the service/engine
+facades, all domain exceptions map to HTTP errors via one exception handler, and **no cell
+addresses** cross the boundary (assessment §5.3 rule 1).
+
+> ⚙ **Status: planned.** `energytools.api` is **not yet implemented** in this milestone — there
+> is nothing to import or run yet. The endpoint contract below is the design the FastAPI
+> layer will implement; the underlying operations are already available in Python
+> (parts [03](03-raumdaten-service.md) / [04](04-gebaeude-engine.md)).
 
 ---
 
-## 1. Settings
+## In this page
 
-`class Settings(pydantic.BaseSettings)`
+- [How to run the service (planned)](#how-to-run-the-service-planned)
+- [Endpoint reference](#endpoint-reference)
+- [What to import for a new project](#what-to-import-for-a-new-project)
 
-- **Purpose:** Runtime settings of the API process: where datasets/models live, which backend
-  is used, request limits, CORS and docs flags. Loaded from environment (`ENERGYTOOLS_*`) and
-  `.env`.
-- **Inputs (constructor):** environment/config only; fields:
-  `dataset_dir: str = "data/datasets"`, `model_dir: str = "data/models"`,
-  `backend: str = "native"` (`"native" | "excel"`), `excel_workbook: str | None = None`
-  (copy of the Gebaeude workbook for the Excel backend), `result_store_dir: str | None =
-  None`, `max_rooms: int = 100`, `max_ventilation_systems: int = 16`,
-  `cors_origins: list[str] = []`, `docs_enabled: bool = True`, `api_prefix: str = ""`.
-- **Attributes:** all fields (pydantic).
-- **Outputs:** —.
-- **Raises:** `ValidationError` (pydantic) on invalid environment values.
-- **Example:**
-  ```python
-  from energytools.api.settings import Settings
-  settings = Settings(dataset_dir="data/datasets", backend="native")
-  ```
+---
 
-## 2. `create_app`
+<a id="1-settings"></a>
+<a id="2-create_app"></a>
+## How to run the service (planned)
 
-`def create_app(service: RaumdatenService | None = None, engine: CalculationEngine | None =
-None, store: CalculationStore | None = None, settings: Settings | None = None) -> FastAPI`
+Once implemented, the service runs as a standard FastAPI app (the `api` extra provides
+fastapi/uvicorn):
 
-- **Purpose:** Application factory: builds the FastAPI app with the three routers, wires
-  dependency injection (defaults created from `settings`), registers the global exception
-  handler (domain exceptions → HTTP error responses with `details`) and the OpenAPI schema
-  (`/openapi.json`, `/docs`).
-- **Inputs:** `service` (data service; default: created from `settings.dataset_dir`),
-  `engine` (calculation engine; default: created with `settings.backend`),
-  `store` (result store; default: `CalculationStore(settings.result_store_dir)`),
-  `settings`.
-- **Outputs:** configured `FastAPI` instance (not started).
-- **Raises:** —.
-- **Example:**
-  ```python
-  from energytools.api.app import create_app
-  app = create_app()                      # defaults from environment
-  # uvicorn energytools.api.app:create_app --factory
-  ```
+```bash
+pip install "energytools[api]"
+```
 
-## 3. Datasets router
+```python
+# energytools.api.app:create_app --factory   (planned)
+from energytools.api.app import create_app
 
-`datasets_router: APIRouter` (prefix `/datasets`, tags `["datasets"]`) — endpoints delegate to
-`RaumdatenService`. All error responses follow `{"detail": …, "details": {…}}`; `release_id`
-path params accept aliases (`latest`).
+app = create_app()                    # builds service/engine/store from settings
+```
 
-### 3.1 `GET /datasets`
+```console
+# planned
+$ uvicorn energytools.api.app:create_app --factory --port 8000
+$ curl http://127.0.0.1:8000/openapi.json   # OpenAPI schema
+$ curl http://127.0.0.1:8000/docs           # Swagger UI
+```
 
-- **Purpose:** List dataset releases (id, edition, date, checksum, supersedes).
-- **Inputs:** —.
-- **Outputs:** `200` → `list[DatasetReleaseOut]` (newest first).
-- **Raises:** HTTP —.
-- **Example:**
-  ```console
-  $ curl http://127.0.0.1:8000/datasets
-  [{"id": "V221", "edition": "SIA 2024", "publication_date": "2024-11-17", …}]
-  ```
+Runtime settings (environment `ENERGYTOOLS_*` / `.env`): `dataset_dir` (`"data/datasets"`),
+`model_dir`, `backend` (`"native"`/`"excel"`), `excel_workbook`, `result_store_dir`,
+`max_rooms`, `max_ventilation_systems`, `cors_origins`, `docs_enabled`, `api_prefix`.
 
-### 3.2 `GET /datasets/{release_id}`
+---
 
-- **Purpose:** Full release metadata incl. changelog.
-- **Inputs:** `release_id: str` (path).
-- **Outputs:** `200` → `DatasetReleaseOut` (with `changelog`).
-- **Raises:** HTTP `404` `DatasetNotFoundError`.
-- **Example:** `curl http://127.0.0.1:8000/datasets/latest`
+## Endpoint reference
 
-### 3.3 `GET /datasets/{release_id}/room-uses`
+All endpoints delegate to the Python API documented in parts [03](03-raumdaten-service.md) /
+[04](04-gebaeude-engine.md); error responses follow `{"detail": …, "details": {…}}` and
+`release_id` path params accept the `latest` alias.
 
-- **Purpose:** The 45 room uses, localized.
-- **Inputs:** `release_id` (path), `language: str = "de"` (query).
-- **Outputs:** `200` → `list[RoomUseOut]`.
-- **Raises:** HTTP `404` `DatasetNotFoundError`; `422` `UnknownLanguageError`.
-- **Example:** `curl "http://127.0.0.1:8000/datasets/V221/room-uses?language=fr"`
+<a id="3-datasets-router"></a>
+### Datasets router — `GET /datasets`
 
-### 3.4 `GET /datasets/{release_id}/room-uses/{room_use_id}`
-
-- **Purpose:** One room use, all languages.
-- **Inputs:** `release_id`, `room_use_id` (path; nutzid or SIA code).
-- **Outputs:** `200` → `RoomUseOut`.
-- **Raises:** HTTP `404` `DatasetNotFoundError` / `UnknownRoomUseError`.
-- **Example:** `curl http://127.0.0.1:8000/datasets/V221/room-uses/1.01`
-
-### 3.5 `GET /datasets/{release_id}/room-uses/{room_use_id}/profile`
-
-- **Purpose:** Full data-sheet content (assessment §6.1 `get_room_use_profile`).
-- **Inputs:** `release_id`, `room_use_id` (path), `value_kind: str | None = None` (query).
-- **Outputs:** `200` → `RoomUseProfileOut` (parameters with values per kind, units,
-  provenance).
-- **Raises:** HTTP `404` dataset/room-use; `422` `UnknownValueKindError`.
-- **Example:**
-  ```console
-  $ curl "http://127.0.0.1:8000/datasets/V221/room-uses/1/profile?value_kind=zielwert"
-  ```
-
-### 3.6 `GET /datasets/{release_id}/room-uses/{a}/compare/{b}`
-
-- **Purpose:** Compare two room-use profiles (all kinds).
-- **Inputs:** `release_id`, `a`, `b` (path).
-- **Outputs:** `200` → `CompareOut`.
-- **Raises:** HTTP `404` dataset/room-use.
-- **Example:** `curl http://127.0.0.1:8000/datasets/V221/room-uses/1.01/compare/1.02`
-
-### 3.7 `GET /datasets/{release_id}/parameters`
-
-- **Purpose:** Parameter catalog, localized.
-- **Inputs:** `release_id` (path), `language: str = "de"` (query).
-- **Outputs:** `200` → `list[ParameterOut]`.
-- **Raises:** HTTP `404` `DatasetNotFoundError`; `422` `UnknownLanguageError`.
-- **Example:** `curl http://127.0.0.1:8000/datasets/V221/parameters`
-
-### 3.8 `GET /datasets/{release_id}/parameters/{parameter_id}`
-
-- **Purpose:** One parameter.
-- **Inputs:** `release_id`, `parameter_id` (path; clause id or slug).
-- **Outputs:** `200` → `ParameterOut`.
-- **Raises:** HTTP `404` `UnknownParameterError`.
-- **Example:** `curl http://127.0.0.1:8000/datasets/V221/parameters/1.1.2.7`
-
-### 3.9 `GET /datasets/{release_id}/climate-stations`
-
-- **Purpose:** The 40 stations (id, name).
-- **Inputs:** `release_id` (path), `language: str = "de"` (query).
-- **Outputs:** `200` → `list[ClimateStationOut]`.
-- **Raises:** HTTP `404` `DatasetNotFoundError`.
-- **Example:** `curl http://127.0.0.1:8000/datasets/V221/climate-stations`
-
-### 3.10 `GET /datasets/{release_id}/climate-stations/{station_id}`
-
-- **Purpose:** Full station data.
-- **Inputs:** `release_id`, `station_id` (path).
-- **Outputs:** `200` → `ClimateStationOut` (design values, monthly, bins).
-- **Raises:** HTTP `404` `UnknownClimateStationError`.
-- **Example:** `curl http://127.0.0.1:8000/datasets/V221/climate-stations/40`
-
-### 3.11 `GET /datasets/{release_id}/profiles`
-
-- **Purpose:** Hourly/monthly/weekly profile sets.
-- **Inputs:** `release_id` (path).
-- **Outputs:** `200` → `{"hourly": […], "monthly": […], "weekly": […]}`.
-- **Raises:** HTTP `404` `DatasetNotFoundError`.
-- **Example:** `curl http://127.0.0.1:8000/datasets/V221/profiles`
-
-### 3.12 `GET /datasets/{release_id}/full-load-hours`
-
-- **Purpose:** Ventilation full-load hours (all uses × regulations × standard versions) —
-  the versioned `Volll_Lüft` table.
-- **Inputs:** `release_id` (path), optional filters `room_use_id`, `regulation`,
-  `standard_version` (query).
-- **Outputs:** `200` → list of `{room_use_id, regulation, standard_version, hours, unit,
-  provenance}`.
-- **Raises:** HTTP `404` `DatasetNotFoundError`; `422` invalid filter values.
-- **Example:**
-  ```console
-  $ curl "http://127.0.0.1:8000/datasets/V221/full-load-hours?standard_version=prSIA%202024-C1:2024"
-  ```
-
-### 3.13 `GET /datasets/{release_id}/qhc`
-
-- **Purpose:** Qhc matrix rows (use × station × kind).
-- **Inputs:** `release_id` (path), optional filters `room_use_id`, `station_id`, `value_kind`
-  (query).
-- **Outputs:** `200` → list of `{room_use_id, station_id, kind, qhc: {value, unit}}`.
-- **Raises:** HTTP `404` `DatasetNotFoundError`.
-- **Example:** `curl "http://127.0.0.1:8000/datasets/V221/qhc?station_id=40"`
-
-### 3.14 `GET /datasets/{release_id}/exports.{fmt}`
-
-- **Purpose:** Bulk export of the release (assessment §6.1).
-- **Inputs:** `release_id` (path), `fmt` (path: `json | csv | xlsx | pdf`), `scope: str =
-  "all"` (query), `language: str = "de"` (query).
-- **Outputs:** `200` → file response (`Content-Disposition: attachment`); for `pdf` one file
-  (`merged=true`) or a zip.
-- **Raises:** HTTP `404` `DatasetNotFoundError`; `400` `ExportError` (unsupported
-  format/scope).
-- **Example:** `curl -o V221.xlsx http://127.0.0.1:8000/datasets/V221/exports.xlsx`
-
-### 3.15 `POST /datasets/{release_id}/validate`
-
-- **Purpose:** Validation report of the release (schema + value rules).
-- **Inputs:** `release_id` (path).
-- **Outputs:** `200` → `{"release_id", "valid", "errors": [...], "warnings": [...]}`.
-- **Raises:** HTTP `404` `DatasetNotFoundError`.
-- **Example:**
-  ```console
-  $ curl -X POST http://127.0.0.1:8000/datasets/V221/validate
-  {"release_id": "V221", "valid": true, "errors": [], "warnings": ["code 12.1 normalized to 12.10"]}
-  ```
-
-## 4. Calculations router
-
-`calculations_router: APIRouter` (prefix `/calculations`, tags `["calculations"]`) — delegates
-to `CalculationEngine`; request/response per assessment §6.2.
-
-### 4.1 `POST /calculations/validate`
-
-- **Purpose:** Validate a building input without calculating.
-- **Inputs (body):** `CalculateRequest` (datasetRelease, modelRelease, project{…}, rooms[…],
-  ventilation[…], generation[…], climateStation, valueKind).
-- **Outputs:** `200` → `{"valid": bool, "errors": [...], "warnings": [...]}`.
-- **Raises:** HTTP `404` `DatasetNotFoundError` (unknown release/model);
-  `422` schema/domain validation errors of the request body itself.
-- **Example:**
-  ```console
-  $ curl -X POST http://127.0.0.1:8000/calculations/validate -H "Content-Type: application/json" \
-      -d '{"datasetRelease": "V221", "modelRelease": "1.0.0", "project": {"name": "Beispiel",
-           "climateStationId": 40, "valueKind": "standard", "rooms": [{"name": "Büro 1",
-           "roomUseId": "1.01", "ebf": true, "ngf": 1200.0}]}}'
-  ```
-
-### 4.2 `POST /calculations`
-
-- **Purpose:** Run a calculation (assessment §6.2 `calculate_building`).
-- **Inputs (body):** `CalculateRequest` as in 4.1.
-- **Outputs:** `201` → `CalculateResponse` (resultId, versions, inputsHash, assumptions,
-  warnings, overriddenValues, results{perRoom, perSystem, perEnergietraeger, totals},
-  intermediates{ahuBins, fullLoadHours, qhc}, units).
-- **Raises:** HTTP `404` dataset/model; `409` `ModelVersionMismatchError`;
-  `422` `CalculationInputError` (hard validation errors); `500` `CalculationError` /
-  `BackendError` (with `details`).
-- **Example:**
-  ```console
-  $ curl -X POST http://127.0.0.1:8000/calculations -H "Content-Type: application/json" \
-      -d @building.json
-  {"resultId": "9f2c…", "versions": {"dataset": "V221", "model": "1.0.0", …}, …}
-  ```
-
-### 4.3 `GET /calculations/{result_id}`
-
-- **Purpose:** Retrieve a stored calculation (reproducibility).
-- **Inputs:** `result_id` (path).
-- **Outputs:** `200` → `CalculateResponse`.
-- **Raises:** HTTP `404` unknown `result_id` (`CalculationError` mapped).
-- **Example:** `curl http://127.0.0.1:8000/calculations/9f2c…`
-
-### 4.4 `GET /calculations/{result_id}/explain`
-
-- **Purpose:** Explain a stored calculation (trace steps, formulas, data sources —
-  assessment §6.2 `explain_calculation_result`).
-- **Inputs:** `result_id` (path).
-- **Outputs:** `200` → `ExplainResponse` (steps with id, kind, label, inputs, formula,
-  outputs, provenance).
-- **Raises:** HTTP `404` unknown `result_id`.
-- **Example:** `curl http://127.0.0.1:8000/calculations/9f2c…/explain`
-
-## 5. Versions router
-
-### 5.1 `GET /versions`
-
-- **Purpose:** Publication/dataset/model/implementation/climate versions (assessment §6.2).
-- **Inputs:** —.
-- **Outputs:** `200` → `VersionsOut` (`{"dataset": …, "model": …, "implementation": …,
-  "climate": …, "releases": […]}`).
-- **Raises:** HTTP —.
-- **Example:**
-  ```console
-  $ curl http://127.0.0.1:8000/versions
-  {"dataset": "V221", "model": "1.0.0", "implementation": "0.1.0",
-   "climate": "meteoschweiz-2024", "releases": [{"id": "V221", …}]}
-  ```
-
-## 6. Schemas
-
-Pydantic models (all JSON-Schema-exportable via `model_json_schema()`); fields mirror the
-domain objects of parts 03–04. Every schema is a **class** with the usual pydantic behaviour.
-
-| Schema | Purpose | Key fields | Raises |
+| Method & path | Delegates to | Output | Errors |
 |---|---|---|---|
-| `DatasetReleaseOut` | Release metadata | id, edition, publication_date, checksum_sha256, supersedes, changelog | `ValidationError` |
-| `RoomUseOut` | Room use | nutzid, code, category, name{de,fr,it} | `ValidationError` |
-| `ParameterOut` | Parameter | id, label, symbol, unit, data_type, category, flags | `ValidationError` |
-| `RoomUseProfileOut` | Data sheet | room_use, parameters[{id, label, symbol, unit, values{kind: {value, unit, provenance}}}] | `ValidationError` |
-| `ClimateStationOut` | Station | id, name, winter_design, summer_design, monthly, bins, hdd | `ValidationError` |
-| `ProfileOut` | Profiles | id, profile_type, values, unit | `ValidationError` |
-| `CompareOut` | Profile diff | a_id, b_id, identical, changed[], added[], removed[] | `ValidationError` |
-| `ValidationReportOut` | Report | valid, errors[], warnings[] | `ValidationError` |
-| `CalculateRequest` | Calculation input | datasetRelease, modelRelease, project, rooms[], ventilation[], generation[], climateStationId, valueKind | `ValidationError` |
-| `CalculateResponse` | Calculation output | resultId, versions, inputsHash, assumptions, warnings, overriddenValues, results, intermediates, units | `ValidationError` |
-| `ExplainResponse` | Trace | resultId, steps[{id, kind, label, inputs, formula, outputs, provenance}] | `ValidationError` |
-| `VersionsOut` | Versions | dataset, model, implementation, climate, releases[] | `ValidationError` |
-| `ErrorOut` | Error body | detail, details | `ValidationError` |
+| `GET /datasets` | `list_releases` | release list, newest first | — |
+| `GET /datasets/{release_id}` | `get_release` | release metadata + changelog | 404 |
+| `GET /datasets/{release_id}/room-uses` | `list_room_uses` | localized room uses | 404, 422 |
+| `GET /datasets/{release_id}/room-uses/{room_use_id}` | `get_room_use` | one room use | 404 |
+| `GET /datasets/{release_id}/room-uses/{room_use_id}/profile` | `get_room_use_profile` | full data sheet | 404, 422 |
+| `GET /datasets/{release_id}/room-uses/{a}/compare/{b}` | `compare_room_use_profiles` | profile diff | 404 |
+| `GET /datasets/{release_id}/parameters` | `list_parameters` | parameter catalog | 404, 422 |
+| `GET /datasets/{release_id}/parameters/{parameter_id}` | `get_parameter` | one parameter | 404 |
+| `GET /datasets/{release_id}/climate-stations` | `list_climate_stations` | station list | 404 |
+| `GET /datasets/{release_id}/climate-stations/{station_id}` | `get_climate_station` | full station | 404 |
+| `GET /datasets/{release_id}/profiles` | `list_profiles` | hourly/monthly/weekly | 404 |
+| `GET /datasets/{release_id}/full-load-hours` | `get_full_load_hours` (filters) | full-load-hours rows | 404, 422 |
+| `GET /datasets/{release_id}/qhc` | `get_qhc` (filters) | Qhc matrix rows | 404 |
+| `GET /datasets/{release_id}/exports.{fmt}` | `export` | file download (json today) | 404, 400 |
+| `POST /datasets/{release_id}/validate` | `validate` | `{release_id, valid, errors, warnings}` | 404 |
 
-- **Purpose:** Typed request/response contracts; generated OpenAPI/JSON Schema is the public
-  contract of the API (assessment §6).
-- **Inputs:** constructor keyword arguments per field; unknown fields rejected.
-- **Outputs:** validated pydantic instances; `.model_dump_json()` for responses.
-- **Raises:** `pydantic.ValidationError` (→ HTTP 422 by FastAPI).
-- **Example:**
-  ```python
-  from energytools.api.schemas import CalculateRequest
-  req = CalculateRequest.model_validate(payload)
-  ```
+Example:
 
-## 7. Dependencies
+```console
+$ curl http://127.0.0.1:8000/datasets/V221/room-uses
+[{"nutzid": 1, "code": "1.01", "category": 1, "name": "Wohnen MFH"}, ...]
+```
 
-| Symbol | Kind | Purpose |
-|---|---|---|
-| `get_service(request) -> RaumdatenService` | FastAPI dependency | Yields the app-wide `RaumdatenService` (from `app.state`). |
-| `get_engine(request) -> CalculationEngine` | FastAPI dependency | Yields the app-wide `CalculationEngine`. |
-| `get_store(request) -> CalculationStore` | FastAPI dependency | Yields the app-wide `CalculationStore`. |
+<a id="4-calculations-router"></a>
+### Calculations router — `POST /calculations`
 
-- **Purpose:** Single wiring point so routers never construct services; enables test
-  overrides (`app.dependency_overrides`).
-- **Inputs:** `request: Request`.
-- **Outputs:** the singleton instances.
-- **Raises:** —.
-- **Example:**
-  ```python
-  app.dependency_overrides[get_service] = lambda: test_service
-  ```
+| Method & path | Delegates to | Output | Errors |
+|---|---|---|---|
+| `POST /calculations/validate` | `Engine.validate_input` | `{valid, errors, warnings}` | 404, 422 |
+| `POST /calculations` | `Engine.calculate` | `CalculateResponse` (resultId, versions, results, trace) | 404, 409, 422, 500 |
+| `GET /calculations/{result_id}` | `Engine.get_result` | stored `CalculateResponse` | 404 |
+| `GET /calculations/{result_id}/explain` | `Engine.explain` | trace steps | 404 |
+
+Request body (`CalculateRequest`): `datasetRelease`, `modelRelease`, `project{name,
+climateStationId, valueKind, ...}`, `rooms[]`, `ventilation[]`, `generation[]`.
+
+```console
+$ curl -X POST http://127.0.0.1:8000/calculations -H "Content-Type: application/json" \
+    -d @building.json
+{"resultId": "9f2c…", "versions": {"dataset": "V221", "model": "1.0.0", …}, …}
+```
+
+<a id="5-versions-router"></a>
+### Versions router — `GET /versions`
+
+| Method & path | Delegates to | Output | Errors |
+|---|---|---|---|
+| `GET /versions` | `VersionResolver.current` + releases | `{dataset, model, implementation, climate, releases}` | — |
+
+```console
+$ curl http://127.0.0.1:8000/versions
+{"dataset": "V221", "model": "1.0.0", "implementation": "0.1.0",
+ "climate": "meteoschweiz-2024", "releases": [{"id": "V221", …}]}
+```
+
+<a id="6-schemas"></a>
+### Schemas & dependencies (planned)
+
+Pydantic schemas mirror the domain objects of parts [03](03-raumdaten-service.md) /
+[04](04-gebaeude-engine.md) (`DatasetReleaseOut`, `RoomUseOut`, `ParameterOut`,
+`RoomUseProfileOut`, `ClimateStationOut`, `CompareOut`, `ValidationReportOut`,
+`CalculateRequest`, `CalculateResponse`, `ExplainResponse`, `VersionsOut`, `ErrorOut`).
+FastAPI dependencies (`get_service`, `get_engine`, `get_store`) wire the app-wide singletons
+and support test overrides.
+
+---
+
+## What to import for a new project
+
+Nothing to import yet — the FastAPI layer is **planned**. Today you call the same operations
+directly in Python:
+
+```python
+from energytools.raumdaten import RaumdatenService
+from energytools.engine import Engine
+
+svc = RaumdatenService()                     # what GET /datasets/... will delegate to
+engine = Engine()                            # what POST /calculations will delegate to
+
+profiles = svc.get_room_use_profile("V221", "1.01")
+result = engine.calculate(building_input, "V221", "1.0.0")
+```
+
+When `energytools.api` lands, the endpoint contract above maps 1:1 to these methods.

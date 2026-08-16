@@ -1,274 +1,210 @@
-# Part 05 — API Reference: Versioning & Export
+# API Reference — Versioning, Export & CLI
 
-**Document set 02** · Target-state design specification · Back to [index](README.md) ·
-Inventory: [01-package-inventory.md](01-package-inventory.md) · Foundation:
-[02-common-foundation.md](02-common-foundation.md)
+**Module:** `energytools` (root) + `energytools.raumdaten.service` · **Doc set 02 (API
+Reference)** · Back to [index](README.md) · Foundation:
+[02-common-foundation.md](02-common-foundation.md) · Data:
+[03-raumdaten-service.md](03-raumdaten-service.md)
 
-This part covers the **versioning & export** concern of the library: the distribution root
-(§1), the release-management workflow built on `VersionResolver` (§2), the export layer
-`energytools.export` (§3) and the CLI (§4). Versioning primitives (`DatasetRelease`,
-`ModelRelease`, `VersionInfo`, `ChangelogEntry`, `VersionResolver`) are defined in
-[02 §2](02-common-foundation.md#2-energytoolscommonversioning); this part documents their use.
+How versions work in practice, how to export data, and the command-line interface. The
+versioning *primitives* (`DatasetRelease`, `ModelRelease`, `VersionInfo`, `VersionResolver`)
+are documented in [02 § Classes](02-common-foundation.md#classes); this page is about using
+them: the release lifecycle, `get_version()`, the CLI and the export surface.
 
----
-
-## 1. Distribution root
-
-### 1.1 `__version__`
-
-`__version__: str`
-
-- **Purpose:** PEP 440 version of the installed library (e.g. `"0.1.0"`). Single source: the
-  `pyproject.toml` version, imported at build time; used as `VersionInfo.implementation`.
-- **Inputs:** —.
-- **Outputs:** `str`.
-- **Raises:** —.
-- **Example:**
-  ```python
-  import energytools
-  energytools.__version__            # '0.1.0'
-  ```
-
-### 1.2 `get_version`
-
-`def get_version() -> VersionInfo`
-
-- **Purpose:** Structured version info of the installed library: the library version plus the
-  latest installed dataset and model releases and the climate version. Convenience wrapper
-  around `VersionResolver.current()`.
-- **Inputs:** —.
-- **Outputs:** `VersionInfo` (`dataset`, `model`, `implementation`, `climate`).
-- **Raises:** — (if no dataset is installed, `dataset` is `""`).
-- **Example:**
-  ```python
-  from energytools import get_version
-  get_version().as_dict()   # {'dataset': 'V221', 'model': '1.0.0', 'implementation': '0.1.0', …}
-  ```
+> **Status.** The full export layer (`energytools.export`, CSV/XLSX/PDF exporters) and the CLI
+> subcommands (`versions`, `export`, `serve`, `mcp`) are **planned**, not yet implemented. What
+> works today: `get_version()`, `energytools --version`, and **JSON** export through
+> `RaumdatenService.export` (part [03](03-raumdaten-service.md)).
 
 ---
 
-## 2. Versioning & release management
+## In this page
 
-### 2.1 Release model (workflow)
-
-- **Purpose:** Describe how the four version axes evolve and how the library keeps them
-  consistent (assessment §5.1 "released like software").
-- **Inputs:** —.
-- **Outputs:** The release lifecycle below.
-- **Raises:** —.
-- **Example:** (release rules)
-  ```text
-  Dataset releases   V221 (SIA 2024) → V222 …      id convention from the workbook version
-  Model releases     1.0.0 → 1.1.0 → 2.0.0        semantic versioning; 2.0.0 = breaking graph
-  Implementation     0.1.0 …                       PEP 440; never pinned by calculations
-  Climate data       meteoschweiz-2024 …           external, versioned source (assessment §8.6)
-  ```
-  * A `ModelRelease` declares `compatible_dataset_releases`; the engine refuses combinations
-    outside it (`ModelVersionMismatchError`).
-  * `VersionResolver.resolve_dataset("latest")` is allowed **only** for read/display purposes;
-    `CalculationEngine.calculate` records the concrete resolved ids in `VersionInfo` before
-    running.
-  * Every export embeds the versions of the data it contains; exports of results embed the
-    result's `VersionInfo`.
-  * Dataset packages are immutable: a corrected release is a **new** release id with
-    `supersedes` pointing at the old one (the `12.1`/`12.10` code quirk and the
-    `…V221_20241117.xlsm` vs `…V221.xlsm` naming trap of assessment §8.8 are resolved by pinning
-    the release id, never by overwriting).
-
-### 2.2 `VersionResolver` (usage)
-
-Full entry: [02 §2.5](02-common-foundation.md#25-versionresolver). Usage contract:
-
-- **Purpose:** The only component that answers "which release is this id/alias?". Used by
-  `RaumdatenService`, `CalculationEngine`, the FastAPI `versions` router, the MCP `get_versions`
-  tool and the CLI `versions` command.
-- **Inputs:** mapping of installed releases (constructed from the dataset/model directories at
-  startup).
-- **Outputs:** `DatasetRelease` / `ModelRelease` / `VersionInfo`.
-- **Raises:** `DatasetNotFoundError` for unknown ids (including unknown aliases).
-- **Example:**
-  ```python
-  from energytools.common.versioning import VersionResolver
-  resolver = VersionResolver.from_installed(dataset_dir="data/datasets", model_dir="data/models")
-  print(resolver.current())
-  ```
+- [Quickstart](#quickstart) — get the version, export a release
+- [Release lifecycle](#release-lifecycle) — how the four version axes evolve
+- [CLI](#cli) — `energytools --version`
+- [Export](#export) — what is available now and what is planned
+- [What to import for a new project](#what-to-import-for-a-new-project)
 
 ---
 
-## 3. `energytools.export`
+<a id="1-distribution-root"></a>
+<a id="11-__version__"></a>
+<a id="12-get_version"></a>
+## Quickstart
 
-Replaces the workbook export macros (`Res_Export`, `Volll_Lüft_Export`, `Qhc_Export`,
-`DatenblattSpeichern` — see [01 §3.1](01-package-inventory.md#31-raumdatenblatter-raumdatenxlsm-34-modules))
-with semantic exporters: **no cell copying, no filters, no clipboard**; exports are rendered
-from the domain model. Every exporter embeds version + provenance metadata.
+```python
+import energytools
+from energytools import get_version
 
-### 3.1 `Exporter`
+print(energytools.__version__)          # '0.1.0'  (library version)
+print(get_version())                    # VersionInfo(dataset='', model='', implementation='0.1.0', climate='')
+```
 
-`class Exporter(abc.ABC)`
+The version **quadruple** `(dataset, model, implementation, climate)` makes every result,
+export and API response reproducible. `get_version()` reports the newest installed release per
+axis (see the layout note in [02](02-common-foundation.md#quickstart) — in a source checkout
+with the canonical package layout the dataset/model axes are empty here, while
+`RaumdatenService.list_releases()` resolves them).
 
-- **Purpose:** Contract of all exporters: render one domain object (dataset release, table,
-  calculation result) into bytes or a file, in one format.
-- **Inputs (constructor):** `format: str` (e.g. `"json"`), `options: dict | None = None`
-  (format-specific: pretty printing, sheet selection, language, value kind).
-- **Attributes:** `format`, `options`.
-- **Outputs:** — (exporter object; artifacts are returned by its methods).
-- **Methods (abstract):**
-  - **`export(data: object, target: str | None = None) -> ExportArtifact`** — renders `data`;
-    writes to `target` when given. `ExportArtifact = (bytes, content_type, checksum_sha256,
-    metadata)` dataclass. **Raises:** `ExportError`.
-- **Raises:** constructor: —.
-- **Example:**
-  ```python
-  artifact = JsonExporter().export(dataset, target="out/V221.json")
-  print(artifact.checksum_sha256)
-  ```
+From the command line:
 
-### 3.2 `JsonExporter`
+```console
+$ energytools --version
+energytools 0.1.0
+```
 
-`class JsonExporter(Exporter)`
+JSON export of a release (works today):
 
-- **Purpose:** Dataset release / table / result → JSON, annotated with the package JSON Schema
-  `$schema` reference and embedded versions (the canonical interchange format, assessment §5.1).
-- **Inputs (constructor):** `options: dict | None = None` (`{"indent": 2, "include_provenance":
-  True}`).
-- **Outputs:** `ExportArtifact` with `content_type = "application/json"`.
-- **Raises:** `ExportError` for non-serializable data or unwritable target.
-- **Example:**
-  ```python
-  JsonExporter({"include_provenance": False}).export(service.get_room_use_profile("V221", 1))
-  ```
+```python
+from energytools.raumdaten import RaumdatenService
 
-### 3.3 `CsvExporter`
-
-`class CsvExporter(Exporter)`
-
-- **Purpose:** Tabular views → CSV: room-use lists, parameter catalogs, profile matrices,
-  full-load-hour tables, Qhc matrices, resultate tables (the workbook's TSV-like exports as
-  standard CSV with a header row).
-- **Inputs (constructor):** `options: dict | None = None` (`{"delimiter": ",", "language":
-  "de", "value_kind": None}`).
-- **Outputs:** `ExportArtifact` with `content_type = "text/csv"`.
-- **Raises:** `ExportError` when the data is not tabular for the requested scope.
-- **Example:**
-  ```python
-  CsvExporter({"language": "fr"}).export(service.list_room_uses("V221"), target="uses.csv")
-  ```
-
-### 3.4 `XlsxExporter`
-
-`class XlsxExporter(Exporter)`
-
-- **Purpose:** Dataset release / result → a single XLSX workbook with one sheet per table
-  (Eingabedaten, Profile, Volll_Lüft, Qhc_Klimastat, Resultate …), including a metadata sheet
-  (release, versions, checksums, provenance). Replaces the three export macros with one
-  deterministic artifact; **not** a copy of the authoring workbook.
-- **Inputs (constructor):** `options: dict | None = None` (`{"sheets": ["all"|…],
-  "value_kind": None, "language": "de"}`).
-- **Outputs:** `ExportArtifact` with `content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"`.
-- **Raises:** `ExportError` for unknown sheet names or write failures.
-- **Example:**
-  ```python
-  XlsxExporter({"sheets": ["room-uses", "qhc"]}).export(dataset, target="V221.xlsx")
-  ```
-
-### 3.5 `PdfExporter`
-
-`class PdfExporter(Exporter)`
-
-- **Purpose:** Renders the 45 data sheets as PDFs (one file per room use, or one merged file) —
-  the functional replacement of `DatenblattSpeichern` (assessment §1.3), with trilingual labels
-  selected per option.
-- **Inputs (constructor):** `options: dict | None = None` (`{"language": "de", "merged":
-  False, "include_metadata": True}`).
-- **Outputs:** `ExportArtifact` with `content_type = "application/pdf"` (single file when
-  `merged`, else a zip of 45 PDFs).
-- **Raises:** `ExportError` for rendering failures.
-- **Example:**
-  ```python
-  PdfExporter({"language": "de", "merged": True}).export(dataset, target="Datenblatt.pdf")
-  ```
-
-### 3.6 `export_dataset`
-
-`def export_dataset(service_or_dataset, release_id: str, fmt: str, scope: str, target: str) -> dict`
-
-- **Purpose:** Convenience facade: resolves the release, selects the exporter by `fmt` and the
-  scope view by `scope`, exports, returns metadata (used by `RaumdatenService.export` and the
-  CLI `export` command).
-- **Inputs:** `service_or_dataset` (`RaumdatenService` or `Dataset`), `release_id: str`,
-  `fmt: str` (`"json" | "csv" | "xlsx" | "pdf"`), `scope: str` (`"room-uses" | "profiles" |
-  "climate" | "full-load-hours" | "qhc" | "sia3801" | "all"`), `target: str` (file path).
-- **Outputs:** `{"release_id", "format", "scope", "target", "bytes", "checksum_sha256",
-  "versions"}`.
-- **Raises:** `DatasetNotFoundError`, `ExportError` (unsupported format/scope, write failure).
-- **Example:**
-  ```python
-  from energytools.export import export_dataset
-  export_dataset(service, "V221", "xlsx", "all", "out/V221.xlsx")
-  ```
-
-### 3.7 `export_calculation`
-
-`def export_calculation(result: CalculationResult, fmt: str, target: str) -> dict`
-
-- **Purpose:** Convenience facade for result exports (resultate table, per-system AHU results,
-  trace).
-- **Inputs:** `result: CalculationResult`, `fmt: str` (`"json" | "csv" | "xlsx"`), `target:
-  str`.
-- **Outputs:** metadata dict as in 3.6 (plus `result_id`).
-- **Raises:** `ExportError`.
-- **Example:**
-  ```python
-  export_calculation(result, "json", "out/result.json")
-  ```
+svc = RaumdatenService()
+meta = svc.export("V221", fmt="json", scope="all", target="out/V221.json")
+print(meta["bytes"], meta["checksum"])   # byte count + sha256 of the exported file
+```
 
 ---
 
-## 4. `energytools.cli`
+## Release lifecycle
 
-### 4.1 `main`
+The library treats data "released like software" (assessment §5.1). Four independent version
+axes exist, and a calculation never combines them silently:
 
-`def main(argv: list[str] | None = None) -> int`
+| Axis | Example | Convention |
+|---|---|---|
+| Dataset release | `V221` | Workbook-version id (`V221` → `V222` …). |
+| Model release | `1.0.0` | Semantic versioning; `2.0.0` = breaking calculation graph. |
+| Implementation | `0.1.0` | PEP 440 library version; never pinned by calculations. |
+| Climate data | `meteoschweiz-2024` | External, versioned source. |
 
-- **Purpose:** CLI dispatcher with subcommands `versions`, `export`, `serve`, `mcp` (console
-  entry point `energytools`).
-- **Inputs:** `argv` (defaults to `sys.argv[1:]`).
-- **Outputs:** exit code (0 ok, 2 usage error, 1 runtime error).
-- **Raises:** — (errors are printed and mapped to exit codes).
-- **Example:**
-  ```console
-  $ energytools versions
-  $ energytools export V221 --fmt xlsx --scope all --target out/V221.xlsx
-  $ energytools serve --backend native --port 8000
-  $ energytools mcp
-  ```
+Rules that keep the axes consistent:
 
-### 4.2 `versions_cmd`
+* A `ModelRelease` declares `compatible_dataset_releases`; the engine refuses combinations
+  outside it (`ModelVersionMismatchError`, part [04](04-gebaeude-engine.md)).
+* `resolve_dataset("latest")` is allowed **only** for read/display purposes;
+  `Engine.calculate` records the resolved concrete ids in `Results.versions` before running.
+* Dataset packages are immutable: a corrected release is a **new** release id with
+  `supersedes` pointing at the old one — never an overwrite.
 
-`def versions_cmd(args: argparse.Namespace) -> int`
+```python
+from energytools.raumdaten import RaumdatenService
 
-- **Purpose:** Prints the current `VersionInfo` (dataset, model, implementation, climate) and
-  the installed releases with dates and checksums.
-- **Inputs:** `args` (parsed arguments; `--json` for machine-readable output).
-- **Outputs:** exit code 0; prints to stdout.
-- **Raises:** —.
-- **Example:**
-  ```console
-  $ energytools versions --json
-  {"dataset": "V221", "model": "1.0.0", "implementation": "0.1.0", "climate": "meteoschweiz-2024"}
-  ```
+svc = RaumdatenService()
+svc.list_releases()
+# [{'id': 'V221', 'edition': 'SIA 2024', 'publication_date': '2024-11-17',
+#   'checksum_sha256': '1267a9aa…', 'supersedes': None}]
 
-### 4.3 `export_cmd`
+svc.get_release("V221")["changelog"]
+# [{'version': 'V221', 'date': '2024-11-17',
+#   'change': 'Extracted by the energytools DatasetExtractor from the V221 …', 'migration': None}]
+```
 
-`def export_cmd(args: argparse.Namespace) -> int`
+### Dataset release structure
 
-- **Purpose:** Exports a dataset release or a stored calculation result to a file
-  (`export_dataset` / `export_calculation` facade).
-- **Inputs:** `args` (`release_id` or `result_id`, `--fmt`, `--scope`, `--target`).
-- **Outputs:** exit code 0 on success; prints the artifact checksum.
-- **Raises:** — (errors printed, exit code 1).
-- **Example:**
-  ```console
-  $ energytools export V221 --fmt csv --scope qhc --target qhc.csv
-  wrote qhc.csv (12345 bytes, sha256 ab12…)
-  ```
+A release is a directory with a `package.json` (the canonical package, JSON Schema
+draft 2020-12, `schema_version: "1.0"`) plus a copy of the schema:
+
+```text
+data/datasets/V221/
+├── package.json     # canonical package: release, room_uses, parameters, profiles,
+│                    # climate, full_load_hours, qhc, sia3801, mappings, area_tables, …
+└── schema.json      # copy of PACKAGE_SCHEMA (energytools.raumdaten.schema)
+```
+
+The package declares its own content checksum (`release.checksum_sha256`); the loader verifies
+it and refuses corrupt or foreign packages (`DatasetValidationError`, part
+[03](03-raumdaten-service.md)).
+
+---
+
+<a id="4-energytoolscli"></a>
+<a id="41-main"></a>
+<a id="42-versions_cmd"></a>
+<a id="43-export_cmd"></a>
+## CLI
+
+### `energytools --version` ✅ (works today)
+
+The console script `energytools` prints the library version:
+
+```console
+$ energytools --version
+energytools 0.1.0
+```
+
+### Planned subcommands ⚙ (planned)
+
+The full CLI will dispatch `versions`, `export`, `serve` and `mcp` subcommands. Today only
+`--version` exists (running `energytools` with no arguments prints usage help):
+
+```console
+# planned (not yet implemented)
+$ energytools versions --json          # {"dataset": "V221", "model": "1.0.0", ...}
+$ energytools export V221 --fmt xlsx --scope all --target out/V221.xlsx
+$ energytools serve --backend native --port 8000
+$ energytools mcp
+```
+
+Programmatic entry points `energytools.cli.build_parser()` / `main(argv=None)` exist as the
+scaffold behind `--version`.
+
+---
+
+<a id="3-energytoolsexport"></a>
+<a id="31-exporter"></a>
+<a id="32-jsonexporter"></a>
+<a id="33-csvexporter"></a>
+<a id="34-xlsxexporter"></a>
+<a id="35-pdfexporter"></a>
+<a id="36-export_dataset"></a>
+<a id="37-export_calculation"></a>
+## Export
+
+### `RaumdatenService.export` ✅ (JSON today)
+
+`def export(release_id: str, fmt: str, scope: str, target: str) -> dict`
+
+Bulk export of a release. **`fmt="json"` is fully supported**; `csv` / `xlsx` / `pdf` raise
+`ExportError` until the export layer lands.
+
+```python
+svc = RaumdatenService()
+meta = svc.export("V221", "json", "room-uses", "out/room-uses.json")
+meta
+# {'release_id': 'V221', 'format': 'json', 'scope': 'room-uses',
+#  'target': 'out/room-uses.json', 'bytes': 12345, 'checksum': 'ab12…'}
+```
+
+Scopes: `"room-uses"`, `"profiles"`, `"climate"`, `"full-load-hours"`, `"qhc"`, `"all"`.
+
+**Raises:** `DatasetNotFoundError` (unknown release); `ExportError` (unsupported format or
+scope, or a not-yet-implemented format).
+
+### Planned export layer ⚙ (planned)
+
+`energytools.export` will provide an `Exporter` contract plus `JsonExporter`,
+`CsvExporter`, `XlsxExporter` and `PdfExporter` (the functional replacement of the workbook's
+`DatenblattSpeichern` / `Res_Export` / `Volll_Lüft_Export` / `Qhc_Export` macros) and the
+`export_dataset` / `export_calculation` facades — **semantic exporters** that render from the
+domain model (no cell copying, no clipboard) and embed version + provenance metadata. Until
+then, use `svc.export(..., fmt="json", ...)` for machine-readable output.
+
+---
+
+## What to import for a new project
+
+```python
+# Version info of the installed library
+from energytools import __version__, get_version
+
+# Resolve/query releases (see part 03 for the full data service)
+from energytools.raumdaten import RaumdatenService
+
+# JSON export
+svc = RaumdatenService()
+meta = svc.export("V221", fmt="json", scope="all", target="out/V221.json")
+```
+
+Typical flow: check `get_version()` / `energytools --version` to know what is installed →
+query releases with `RaumdatenService.list_releases()` / `get_release()` → export JSON with
+`svc.export(...)` → pass the loaded `Dataset` to the engine (part [04](04-gebaeude-engine.md)).

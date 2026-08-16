@@ -1,551 +1,397 @@
-# Part 02 — API Reference: `energytools.common` (Foundation)
+# API Reference — Common Foundation
 
-**Document set 02** · Target-state design specification · Back to [index](README.md) ·
-Inventory: [01-package-inventory.md](01-package-inventory.md)
+**Module:** `energytools.common` · **Doc set 02 (API Reference)** · Back to [index](README.md) ·
+Data service: [03-raumdaten-service.md](03-raumdaten-service.md) · Engine:
+[04-gebaeude-engine.md](04-gebaeude-engine.md)
 
-Cross-cutting foundation shared by every layer: the exception hierarchy (§1), versioning
-primitives (§2), units (§3), languages (§4), value kinds (§5) and provenance (§6).
+The cross-cutting foundation shared by every layer of the library: the **exception hierarchy**
+(what to catch), **versioning** (what release am I on), **units and quantities** (typed
+values), **languages** (DE/FR/IT labels), **value kinds** (standard / zielwert / bestand),
+**provenance** (where a value came from) and **validation reports**. You will use most of this
+implicitly — the value objects come back from the data service and the engine — but the
+versioning, units, language and exception pieces are worth importing directly.
 
----
-
-## 1. `energytools.common.errors`
-
-All exceptions derive from `EnergyToolsError`. The hierarchy is flat by design: every subclass is
-raised in exactly one layer, so callers can catch either the precise type or the base type.
-
-### 1.1 `EnergyToolsError`
-
-`class EnergyToolsError(Exception)`
-
-- **Purpose:** Base class of the whole library exception hierarchy. Carries an optional
-  `details: dict | None` payload for structured error reporting (used by the FastAPI and MCP
-  layers to build error responses without string parsing).
-- **Inputs:** `message: str` (human-readable, English), `details: dict | None = None`
-  (structured context, e.g. offending value, symbol id, release id).
-- **Outputs:** Standard exception; `str(e)` = message; `e.details` = details dict.
-- **Raises:** — (raised by subclasses).
-- **Example:**
-  ```python
-  from energytools.common.errors import EnergyToolsError
-  try:
-      ...
-  except EnergyToolsError as e:
-      print(e.details)          # structured context
-  ```
-
-### 1.2 `DatasetNotFoundError`
-
-`class DatasetNotFoundError(EnergyToolsError)`
-
-- **Purpose:** Raised when a requested dataset release does not exist in the store (unknown
-  `release_id`, uninstalled release).
-- **Inputs:** `release_id: str` (as passed by the caller), `details=None`.
-- **Outputs:** Exception with message `"Dataset release '<id>' not found"`.
-- **Raises:** — (raised by `DatasetStore.get`, `RaumdatenService` methods, dataset endpoints).
-- **Example:**
-  ```python
-  from energytools.common.errors import DatasetNotFoundError
-  service.get_release("V222")   # → DatasetNotFoundError: Dataset release 'V222' not found
-  ```
-
-### 1.3 `DatasetValidationError`
-
-`class DatasetValidationError(EnergyToolsError)`
-
-- **Purpose:** Raised when a dataset or an input payload fails schema or domain-value validation
-  (JSON Schema validation of the package, value rules such as `12.1` vs `12.10` code sanity,
-  percentage ranges, missing required columns).
-- **Inputs:** `message: str`, `details: dict | None = None` (recommended: `{"errors": [...]}`
-  list of validation messages, optionally per path).
-- **Outputs:** Exception; `e.details["errors"]` carries the per-item messages.
-- **Raises:** — (raised by `DatasetExtractor`, `Dataset.validate`, `service.validate`,
-  `POST /datasets/{release}/validate`).
-- **Example:**
-  ```python
-  report = service.validate("V221")      # → ValidationReport with errors
-  if report.has_errors:
-      raise DatasetValidationError("release V221 invalid", {"errors": report.errors})
-  ```
-
-### 1.4 `UnknownRoomUseError`
-
-`class UnknownRoomUseError(EnergyToolsError)`
-
-- **Purpose:** Raised when a room-use identifier (numeric `nutzid` 1–45 or SIA code like
-  `"1.01"`) does not exist in the release.
-- **Inputs:** `room_use_id: str | int`, `release_id: str`, `details=None`.
-- **Outputs:** Exception with message `"Room use '<id>' not found in release '<release>'"`.
-- **Raises:** — (raised by `Dataset.room_use`, `RaumdatenService.get_room_use`,
-  `get_room_use_profile`).
-- **Example:**
-  ```python
-  service.get_room_use("V221", 99)   # → UnknownRoomUseError
-  ```
-
-### 1.5 `UnknownParameterError`
-
-`class UnknownParameterError(EnergyToolsError)`
-
-- **Purpose:** Raised when a parameter id (SIA clause id, e.g. `"1.1.2.7"`, or documented slug)
-  is not part of the parameter catalog.
-- **Inputs:** `parameter_id: str`, `release_id: str`, `details=None`.
-- **Outputs:** Exception with message `"Parameter '<id>' not found in release '<release>'"`.
-- **Raises:** — (raised by `Dataset.parameter`, `RaumdatenService.get_parameter`).
-- **Example:**
-  ```python
-  service.get_parameter("V221", "9.9.9")   # → UnknownParameterError
-  ```
-
-### 1.6 `UnknownClimateStationError`
-
-`class UnknownClimateStationError(EnergyToolsError)`
-
-- **Purpose:** Raised when a climate-station id (1–40) is not present in the release.
-- **Inputs:** `station_id: int | str`, `release_id: str`, `details=None`.
-- **Outputs:** Exception with message `"Climate station '<id>' not found in release '<release>'"`.
-- **Raises:** — (raised by `ClimateData.station`, `RaumdatenService.get_climate_station`).
-- **Example:**
-  ```python
-  service.get_climate_station("V221", 41)   # → UnknownClimateStationError (only 40 stations)
-  ```
-
-### 1.7 `UnknownLanguageError`
-
-`class UnknownLanguageError(EnergyToolsError)`
-
-- **Purpose:** Raised when a language other than `de`, `fr`, `it` is requested.
-- **Inputs:** `language: str`, `details=None`.
-- **Outputs:** Exception with message `"Unknown language '<lang>' (expected de, fr or it)"`.
-- **Raises:** — (raised by `TrilingualText.get`, service/API methods with a `language` argument).
-- **Example:**
-  ```python
-  text.get("en")   # → UnknownLanguageError
-  ```
-
-### 1.8 `UnknownValueKindError`
-
-`class UnknownValueKindError(EnergyToolsError)`
-
-- **Purpose:** Raised when a value kind other than `standard`, `zielwert`, `bestand` is requested.
-- **Inputs:** `value_kind: str`, `details=None`.
-- **Outputs:** Exception with message `"Unknown value kind '<kind>' (expected standard, zielwert or bestand)"`.
-- **Raises:** — (raised by `ValueKind.parse`, service/API methods with a `value_kind` argument).
-- **Example:**
-  ```python
-  service.get_room_use_profile("V221", 5, value_kind="optimal")   # → UnknownValueKindError
-  ```
-
-### 1.9 `CalculationInputError`
-
-`class CalculationInputError(EnergyToolsError)`
-
-- **Purpose:** Raised when a building input (`BuildingProject`) is structurally or semantically
-  invalid (unknown room use, negative area, system referencing a nonexistent catalog code,
-  missing climate station, version mismatch between requested dataset and model).
-- **Inputs:** `message: str`, `details: dict | None = None` (recommended `{"errors": [...]}`).
-- **Outputs:** Exception; details carry the validation messages.
-- **Raises:** — (raised by `BuildingProject.validate` consumers, `CalculationEngine.validate_input`
-  for hard errors, `POST /calculations/validate`).
-- **Example:**
-  ```python
-  engine.validate_input(project, dataset, model)   # → ValidationReport
-  # hard failures are raised instead:
-  engine.calculate(project, dataset=wrong_release, ...)  # → ModelVersionMismatchError (see 1.11)
-  ```
-
-### 1.10 `CalculationError`
-
-`class CalculationError(EnergyToolsError)`
-
-- **Purpose:** Raised when a calculation fails at runtime after validation (backend failure not
-  attributable to Excel, numeric failure, missing intermediate, internal inconsistency).
-- **Inputs:** `message: str`, `details: dict | None = None`.
-- **Outputs:** Exception; details may carry `{"step": ..., "system": ...}` context.
-- **Raises:** — (raised by `CalculationEngine.calculate` and backends).
-- **Example:**
-  ```python
-  except CalculationError as e:
-      print(e.details.get("step"))   # e.g. "ahu:LA03"
-  ```
-
-### 1.11 `ModelVersionMismatchError`
-
-`class ModelVersionMismatchError(EnergyToolsError)`
-
-- **Purpose:** Raised when the versions a calculation combines are incompatible: dataset release
-  not supported by the model release, climate version newer/older than the model expects, or a
-  native backend version that cannot reproduce the model release.
-- **Inputs:** `message: str`, `details: dict | None = None`
-  (recommended `{"dataset": ..., "model": ..., "climate": ...}`).
-- **Outputs:** Exception; details carry the conflicting versions.
-- **Raises:** — (raised by `CalculationEngine.calculate`, `ExcelBackend`/`NativeBackend`).
-- **Example:**
-  ```python
-  engine.calculate(project, dataset_2024, model_release="1.0.0")
-  # model 1.0.0 declares compatibility with dataset V221 only → ModelVersionMismatchError
-  ```
-
-### 1.12 `BackendError`
-
-`class BackendError(EnergyToolsError)`
-
-- **Purpose:** Base class for calculation-backend failures; raised directly when a backend cannot
-  produce a result for reasons other than Excel COM (e.g. workbook copy missing, recalculation
-  timed out, native backend raised an unclassified runtime error).
-- **Inputs:** `message: str`, `details: dict | None = None`.
-- **Outputs:** Exception; details may carry `{"backend": ..., "workbook": ...}`.
-- **Raises:** — (raised by backends).
-- **Example:**
-  ```python
-  except BackendError as e:
-      logger.error("backend %s failed: %s", e.details.get("backend"), e)
-  ```
-
-### 1.13 `ExcelBackendError`
-
-`class ExcelBackendError(BackendError)`
-
-- **Purpose:** Excel-COM-specific backend failure: Excel not installed, COM automation denied,
-  workbook copy protection unexpected, recalculation non-deterministic, cached-value mismatch.
-- **Inputs:** `message: str`, `details: dict | None = None`.
-- **Outputs:** Exception; details may carry `{"workbook": path, "cell": address}`.
-- **Raises:** — (raised by `ExcelBackend` only).
-- **Example:**
-  ```python
-  backend = ExcelBackend(path)
-  try:
-      backend.calculate(project, dataset, model)
-  except ExcelBackendError as e:
-      print("Excel runtime unavailable:", e)
-  ```
-
-### 1.14 `ExportError`
-
-`class ExportError(EnergyToolsError)`
-
-- **Purpose:** Raised when an export fails: unsupported format, unwritable target, missing data
-  for the requested scope, PDF rendering failure.
-- **Inputs:** `message: str`, `details: dict | None = None`.
-- **Outputs:** Exception; details may carry `{"format": ..., "target": ...}`.
-- **Raises:** — (raised by all exporters and `export_dataset`/`export_calculation`).
-- **Example:**
-  ```python
-  export_dataset(service, "V221", fmt="docx", target=out)   # → ExportError (unsupported format)
-  ```
-
-### 1.15 `UnitError`
-
-`class UnitError(EnergyToolsError)`
-
-- **Purpose:** Raised for invalid units, unknown unit symbols, or impossible conversions
-  (e.g. converting `kWh` to `m²`).
-- **Inputs:** `message: str`, `details: dict | None = None`.
-- **Outputs:** Exception; details may carry `{"from": ..., "to": ...}`.
-- **Raises:** — (raised by `Unit`, `Quantity.to`).
-- **Example:**
-  ```python
-  Quantity(1.0, Unit("kWh")).to(Unit("m2"))   # → UnitError
-  ```
-
-### 1.16 `PsychrometricError`
-
-`class PsychrometricError(EnergyToolsError)`
-
-- **Purpose:** Raised by psychrometric functions on out-of-domain inputs (e.g. relative humidity
-  outside 0–100 %, negative absolute humidity, pressure ≤ 0), where the VBA code returned the
-  string `"Fehler"`.
-- **Inputs:** `message: str`, `details: dict | None = None` (recommended `{"function": ..., "args": {...}}`).
-- **Outputs:** Exception; details identify the failing function and arguments.
-- **Raises:** — (raised by `gebaeude.physics` functions, see part 04 §2).
-- **Example:**
-  ```python
-  absolute_humidity(20.0, 150.0, 1013.0)   # → PsychrometricError (rh > 100)
-  ```
+> **Which parts do you need?** For a typical project: `VersionInfo`, `ValueKind`, `Language`,
+> `Quantity`, and the exceptions. The ⚙ symbols (`SourceRef`, `Provenance`, `register_unit`)
+> are for advanced/audit use.
 
 ---
 
-## 2. `energytools.common.versioning`
+## In this page
 
-Versioning is the backbone of the library (assessment §5.1: "released like software"). Every
-result, export and API response references concrete releases; nothing resolves "latest"
-silently at calculation time.
-
-### 2.1 `DatasetRelease`
-
-`@dataclass(frozen=True) class DatasetRelease`
-
-- **Purpose:** Immutable metadata of one Raumdaten dataset package. Identifies a release by its
-  human id (`"V221"` — the workbook version convention), the SIA edition it implements, the
-  publication date, content checksum and extraction fingerprint.
-- **Inputs (constructor):** `id: str` (e.g. `"V221"`), `edition: str` (e.g. `"SIA 2024"`),
-  `publication_date: date`, `checksum_sha256: str` (of the package file), `source_workbook: str`
-  (e.g. `"2024_Raumdatenblätter_dfi_V221.xlsm"`), `extraction_tool_version: str`,
-  `changelog: tuple[ChangelogEntry, ...] = ()`, `supersedes: str | None = None`.
-- **Attributes:** all constructor fields; `is_latest` is computed by the resolver, not stored.
-- **Outputs:** — (value object; equality/ordering on `id`).
-- **Raises:** `ValueError` on empty `id`.
-- **Example:**
-  ```python
-  from energytools.common.versioning import DatasetRelease
-  rel = DatasetRelease(id="V221", edition="SIA 2024", publication_date=date(2024, 11, 17),
-                       checksum_sha256="ab12…", source_workbook="2024_Raumdatenblätter_dfi_V221.xlsm",
-                       extraction_tool_version="0.1.0")
-  ```
-
-### 2.2 `ModelRelease`
-
-`@dataclass(frozen=True) class ModelRelease`
-
-- **Purpose:** Immutable metadata of the declarative Gebäude model definition (assessment §5.2):
-  version, the dataset releases it is compatible with, the climate data versions it accepts, and
-  a changelog.
-- **Inputs (constructor):** `id: str` (semantic, e.g. `"1.0.0"`), `compatible_dataset_releases:
-  frozenset[str]` (e.g. `{"V221"}`), `compatible_climate_versions: frozenset[str]`,
-  `publication_date: date`, `changelog: tuple[ChangelogEntry, ...] = ()`.
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object).
-- **Raises:** `ValueError` on malformed semantic version or empty compatibility sets.
-- **Example:**
-  ```python
-  ModelRelease(id="1.0.0", compatible_dataset_releases=frozenset({"V221"}),
-               compatible_climate_versions=frozenset({"meteoschweiz-2024"}),
-               publication_date=date(2025, 4, 20))
-  ```
-
-### 2.3 `VersionInfo`
-
-`@dataclass(frozen=True) class VersionInfo`
-
-- **Purpose:** The version quadruple every calculation result and every `/versions` response
-  carries: dataset release, model release, implementation (library) version and climate data
-  version. This makes results reproducible and comparable (assessment §6.2).
-- **Inputs (constructor):** `dataset: str`, `model: str`, `implementation: str` (PEP 440),
-  `climate: str`.
-- **Attributes:** all four fields; `as_dict()` returns `{"dataset": …, "model": …,
-  "implementation": …, "climate": …}`.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:**
-  ```python
-  VersionInfo(dataset="V221", model="1.0.0", implementation="0.1.0", climate="meteoschweiz-2024")
-  ```
-
-### 2.4 `ChangelogEntry`
-
-`@dataclass(frozen=True) class ChangelogEntry`
-
-- **Purpose:** One changelog row of a release: what changed between releases and whether the
-  change is a breaking migration.
-- **Inputs (constructor):** `version: str`, `date: date`, `change: str`, `migration: str | None = None`
-  (description of required data migration, if any).
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:**
-  ```python
-  ChangelogEntry(version="V221", date=date(2024, 11, 17),
-                 change="prSIA 2024-C1 values; Qhc extended to 40 stations",
-                 migration="Qhc table layout extended by 12 columns per station block")
-  ```
-
-### 2.5 `VersionResolver`
-
-`class VersionResolver`
-
-- **Purpose:** Resolves user-facing release ids and aliases (`"latest"`, `"V221"`) to concrete
-  `DatasetRelease` / `ModelRelease` objects. Central place for "what is installed" and "what is
-  current"; used by `RaumdatenService`, `CalculationEngine`, the FastAPI and MCP layers and the
-  CLI. Never resolves silently inside a calculation — the resolved ids are recorded in
-  `VersionInfo`.
-- **Inputs (constructor):** `datasets: Mapping[str, DatasetRelease]`,
-  `models: Mapping[str, ModelRelease]`, `implementation_version: str | None = None`.
-- **Attributes:** `datasets`, `models`.
-- **Outputs:** — (service object; results are returned by its methods).
-- **Methods:**
-  - **`resolve_dataset(release_id: str) -> DatasetRelease`** — resolves `release_id`; accepts
-    `"latest"` (highest `publication_date`). **Raises:** `DatasetNotFoundError` on unknown id.
-  - **`resolve_model(model_id: str) -> ModelRelease`** — same for models; `"latest"` supported.
-    **Raises:** `DatasetNotFoundError` (reused) on unknown id.
-  - **`list_datasets() -> list[DatasetRelease]`** — all installed releases, newest first.
-  - **`list_models() -> list[ModelRelease]`** — all installed models, newest first.
-  - **`current() -> VersionInfo`** — `VersionInfo` of latest dataset, latest model, library
-    version and latest installed climate version.
-- **Raises:** constructor: —; methods as noted.
-- **Example:**
-  ```python
-  from energytools.common.versioning import VersionResolver, DatasetRelease, ModelRelease
-  resolver = VersionResolver(
-      datasets={"V221": rel_v221},
-      models={"1.0.0": model_100},
-      implementation_version="0.1.0",
-  )
-  current = resolver.current()              # VersionInfo(dataset="V221", model="1.0.0", …)
-  assert resolver.resolve_dataset("latest") is rel_v221
-  resolver.resolve_dataset("V199")          # → DatasetNotFoundError
-  ```
+- [Quickstart](#quickstart) — versions, quantities, languages, value kinds
+- [Exceptions](#exceptions) — the hierarchy and when to catch what
+- [Classes](#classes) — `VersionInfo`, `VersionResolver`, `TrilingualText`, `Quantity`, `Unit`, `ValueKind`, `Language`, `ValidationReport`
+- [What to import for a new project](#what-to-import-for-a-new-project)
 
 ---
 
-## 3. `energytools.common.units`
+## Quickstart
 
-### 3.1 `Unit`
+### Versions
 
-`class Unit`
+```python
+from energytools import get_version
 
-- **Purpose:** A unit of measure with a display symbol, an SI hint and conversion metadata.
-  Units are parsed from the workbook's rich-text unit cells during extraction (normalized from
-  e.g. `W/m²`); unknown symbols raise `UnitError`. Provides conversion within the same physical
-  dimension.
-- **Inputs (constructor):** `symbol: str` (e.g. `"W/m2"`, `"kWh"`, `"mbar"`, `"%"`, `"-"`),
-  `si_hint: str | None = None` (e.g. `"W·m⁻²"`), `dimension: str | None = None`
-  (e.g. `"power_per_area"`; inferred from the unit registry when omitted).
-- **Attributes:** `symbol`, `si_hint`, `dimension`.
-- **Outputs:** — (value object; conversion results are returned by its methods).
-- **Methods:**
-  - **`convert_to(value: float, target: Unit) -> float`** — converts `value` in this unit to
-    `target`. **Raises:** `UnitError` when dimensions differ or conversion factors are unknown.
-  - **`__str__()`** — the symbol.
-- **Raises:** `UnitError` on unknown symbol (constructor).
-- **Example:**
-  ```python
-  from energytools.common.units import Unit
-  w_per_m2 = Unit("W/m2")
-  kw_per_m2 = Unit("kW/m2")
-  assert w_per_m2.convert_to(1000.0, kw_per_m2) == 1.0
-  Unit("not-a-unit")          # → UnitError
-  ```
+info = get_version()            # structured version quadruple of the installation
+print(info.as_dict())
+# {'dataset': '', 'model': '', 'implementation': '0.1.0', 'climate': ''}
+```
 
-### 3.2 `Quantity`
+`get_version()` reads the newest installed dataset/model release per axis. In a source
+checkout with the canonical package layout the dataset/model axes are currently empty — see
+the layout note below. With release manifests installed they resolve to the concrete ids
+(e.g. `dataset: 'V221'`, `model: '1.0.0'`, `climate: 'meteoschweiz-2024'`).
 
-`@dataclass(frozen=True) class Quantity`
+> **Layout note (source checkout).** `get_version()` and `VersionResolver.from_installed`
+> read **flat `*.json` release manifests** from `data/datasets/` and `data/models/`. The
+> canonical dataset package shipped with this repository lives in the subdirectory
+> `data/datasets/V221/package.json`, so in this checkout `get_version()` reports empty
+> dataset/model axes. The `RaumdatenService` (part [03](03-raumdaten-service.md)) scans
+> `*/package.json` and resolves the same releases correctly — prefer it for data access.
 
-- **Purpose:** Typed value + unit pair used across the domain model (parameter values, results,
-  profile values). Conversion-safe and format-safe; the API serializes it as
-  `{"value": …, "unit": …}`.
-- **Inputs (constructor):** `value: float | int | None`, `unit: Unit | str`
-  (str is parsed via `Unit`).
-- **Attributes:** `value`, `unit`.
-- **Outputs:** — (value object; converted/formatted values are returned by its methods).
-- **Methods:**
-  - **`to(unit: Unit | str) -> Quantity`** — converted copy. **Raises:** `UnitError`.
-  - **`format(precision: int = 2) -> str`** — e.g. `"12.34 W/m2"`. **Raises:** —.
-  - **`as_dict() -> dict`** — `{"value": …, "unit": "…"}`. **Raises:** —.
-- **Raises:** constructor: `UnitError` on invalid unit string.
-- **Example:**
-  ```python
-  from energytools.common.units import Quantity, Unit
-  q = Quantity(45.0, "kWh/m2")
-  q.to(Unit("MWh/m2")).format()      # "0.05 MWh/m2"
-  q.as_dict()                        # {'value': 45.0, 'unit': 'kWh/m2'}
-  ```
+Resolve ids and aliases explicitly with `VersionResolver`:
 
----
+```python
+from energytools.common.versioning import VersionResolver, DatasetRelease, ModelRelease
+from datetime import date
 
-## 4. `energytools.common.language`
+resolver = VersionResolver(
+    datasets={
+        "V221": DatasetRelease(id="V221", edition="SIA 2024",
+                               publication_date=date(2024, 11, 17),
+                               checksum_sha256="0" * 64,
+                               source_workbook="…V221.xlsm",
+                               extraction_tool_version="0.1.0"),
+    },
+    models={
+        "1.0.0": ModelRelease(id="1.0.0",
+                              compatible_dataset_releases=frozenset({"V221"}),
+                              compatible_climate_versions=frozenset({"meteoschweiz-2024"}),
+                              publication_date=date(2025, 4, 20)),
+    },
+    implementation_version="0.1.0",
+)
+release = resolver.resolve_dataset("V221")     # or "latest"
+print(release.id, release.edition)             # V221 SIA 2024
+```
 
-### 4.1 `Language`
+### Typed values with units
 
-`class Language(enum.Enum)`
+```python
+from energytools.common.units import Quantity, Unit
 
-- **Purpose:** The three workbook languages (assessment §1.2: `Begriffe!G1` = 1/2/3).
-- **Members:** `DE = "de"`, `FR = "fr"`, `IT = "it"`.
-- **Inputs:** — (enum members; `parse` takes `value: str`).
-- **Outputs:** the enum member; `parse` returns `Language`.
-- **Methods:**
-  - **`parse(value: str) -> Language`** — accepts `"de"/"fr"/"it"` (case-insensitive) and
-    `"1"/"2"/"3"` (workbook indices). **Raises:** `UnknownLanguageError`.
-- **Example:**
-  ```python
-  from energytools.common.language import Language
-  Language.parse("1") is Language.DE    # workbook index 1 = German
-  Language.parse("fr") is Language.FR
-  Language.parse("en")                   # → UnknownLanguageError
-  ```
+q = Quantity(3600.0, "kWh")
+print(q.to("MWh"))                  # 3.6 MWh  (Quantity(value=3.6, unit=MWh))
+print(q.to("MWh").format(2))        # '3.60 MWh'
+print(q.as_dict())                  # {'value': 3600.0, 'unit': 'kWh'}
 
-### 4.2 `TrilingualText`
+Unit("W/m2").convert_to(1000.0, Unit("kW/m2"))   # 1.0
+Quantity(1.0, "kWh").to("m2")       # → UnitError (different dimensions)
+```
 
-`@dataclass(frozen=True) class TrilingualText`
+### Trilingual labels
 
-- **Purpose:** A DE/FR/IT label triple (names, parameter labels, sheet titles). Normalizes the
-  workbook's rich-text cells to plain structured strings during extraction.
-- **Inputs (constructor):** `de: str = ""`, `fr: str = ""`, `it: str = ""`.
-- **Attributes:** `de`, `fr`, `it`; `as_dict()` → `{"de": …, "fr": …, "it": …}`.
-- **Outputs:** — (value object; labels are returned by `get`/`as_dict`).
-- **Methods:**
-  - **`get(language: Language | str) -> str`** — label in the requested language; falls back to
-    `de` when the requested field is empty (observed: unfinished Italian cells). **Raises:**
-    `UnknownLanguageError` on invalid language input.
-- **Raises:** —.
-- **Example:**
-  ```python
-  from energytools.common.language import TrilingualText, Language
-  name = TrilingualText(de="Wohnen MFH", fr="Habitation CMI", it="Abitazione CMI")
-  name.get(Language.FR)                 # 'Habitation CMI'
-  name.get("it")                        # 'Abitazione CMI'
-  ```
+```python
+from energytools.common.language import Language, TrilingualText
 
----
+name = TrilingualText(de="Wohnen MFH", fr="Habitat collectif", it="Abitazione plurifamiliare")
+print(name.get(Language.FR))        # 'Habitat collectif'
+print(name.get("it"))               # 'Abitazione plurifamiliare'
+print(name.get("de"))               # 'Wohnen MFH'  (fallback for empty fields)
+```
 
-## 5. `energytools.common.valuekind`
+### Value kinds
 
-### 5.1 `ValueKind`
+```python
+from energytools.common.valuekind import ValueKind
 
-`class ValueKind(enum.Enum)`
+print(ValueKind.parse("zielwert"))      # ValueKind.ZIELWERT
+print(ValueKind.parse("target"))        # ValueKind.ZIELWERT  (English alias)
+print(ValueKind.parse("optimal"))       # → UnknownValueKindError
+```
 
-- **Purpose:** The three value kinds of the Raumdaten dataset (assessment §1.2, columns M/N/O of
-  `Datenblatt`): Standard, Zielwert, Bestand.
-- **Members:** `STANDARD = "standard"`, `ZIELWERT = "zielwert"`, `BESTAND = "bestand"`.
-- **Inputs:** — (enum members; `parse` takes `value: str`).
-- **Outputs:** the enum member; `parse` returns `ValueKind`.
-- **Methods:**
-  - **`parse(value: str) -> ValueKind`** — case-insensitive; accepts `"standard"`,
-    `"zielwert"`, `"bestand"` (also `"target"`/`"existing"` aliases). **Raises:**
-    `UnknownValueKindError`.
-- **Example:**
-  ```python
-  from energytools.common.valuekind import ValueKind
-  ValueKind.parse("Zielwert") is ValueKind.ZIELWERT
-  ValueKind.parse("optimal")           # → UnknownValueKindError
-  ```
+### Catching errors
+
+```python
+from energytools.common.errors import EnergyToolsError, DatasetNotFoundError
+
+try:
+    svc.get_release("V199")             # unknown release
+except DatasetNotFoundError as e:
+    print(e)                            # Dataset release 'V199' not found
+    print(e.details)                    # structured context (or None)
+except EnergyToolsError as e:           # catch-all for library errors
+    ...
+```
 
 ---
 
-## 6. `energytools.common.provenance`
+<a id="1-energytoolscommonerrors"></a>
+<a id="11-energytoolserror"></a>
+<a id="12-datasetnotfounderror"></a>
+<a id="13-datasetvalidationerror"></a>
+<a id="14-unknownroomuseerror"></a>
+<a id="15-unknownparametererror"></a>
+<a id="16-unknownclimatestationerror"></a>
+<a id="17-unknownlanguageerror"></a>
+<a id="18-unknownvaluekinderror"></a>
+<a id="19-calculationinputerror"></a>
+<a id="110-calculationerror"></a>
+<a id="111-modelversionmismatcherror"></a>
+<a id="112-backenderror"></a>
+<a id="113-excelbackenderror"></a>
+<a id="114-exporterror"></a>
+<a id="115-uniterror"></a>
+<a id="116-psychrometricerror"></a>
+## Exceptions
 
-### 6.1 `SourceRef`
+All exceptions derive from `EnergyToolsError(Exception)` and carry an optional structured
+`details: dict | None` payload (`str(e)` is the human-readable message, `e.details` the
+structured context). The hierarchy is **flat by design**: each subclass is raised in exactly
+one layer, so you can catch either the precise type or the base type.
 
-`@dataclass(frozen=True) class SourceRef`
+| Exception | Raised when | Raised by | Typical handling |
+|---|---|---|---|
+| `EnergyToolsError` | *(base)* | everything | Catch-all for library errors. |
+| `DatasetNotFoundError` | A dataset release is unknown/uninstalled | `DatasetStore.get`, `RaumdatenService`, resolver | Show "release not found". |
+| `DatasetValidationError` | A package/input fails schema or value rules | loader, `Dataset.validate` consumers | Report validation errors. |
+| `UnknownRoomUseError` | Room-use id not in the release | `Dataset.room_use`, service methods | Show "unknown room use". |
+| `UnknownParameterError` | Parameter id not in the catalog | `Dataset.parameter`, service methods | Show "unknown parameter". |
+| `UnknownClimateStationError` | Station id (1–40) not in the release | `ClimateData.station`, service methods | Show "unknown station". |
+| `UnknownLanguageError` | Language not de/fr/it | `Language.parse`, `TrilingualText.get`, service methods | Show "unknown language". |
+| `UnknownValueKindError` | Value kind not standard/zielwert/bestand | `ValueKind.parse`, service methods | Show "unknown value kind". |
+| `CalculationInputError` | Building input structurally/semantically invalid | `Engine.calculate` (hard validation errors) | Report validation errors. |
+| `CalculationError` | Calculation fails at runtime after validation | `Engine.calculate`, `Engine.explain`/`get_result` | Show "calculation failed". |
+| `ModelVersionMismatchError` | Dataset/model/climate versions incompatible | `Engine.calculate` | Suggest a compatible release. |
+| `BackendError` | Backend cannot produce a result | backends | Show "backend unavailable". |
+| `ExcelBackendError` | Excel-COM-specific failure | Excel backend only | Show "Excel unavailable". |
+| `ExportError` | Export fails (format, target, data) | `RaumdatenService.export`, export layer | Show "export failed". |
+| `UnitError` | Invalid unit, unknown symbol, impossible conversion | `Unit`, `Quantity.to` | Show unit error. |
+| `PsychrometricError` | Out-of-domain psychrometric input | `engine.native.psychrometrics` | Show "invalid input". |
+| `TableLookupError` | Workbook-derived table lookup misses a key | `FullLoadHoursTable.hours`, `QhcTable.qhc` | Show "value not found in table". |
 
-- **Purpose:** One grounded source reference: where a value or formula came from in the source
-  workbook. Keeps traceability without exposing addresses through the API (addresses are
-  metadata, not API — assessment §5.3 rule 1).
-- **Inputs (constructor):** `workbook: str` (e.g. `"2024_Raumdatenblätter_dfi_V221.xlsm"`),
-  `sheet: str` (exact sheet name as stored, e.g. `"tblEingabedaten"`), `range: str | None`
-  (e.g. `"M11"` or `"A9:C53"`), `formula: str | None` (extracted formula text, e.g.
-  `INDEX(Eingabedaten!C9:C53,nutzid)`), `cached_value: str | float | None` (the value Excel
-  cached), `extraction_hash: str | None` (package fingerprint).
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; serializes via `as_dict()`).
-- **Raises:** `ValueError` if neither `range` nor `formula` is set.
-- **Example:**
-  ```python
-  SourceRef(workbook="2024_Raumdatenblätter_dfi_V221.xlsm", sheet="Datenblatt",
-            range="O2", formula="INDEX(Eingabedaten!A9:A53,nutzid)", cached_value="1.01")
-  ```
+```python
+try:
+    dataset = load_dataset("V221")
+except DatasetNotFoundError:
+    print("install the release first")
+except DatasetValidationError as e:
+    print("corrupt package:", e.details.get("errors"))
+```
 
-### 6.2 `Provenance`
+---
 
-`@dataclass(frozen=True) class Provenance`
+## Classes
 
-- **Purpose:** Collection of `SourceRef`s plus a free-text note for one domain value or derived
-  result. Every `ParameterValue`, derived profile value and calculation intermediate may carry
-  one; the API surfaces it in `assumptions[]`/`overriddenValues[]` (assessment §6.2).
-- **Inputs (constructor):** `sources: tuple[SourceRef, ...] = ()`, `note: str | None = None`.
-- **Attributes:** `sources`, `note`.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:**
-  ```python
-  Provenance(sources=(SourceRef(workbook=…, sheet="Profile", range="O611:AB611"),),
-             note="Annual ventilation full-load hours, 365-day engine, prSIA 2024-C1")
-  ```
+<a id="2-energytoolscommonversioning"></a>
+<a id="23-versioninfo"></a>
+### `VersionInfo` ✅ (user-facing)
+
+`@dataclass(frozen=True) class VersionInfo` — the version quadruple every calculation result
+and every `/versions` response carries: `dataset`, `model`, `implementation`, `climate`.
+`as_dict()` returns the four axes as a plain dict.
+
+```python
+from energytools.common.versioning import VersionInfo
+v = VersionInfo(dataset="V221", model="1.0.0", implementation="0.1.0", climate="meteoschweiz-2024")
+print(v.as_dict())
+# {'dataset': 'V221', 'model': '1.0.0', 'implementation': '0.1.0', 'climate': 'meteoschweiz-2024'}
+```
+
+<a id="25-versionresolver"></a>
+### `VersionResolver` ✅ (user-facing)
+
+`class VersionResolver` — the central place for "what is installed" and "what is current".
+Maps user-facing ids and the `"latest"` alias to concrete releases; **never resolves
+silently inside a calculation** — the concrete ids are recorded in `VersionInfo`.
+
+| Method | Signature | Returns | One-liner |
+|---|---|---|---|
+| `from_installed` | `(dataset_dir, model_dir, implementation_version=None) -> VersionResolver` *(classmethod)* | `VersionResolver` | Build from release manifest files on disk. |
+| `resolve_dataset` | `(release_id: str) -> DatasetRelease` | `DatasetRelease` | Resolve an id or `"latest"` (newest publication date). |
+| `resolve_model` | `(model_id: str) -> ModelRelease` | `ModelRelease` | Same for models. |
+| `list_datasets` | `() -> list[DatasetRelease]` | `list[DatasetRelease]` | Installed datasets, newest first. |
+| `list_models` | `() -> list[ModelRelease]` | `list[ModelRelease]` | Installed models, newest first. |
+| `current` | `() -> VersionInfo` | `VersionInfo` | Quadruple of the newest dataset/model/climate + implementation version. |
+
+**Raises:** `DatasetNotFoundError` for unknown ids (also reused for unknown models).
+
+```python
+resolver = VersionResolver(
+    datasets={"V221": rel_v221},
+    models={"1.0.0": model_100},
+    implementation_version="0.1.0",
+)
+print(resolver.current())                 # VersionInfo(dataset='V221', model='1.0.0', ...)
+print(resolver.resolve_dataset("latest").id)
+```
+
+<a id="21-datasetrelease"></a>
+<a id="22-modelrelease"></a>
+<a id="24-changelogentry"></a>
+### `DatasetRelease` / `ModelRelease` ✅ (user-facing)
+
+Immutable release metadata value objects (fields are also constructor arguments).
+
+| Class | Key fields |
+|---|---|
+| `DatasetRelease` | `id` (`"V221"`), `edition` (`"SIA 2024"`), `publication_date: date`, `checksum_sha256`, `source_workbook`, `extraction_tool_version`, `changelog`, `supersedes` |
+| `ModelRelease` | `id` (semver, `"1.0.0"`), `compatible_dataset_releases: frozenset[str]`, `compatible_climate_versions: frozenset[str]`, `publication_date`, `changelog` |
+| `ChangelogEntry` | `version`, `date`, `change`, `migration: str \| None` |
+
+```python
+from datetime import date
+from energytools.common.versioning import DatasetRelease, ModelRelease
+
+rel = DatasetRelease(id="V221", edition="SIA 2024", publication_date=date(2024, 11, 17),
+                     checksum_sha256="0" * 64, source_workbook="…V221.xlsm",
+                     extraction_tool_version="0.1.0")
+model = ModelRelease(id="1.0.0",
+                     compatible_dataset_releases=frozenset({"V221"}),
+                     compatible_climate_versions=frozenset({"meteoschweiz-2024"}),
+                     publication_date=date(2025, 4, 20))
+```
+
+**Raises:** `ValueError` on an empty dataset id, a non-semver model id, or empty
+compatibility sets.
+
+<a id="3-energytoolscommonunits"></a>
+<a id="32-quantity"></a>
+### `Quantity` ✅ (user-facing)
+
+`@dataclass(frozen=True) class Quantity` — a typed value paired with a unit. Used across the
+domain model for parameter values, results and profile values; serialized as
+`{"value": …, "unit": …}`.
+
+| Method | Signature | Returns | One-liner |
+|---|---|---|---|
+| `to` | `(unit: Unit \| str) -> Quantity` | `Quantity` | A converted copy. |
+| `format` | `(precision: int = 2) -> str` | `str` | `"12.34 W/m2"` (missing values render `"-"`). |
+| `as_dict` | `() -> dict` | `dict` | `{"value": …, "unit": "…"}`. |
+
+**Raises:** `UnitError` on conversion across dimensions or an unknown unit symbol.
+
+```python
+q = Quantity(45.0, "kWh/m2")
+q.to("MWh/m2").format(2)          # '0.05 MWh/m2'
+q.as_dict()                       # {'value': 45.0, 'unit': 'kWh/m2'}
+```
+
+<a id="31-unit"></a>
+### `Unit` ✅ (user-facing)
+
+`@dataclass(frozen=True) class Unit` — a unit of measure with a display symbol (normalized,
+e.g. `W/m²` → `W/m2`), an SI hint and conversion metadata. Conversion is only defined within
+the same physical dimension.
+
+| Method | Signature | Returns | One-liner |
+|---|---|---|---|
+| `convert_to` | `(value: float, target: Unit) -> float` | `float` | Convert a numeric value to the target unit. |
+
+```python
+Unit("W/m2").convert_to(1000.0, Unit("kW/m2"))   # 1.0
+Unit("kWh").convert_to(3600.0, Unit("Wh"))       # 3600.0
+Unit("not-a-unit")                               # → UnitError
+```
+
+`register_unit(symbol, dimension, factor=1.0, offset=0.0, si_hint=None)` ⚙ registers a custom
+unit symbol (e.g. for a private dataset package) — advanced use.
+
+<a id="4-energytoolscommonlanguage"></a>
+<a id="42-trilingualtext"></a>
+### `TrilingualText` ✅ (user-facing)
+
+`@dataclass(frozen=True) class TrilingualText` — a DE/FR/IT label triple (names, parameter
+labels, sheet titles).
+
+| Method | Signature | Returns | One-liner |
+|---|---|---|---|
+| `get` | `(language: Language \| str) -> str` | `str` | Label in the requested language; falls back to German for empty fields. |
+| `as_dict` | `() -> dict` | `dict` | `{"de": …, "fr": …, "it": …}`. |
+
+```python
+name.get(Language.IT)             # 'Abitazione plurifamiliare'
+name.get("fr")                    # 'Habitat collectif'
+name.get("en")                    # → UnknownLanguageError
+```
+
+<a id="41-language"></a>
+### `Language` ✅ (user-facing)
+
+`class Language(enum.Enum)` — members `DE = "de"`, `FR = "fr"`, `IT = "it"`.
+`parse(value)` accepts the codes (case-insensitive) and the workbook indices `"1"/"2"/"3"`;
+raises `UnknownLanguageError` otherwise.
+
+<a id="5-energytoolscommonvaluekind"></a>
+<a id="51-valuekind"></a>
+### `ValueKind` ✅ (user-facing)
+
+`class ValueKind(enum.Enum)` — members `STANDARD = "standard"`, `ZIELWERT = "zielwert"`,
+`BESTAND = "bestand"` (the workbook's M/N/O columns). `parse(value)` is case-insensitive and
+accepts the English aliases `"target"` / `"existing"`; raises `UnknownValueKindError`.
+
+### `ValidationReport` ✅ (user-facing)
+
+`@dataclass(frozen=True) class ValidationReport` — structured validation outcome: hard
+`errors` (a non-empty list means `valid is False`) and `warnings` (suspicious but acceptable).
+`as_dict()` → `{"valid", "errors", "warnings"}`. Returned by `Dataset.validate`,
+`BuildingInput.validate`, `Engine.validate_input`.
+
+<a id="6-energytoolscommonprovenance"></a>
+<a id="61-sourceref"></a>
+<a id="62-provenance"></a>
+### `SourceRef` / `Provenance` ⚙ (internal/advanced)
+
+Provenance keeps traceability without exposing cell addresses through the API.
+
+| Class | Purpose |
+|---|---|
+| `SourceRef` | One grounded source reference: `workbook`, `sheet`, `range`, `formula`, `cached_value`, `extraction_hash`. Requires at least `range` or `formula`. |
+| `Provenance` | Collection of `SourceRef`s plus a free-text `note` for one value or derived result. |
+
+```python
+from energytools.common.provenance import Provenance, SourceRef
+
+provenance = Provenance(
+    sources=(SourceRef(workbook="2024_Raumdatenblätter_dfi_V221.xlsm",
+                       sheet="Datenblatt", range="A56:S56"),),
+    note="Parameter values of the Datenblatt sheet",
+)
+```
+
+These ride along on `ParameterValue`, `Parameter`, `ClimateStation` and calculation
+intermediates — you mostly *read* them, e.g. `parameter.provenance.as_dict()`.
+
+---
+
+## What to import for a new project
+
+```python
+# Versions
+from energytools import get_version                                   # VersionInfo
+from energytools.common.versioning import VersionResolver, VersionInfo
+
+# Typed values
+from energytools.common.units import Quantity, Unit
+
+# Languages and value kinds for API arguments
+from energytools.common.language import Language, TrilingualText
+from energytools.common.valuekind import ValueKind
+
+# Errors to catch
+from energytools.common.errors import (
+    EnergyToolsError,            # catch-all
+    DatasetNotFoundError,        # unknown release
+    UnknownRoomUseError,         # unknown room use
+    UnknownValueKindError,       # bad value kind
+    UnitError,                   # bad unit/conversion
+    ExportError,                 # export failures
+)
+
+# Validation outcome
+from energytools.common.validation import ValidationReport
+```
+
+Typical flow: `get_version()` for the installation state → service/engine methods that accept
+`ValueKind` / `Language` arguments → read the returned `Quantity` / `TrilingualText` values.

@@ -1,764 +1,522 @@
-# Part 04 — API Reference: `energytools.gebaeude` (Calculation Engine)
+# API Reference — Calculation Engine
 
-**Document set 02** · Target-state design specification · Back to [index](README.md) ·
-Inventory: [01-package-inventory.md](01-package-inventory.md) · Foundation:
-[02-common-foundation.md](02-common-foundation.md) · Data:
+**Module:** `energytools.engine` · **Doc set 02 (API Reference)** · Back to [index](README.md) ·
+Foundation: [02-common-foundation.md](02-common-foundation.md) · Data:
 [03-raumdaten-service.md](03-raumdaten-service.md)
 
-The Gebäude calculation engine: deterministic early-design energy model (assessment §2: building
-inputs → room KPI aggregation → AHU temperature-bin psychrometric calculation → generation →
-resultate). This part covers the building model (§1), the psychrometric physics port (§2), the
-AHU bin engine (§3), the orchestration engine (§4), the **Excel and native backends** (§5) and
-the resultate aggregation (§6).
+The calculation engine is the digital replacement of the `2024_Gebaeude-Tool_dfi_V221.xlsm`
+workbook: you build a `BuildingInput` (rooms, ventilation systems, generation systems, climate
+station), hand it to [`Engine.calculate`](#engine--calculationengine), and read a fully
+versioned, explainable `Results` object. The physical core (psychrometrics, the AHU
+temperature-bin method, building aggregation) lives in `energytools.engine.native` and is
+available directly to advanced users.
+
+> **Which parts do you need?** For a typical project: `Engine` (or its alias
+> `CalculationEngine`), `BuildingInput`, `RoomRow`, `VentilationSystem`, `Results`, and the
+> `ValueKind` enum. That is the ✅ section below. The ⚙ symbols (`EngineBase`, `StubBackend`,
+> `CalculationStore`, `engine.native.*`) are for backend development and low-level physics.
 
 ---
 
-## 1. `energytools.gebaeude.model`
+## In this page
 
-### 1.1 `EnergyCarrier`
-
-`class EnergyCarrier(enum.Enum)`
-
-- **Purpose:** The Energieträger of the `Resultate` table (assessment §2.1: El, HEL, Erdgas, …).
-- **Members:** `ELECTRICITY = "el"`, `HEATING_OIL = "hel"`, `NATURAL_GAS = "erdgas"`,
-  `WOOD = "holz"`, `DISTRICT_HEATING = "fernwaerme"`, `DISTRICT_COOLING = "fernkaelte"`,
-  `SOLAR = "solar"`, `OTHER = "andere"`.
-- **Inputs:** — (enum members; `parse` takes `value: str`).
-- **Outputs:** the enum member; `parse` returns `EnergyCarrier`.
-- **Methods:**
-  - **`parse(value: str) -> EnergyCarrier`** — accepts German workbook labels
-    (`"Elektrizität"`, `"HEL"`, `"Erdgas"`) and the codes above. **Raises:** `ValueError`.
-- **Example:**
-  ```python
-  EnergyCarrier.parse("Elektrizität") is EnergyCarrier.ELECTRICITY
-  ```
-
-### 1.2 `EndUse`
-
-`class EndUse(enum.Enum)`
-
-- **Purpose:** End-use categories of the `Resultate` table (assessment §2.1): Allg.
-  Gebäudetechnik, Geräte, Prozessanlagen, Beleuchtung, Lüftung, Kühlung, Heizung, Warmwasser.
-- **Members:** `ALLGEMEINE_GEBAEUDETECHNIK = "allg_gebaeudetechnik"`, `GERAETE = "geraete"`,
-  `PROZESSANLAGEN = "prozessanlagen"`, `BELEUCHTUNG = "beleuchtung"`, `LUEFTUNG = "lueftung"`,
-  `KUEHLUNG = "kuehlung"`, `HEIZUNG = "heizung"`, `WARMWASSER = "warmwasser"`.
-- **Inputs:** — (enum members; `parse` takes `value: str`).
-- **Outputs:** the enum member; `parse` returns `EndUse`.
-- **Methods:**
-  - **`parse(value: str) -> EndUse`** — accepts German labels and the codes above.
-    **Raises:** `ValueError`.
-- **Example:**
-  ```python
-  EndUse.parse("Kühlung") is EndUse.KUEHLUNG
-  ```
-
-### 1.3 `RoomRow`
-
-`@dataclass(frozen=True) class RoomRow`
-
-- **Purpose:** One building room row of the `Gebäude` sheet (assessment §2.1: room use, EBF
-  flag, NGF, share, per-use power/energy for Geräte/Prozessanlagen/Beleuchtung/Lüftung,
-  Raumkühlung/Heizung flags, Warmwasser).
-- **Inputs (constructor):** `name: str` (row label), `room_use_id: int | str` (nutzid or SIA
-  code), `ebf: bool` (counts toward EBF), `ngf: Quantity` (m²), `share: float | None = None`
-  (share of the total NGF), `geraete: Quantity | None`, `prozessanlagen: Quantity | None`,
-  `beleuchtung: Quantity | None`, `lueftung_system: str | None` (LA id, e.g. `"LA03"`),
-  `lueftung_volume_flow: Quantity | None` (m³/h), `gekuehlt: bool = False`,
-  `beheizt: bool = True`, `warmwasser: bool = False`.
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; derived values are returned by its methods).
-- **Methods:**
-  - **`effective_area() -> Quantity`** — `share × ngf` when share is set, else `ngf`.
-- **Raises:** `ValueError` for negative areas or unknown flags.
-- **Example:**
-  ```python
-  RoomRow(name="Büro 1", room_use_id="1.01", ebf=True, ngf=Quantity(1200.0, "m2"),
-          geraete=Quantity(8.0, "W/m2"), lueftung_system="LA03",
-          lueftung_volume_flow=Quantity(4000.0, "m3/h"))
-  ```
-
-### 1.4 `VentilationSystem`
-
-`@dataclass(frozen=True) class VentilationSystem`
-
-- **Purpose:** One of the **16 ventilation systems LA01–LA16** of the `Lüftung` sheet
-  (assessment §2.1): volume flows (Standard/Prozess/Projekt), SFP, fan power, regulation,
-  full-load hours, WRG %, setpoints and humidity setpoints.
-- **Inputs (constructor):** `id: str` (`"LA01"`…`"LA16"`), `room_use: str | None` (served use),
-  `volume_flow_standard: Quantity | None` (m³/h), `volume_flow_prozess: Quantity | None`,
-  `volume_flow_projekt: Quantity | None`, `sfp: Quantity | None` (W/(m³/s) or W/(m³/h) — unit
-  explicit), `fan_power: Quantity | None` (kW), `regulation: str | None`
-  (`"1-stufig" | "2-stufig" | "stufenlos"`), `full_load_hours: Quantity | None` (h/a),
-  `wrg: float | None` (0–1 recovery ratio), `kuehlfall_t: Quantity | None` (°C setpoint),
-  `heizfall_t: Quantity | None`, `humidity_setpoints: dict[str, Quantity] | None`
-  (e.g. `{"x_soll": …, "rh_soll": …}`).
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; derived values are returned by its methods).
-- **Methods:**
-  - **`effective_volume_flow() -> Quantity`** — Projekt → Prozess → Standard priority.
-- **Raises:** `ValueError` if `wrg` outside 0–1.
-- **Example:**
-  ```python
-  VentilationSystem(id="LA03", regulation="2-stufig",
-                    volume_flow_standard=Quantity(4000.0, "m3/h"),
-                    sfp=Quantity(1.8, "W/(m3/h)"), wrg=0.7,
-                    kuehlfall_t=Quantity(26.0, "°C"), heizfall_t=Quantity(21.0, "°C"))
-  ```
-
-### 1.5 `GenerationSystem`
-
-`@dataclass(frozen=True) class GenerationSystem`
-
-- **Purpose:** One generator of the `Erzeugung` sheet (assessment §2.1: 3 Kälteerzeuger + 3
-  Wärmeerzeuger + 3 Warmwassererzeuger): catalog code, Nutzungsgrad, Deckungsgrad,
-  Speicher-/Verteilverluste, and computed Leistung/Energie/Endenergie per Energieträger.
-- **Inputs (constructor):** `id: str` (e.g. `"KE1"`), `kind: str` (`"cooling" | "heating" |
-  "ww"`), `catalog_code: str` (e.g. `"KE01"` — resolved via `GenerationCatalog`),
-  `coverage: float` (Deckungsgrad 0–1), `losses: float` (Speicher-/Verteilverluste 0–1),
-  `nominal_power: Quantity | None = None` (kW).
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; no methods).
-- **Raises:** `ValueError` if `coverage`/`losses` outside 0–1.
-- **Example:**
-  ```python
-  GenerationSystem(id="KE1", kind="cooling", catalog_code="KE01",
-                   coverage=1.0, losses=0.05, nominal_power=Quantity(120.0, "kW"))
-  ```
-
-### 1.6 `BuildingProject`
-
-`@dataclass(frozen=True) class BuildingProject`
-
-- **Purpose:** The complete, validated calculation input: project header (as in
-  `Gebäude!B1:J2`), climate station, value kind, room rows, ventilation systems, generation
-  systems. Exactly the request body of `POST /calculations` (assessment §6.2).
-- **Inputs (constructor):** `name: str`, `author: str | None = None`, `date: date | None =
-  None`, `climate_station_id: int` (1–40), `value_kind: ValueKind = ValueKind.STANDARD`,
-  `rooms: tuple[RoomRow, ...]`, `ventilation: tuple[VentilationSystem, ...] = ()`,
-  `generation: tuple[GenerationSystem, ...] = ()`, `note: str | None = None`.
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; derived values are returned by its methods).
-- **Methods:**
-  - **`validate(dataset: Dataset, catalog: GenerationCatalog) -> ValidationReport`** —
-    domain validation: room uses exist, areas positive, systems reference known LAs, catalog
-    codes exist, at least one room. **Raises:** — (report, not exception).
-  - **`total_ngf() -> Quantity`** — sum of effective areas.
-- **Raises:** constructor: `ValueError` on empty `name` or empty `rooms`.
-- **Example:**
-  ```python
-  project = BuildingProject(name="Beispiel", author="Max Muster",
-                            climate_station_id=40, value_kind=ValueKind.STANDARD,
-                            rooms=(room_office, room_meeting),
-                            ventilation=(la03,), generation=(ke1, we1))
-  report = project.validate(ds, catalog)
-  ```
-
-### 1.7 `GenerationCatalog`
-
-`@dataclass(frozen=True) class GenerationCatalog`
-
-- **Purpose:** The generator catalog (assessment §2.1, `Nutzungsgrad` sheet): KE01–KE06
-  (cooling, EER 3–15), WE01+ (heating, η 0.6–0.8), WW types; each entry carries Energieträger
-  and Hilfsenergie %.
-- **Inputs (constructor):** `entries: Mapping[str, CatalogEntry]` (`CatalogEntry` =
-  `{code, kind, name: TrilingualText, efficiency: float, energy_carrier: EnergyCarrier,
-  auxiliary_energy_pct: float, provenance}`).
-- **Attributes:** `entries`.
-- **Outputs:** — (value object; lookup results are returned by its methods).
-- **Methods:**
-  - **`generator(code: str) -> CatalogEntry`** — **Raises:** `KeyError`-derived
-    `CalculationInputError` with the offending code.
-  - **`codes(kind: str | None = None) -> tuple[str, ...]`** — all codes, optionally filtered.
-- **Raises:** —.
-- **Example:**
-  ```python
-  catalog.generator("KE01").efficiency        # 3.0
-  catalog.generator("KE99")                    # → CalculationInputError
-  ```
-
-### 1.8 `WeightingFactors`
-
-`@dataclass(frozen=True) class WeightingFactors`
-
-- **Purpose:** The weighting factors of the `Resultate` sheet (assessment §2.1: NEGF, PEne,
-  THGE per Energieträger).
-- **Inputs (constructor):** `negf: Mapping[EnergyCarrier, float]`, `pene: Mapping[EnergyCarrier,
-  float]`, `thge: Mapping[EnergyCarrier, float]`.
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:** `factors.negf[EnergyCarrier.ELECTRICITY]  # e.g. 2.0`
-
-### 1.9 `Resultate`
-
-`@dataclass class Resultate`
-
-- **Purpose:** Final energy per Energieträger × end use plus totals and weighted sums — the
-  digital `Resultate` table (assessment §2.1).
-- **Inputs (constructor):** `project: BuildingProject`, `cells: Mapping[tuple[EnergyCarrier,
-  EndUse], Quantity]`, `weighting: WeightingFactors | None = None`.
-- **Attributes:** `project`, `cells`, `weighting`.
-- **Outputs:** — (value object; table views are returned by its methods).
-- **Methods:**
-  - **`totals(carrier: EnergyCarrier | None = None) -> Quantity | dict[EnergyCarrier, Quantity]`**
-    — column/row totals. **Raises:** —.
-  - **`weighted(factor: str) -> dict[EnergyCarrier, float]`** — `"negf" | "pene" | "thge"`
-    weighted sums. **Raises:** `ValueError` on unknown factor name.
-  - **`as_dict() -> dict`** — JSON-ready table.
-- **Raises:** —.
-- **Example:**
-  ```python
-  resultate.totals(EnergyCarrier.ELECTRICITY)     # Quantity(…, 'kWh/a')
-  resultate.weighted("pene")
-  ```
-
-### 1.10 `ValidationReport`
-
-`@dataclass(frozen=True) class ValidationReport`
-
-- **Purpose:** Structured validation outcome: hard errors (invalid) and warnings (suspicious
-  but acceptable). Used by input validation and dataset validation alike.
-- **Inputs (constructor):** `errors: tuple[str, ...] = ()`, `warnings: tuple[str, ...] = ()`.
-- **Attributes:** `errors`, `warnings`; `valid` property (`not errors`); `as_dict()`.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:**
-  ```python
-  report = project.validate(ds, catalog)
-  if not report.valid:
-      raise CalculationInputError("invalid project", {"errors": list(report.errors)})
-  ```
+- [Quickstart](#quickstart) — build an input, calculate, read results
+- [Classes](#classes) — `Engine`, `BuildingInput`, `Results`, backends
+- [Functions and constants](#functions-and-constants) — `DEFAULT_MODEL`
+- [Native module (advanced)](#native-module-advanced) — psychrometrics, AHU, aggregation
+- [What to import for a new project](#what-to-import-for-a-new-project)
 
 ---
 
-## 2. `energytools.gebaeude.physics`
+## Quickstart
 
-Direct port of the psychrometric UDFs observed in `FeuchteLuft_Formeln.bas` (assessment §2.2:
-"Glück" saturation-pressure polynomials, constants 611, 2501.6, 1.006, 1.86, 2.8858, 8.02). All
-functions are pure, documented with the VBA source, and verified against VBA values over the
-full bin range (−25 … +34 °C) in the regression harness (assessment §7.4/7.5).
+### 1. Install
 
-### 2.1 Physics constants
+```bash
+# pixi (recommended, contributors)
+pixi install
 
-`CP_AIR = 1.006` (kJ/(kg·K), dry air — VBA `cpl`), `CP_WATER_VAPOUR = 1.86` (kJ/(kg·K),
-water vapour — VBA `cpw`), `CP_WATER = 4.19` (kJ/(kg·K), liquid water — `cw`,
-`Berechnung LU!N22`), `HEAT_OF_VAPORIZATION = 2501.6` (kJ/kg at 0 °C — VBA `r0`),
-`HEAT_OF_VAPORIZATION_100 = 2256` (kJ/kg at 100 °C — `r100`, `Berechnung LU!N25`),
-`AIR_DENSITY = 1.15` (kg/m³ — `ρ`, `Berechnung LU!N23`), `MOLAR_MASS_RATIO = 622`
-(g/kg scale factor, 0.622 × 1000 — used in all psychrometric formulas), `PS_0 = 611`
-(Pa reference of the Glück polynomial), `DEW_POINT_P = 2.8858`, `DEW_POINT_N = 8.02`,
-`DEW_POINT_K = 1.098` (dew-point inversion constants).
+# or plain pip (Python >= 3.11)
+pip install -e .
+```
 
-- **Purpose:** The magic constants of the workbook model, named and unit-annotated so the
-  port can be reviewed against the VBA. Value grounding: textbook ch01 §1.1 (UDF module
-  constants) and ch04 §4.16-3 / `analysis_Berechnung_LU.md` §8 (`Berechnung LU!N19:N25`
-  AHU constants).
-- **Inputs:** —.
-- **Outputs:** `float` constants.
-- **Raises:** —.
-- **Example:**
-  ```python
-  from energytools.gebaeude import physics
-  physics.HEAT_OF_VAPORIZATION      # 2501.6
-  ```
+The engine itself needs no extras. The dataset it calculates against comes from part
+[03](03-raumdaten-service.md) (the `data` extra covers the loader).
 
-### 2.2 `saturation_pressure_glueck`
+### 2. Build the input
 
-`def saturation_pressure_glueck(t: float) -> float`
+`BuildingInput` is the validated, immutable calculation request. Rooms reference the 45
+standard room uses by **nutzid (1–45) or SIA code** (`"1.01"`); ventilation systems use the
+workbook's `LA01`–`LA16` ids; the climate station is 1–40.
 
-- **Purpose:** Saturation vapour pressure after Glück in **mbar** — the piecewise polynomial
-  with the split at `t = 0` (VBA `Saettigungsdruck`; the VBA `Else` branch returning
-  `"Fehler"` is unreachable in VBA and becomes an exception here).
-- **Inputs:** `t: float` — temperature in °C.
-- **Outputs:** `float` — saturation pressure in mbar.
-- **Raises:** `PsychrometricError` if `t` is NaN (the VBA "Fehler" case).
-- **Example:**
-  ```python
-  ps = saturation_pressure_glueck(20.0)     # ≈ 23.37 mbar
-  ```
+```python
+from datetime import date
+from energytools.engine import (
+    BuildingInput, RoomRow, VentilationSystem, GenerationSystem,
+)
 
-### 2.3 `absolute_humidity`
+project = BuildingInput(
+    name="Beispiel",
+    author="Max Muster",
+    date=date(2025, 1, 15),
+    climate_station_id=40,                      # Zürich-MeteoSchweiz
+    rooms=(
+        RoomRow(name="Büro 1", room_use_id="1.01", ebf=True, ngf=1200.0,
+                geraete=8.0, beleuchtung=10.0, gekuehlt=True,
+                lueftung_system="LA03", lueftung_volume_flow=4000.0),
+        RoomRow(name="Sitzungszimmer", room_use_id=2, ebf=True, ngf=300.0,
+                share=0.5, geraete=5.0),
+    ),
+    ventilation=(
+        VentilationSystem(id="LA03", room_use="1.01", regulation="2-stufig",
+                          volume_flow_standard=4000.0, sfp=1.8,
+                          fan_power=7.5, full_load_hours=3900.0, wrg=0.7),
+    ),
+    generation=(
+        GenerationSystem(id="KE1", kind="cooling", catalog_code="KE01",
+                         coverage=1.0, losses=0.05, nominal_power=120.0),
+    ),
+)
 
-`def absolute_humidity(t: float, rh: float, p: float) -> float`
+print(project.validate().valid)     # True — hard errors are reported, not raised
+print(project.total_ngf())          # 1350.0  (m²)
+```
 
-- **Purpose:** Absolute humidity in **g/kg** from temperature, relative humidity and pressure —
-  VBA `AbsFeuchte`: `x = (rh * 622 * ps) / (p - rh * ps)`. **Unit convention:** the workbook
-  call sites pass φ as a **fraction (0–1)** (e.g. `Klimadaten!Q20 = AbsFeuchte(-10, 0.8817, p)`;
-  textbook ch01 §1.3/§1.9); this API accepts `rh` in **% (0–100)** and converts internally so
-  the VBA formula above uses `rh/100`.
-- **Inputs:** `t` (°C), `rh` (%, 0–100), `p` (mbar, > 0).
-- **Outputs:** `float` — g/kg.
-- **Raises:** `PsychrometricError` for `rh` outside 0–100, `p <= 0`, or when `p - rh*ps <= 0`.
-- **Example:**
-  ```python
-  absolute_humidity(20.0, 50.0, 1013.0)     # ≈ 7.28 g/kg
-  ```
+### 3. Calculate
 
-### 2.4 `relative_humidity`
+```python
+from energytools.engine import Engine, StubBackend
 
-`def relative_humidity(t: float, x: float, p: float) -> float`
+engine = Engine()                                   # in-memory result store
+result = engine.calculate(project, "V221", "1.0.0")
+```
 
-- **Purpose:** Relative humidity in % from temperature, absolute humidity and pressure — VBA
-  `RelFeuchte`: `rh = (x * p) / (ps * (622 + x))`. **Unit convention:** the workbook function
-  returns a **fraction (0–1)** and call sites combine it with `MIN(1, …)` saturation clamps
-  (textbook ch01 §1.6); this API returns **% (0–100)**.
-- **Inputs:** `t` (°C), `x` (g/kg, ≥ 0), `p` (mbar, > 0).
-- **Outputs:** `float` — %.
-- **Raises:** `PsychrometricError` for `x < 0` or `p <= 0`.
-- **Example:**
-  ```python
-  relative_humidity(20.0, 7.28, 1013.0)     # ≈ 50.0 %
-  ```
+`calculate` validates the input first, then runs the backend and **stores** the result. The
+default backend is `StubBackend` (deterministic structural aggregation — no physics yet; the
+Excel/native physics backends arrive in later milestones, see [05](05-versioning-export.md)).
+You can pass a backend explicitly:
 
-### 2.5 `enthalpy_from_rel_humidity`
+```python
+result = engine.calculate(project, "V221", "1.0.0", backend=StubBackend())
+```
 
-`def enthalpy_from_rel_humidity(t: float, rh: float, p: float) -> float`
+### 4. Read the results
 
-- **Purpose:** Enthalpy in **kJ/kg** from T/rF/p — VBA `EnthalpieR`, which computes `x` in kg/kg
-  first: `h = cpl*T + x*(r0 + cpw*T)`. **Reference-only:** no stored formula calls
-  `EnthalpieR` (dead code — textbook ch01 §1.9; the VBA `rF*100`/`p*100` double conversion is
-  only self-consistent for fractional `rF`), ported for completeness.
-- **Inputs:** `t` (°C), `rh` (%, 0–100), `p` (mbar, > 0).
-- **Outputs:** `float` — kJ/kg.
-- **Raises:** `PsychrometricError` (same domain rules as `absolute_humidity`).
-- **Example:**
-  ```python
-  enthalpy_from_rel_humidity(20.0, 50.0, 1013.0)    # ≈ 38.5 kJ/kg
-  ```
+```python
+print(result.totals)
+# {'ngf_m2': 1350.0, 'ebf_m2': 1350.0, 'rooms': 2,
+#  'ventilation_systems': 1, 'installed_electric_kw': 29.85}
 
-### 2.6 `enthalpy_from_absolute_humidity`
+print(result.per_carrier)            # {'el': 29.85}  (stub: installed electric power, kW)
+print(result.backend)                # 'stub@0.1.0'
+print(result.versions.as_dict())
+# {'dataset': 'V221', 'model': '1.0.0', 'implementation': '0.1.0', 'climate': 'meteoschweiz-2024'}
+print(result.warnings[0])
+# 'stub backend: energy values are placeholders (structural values only).'
+```
 
-`def enthalpy_from_absolute_humidity(t: float, x: float, p: float) -> float`
+Every result is reproducible and explainable:
 
-- **Purpose:** Enthalpy in **kJ/kg** from T/x/p — VBA `EnthalpieA` (the UDF actually referenced
-  by stored formulas in the Gebäude-Tool): `h = cpl*T + (x/1000)*(r0 + cpw*T)`. `p` is unused
-  in the formula but kept for signature symmetry with the VBA.
-- **Inputs:** `t` (°C), `x` (g/kg, ≥ 0), `p` (mbar — accepted, unused).
-- **Outputs:** `float` — kJ/kg.
-- **Raises:** `PsychrometricError` for `x < 0`.
-- **Example:**
-  ```python
-  enthalpy_from_absolute_humidity(20.0, 7.28, 1013.0)
-  ```
+```python
+trace = engine.explain(result.trace_id)             # trace_id == result_id
+print([step.id for step in trace.steps])
+# ['validate', 'rooms', 'ventilation', 'generation', 'totals', 'resultate']
 
-### 2.7 `dew_point`
-
-`def dew_point(t: float, rh: float, p: float) -> float`
-
-- **Purpose:** Dew-point temperature in °C from T/rF/p — VBA `TaupunktR`: computes `x`, then
-  inverts the saturation pressure: `t_dp = ((pst/2.8858)^(1/8.02) - 1.098) * 100` with
-  `pst = p / (0.622*1000/x + 1)`. **Reference-only:** no stored formula calls `TaupunktR`
-  (dead code — textbook ch01 §1.7); the dew-point power-law fit deviates from the Glück
-  polynomial (≈6 % at 20 °C) and is not used by the engine.
-- **Inputs:** `t` (°C), `rh` (%, 0–100), `p` (mbar, > 0).
-- **Outputs:** `float` — °C.
-- **Raises:** `PsychrometricError` (domain rules of `absolute_humidity`; also when `x == 0`).
-- **Example:**
-  ```python
-  dew_point(20.0, 50.0, 1013.0)             # ≈ 9.3 °C
-  ```
-
-### 2.8 `dew_point_from_absolute_humidity`
-
-`def dew_point_from_absolute_humidity(x: float, p: float) -> float`
-
-- **Purpose:** Dew-point temperature in °C from absolute humidity and pressure — VBA
-  `TaupunktA`. **Reference-only:** the function is **commented out** in the Gebaeude VBA
-  module, but `Berechnung LU!AQ{n}` still calls it → cached `#NAME?` cascading to `AS{n}`
-  `#VALUE!`; the AQ/AS column chain does not participate in any result (textbook ch01
-  §1.7/§1.10, ch04 §4.14-1). Ported for completeness; a fix would invert the Glück
-  polynomial instead.
-- **Inputs:** `x` (g/kg, > 0), `p` (mbar, > 0).
-- **Outputs:** `float` — °C.
-- **Raises:** `PsychrometricError` for `x <= 0` or `p <= 0`.
-- **Example:**
-  ```python
-  dew_point_from_absolute_humidity(7.28, 1013.0)   # ≈ 9.3 °C
-  ```
-
-### 2.9 `temperature_from_enthalpy`
-
-`def temperature_from_enthalpy(h: float, x: float) -> float`
-
-- **Purpose:** Temperature in °C from enthalpy and absolute humidity — VBA `TemperaturH`:
-  `t = (h - x*r0) / (cpl + cpw*x)` with `x` in kg/kg internally.
-- **Inputs:** `h` (kJ/kg), `x` (g/kg, ≥ 0).
-- **Outputs:** `float` — °C.
-- **Raises:** `PsychrometricError` for `x < 0` or a denominator of zero.
-- **Example:**
-  ```python
-  temperature_from_enthalpy(38.5, 7.28)     # ≈ 20.0 °C
-  ```
-
-### 2.10 `wet_bulb_temperature`
-
-`def wet_bulb_temperature(t: float, rh: float) -> float`
-
-- **Purpose:** Empirical wet-bulb temperature in °C — VBA `Feuchtkugel`
-  (`FK = -5.809 + 0.058*rh + 0.697*t + 0.003*rh*t`, below 0 °C corrected to `FK*0.8 + 0.5`).
-  **Reference-only**: the function is not referenced by any stored formula (dead code —
-  textbook ch01 §1.8); it is ported for completeness and marked accordingly.
-- **Inputs:** `t` (°C), `rh` (%, 0–100).
-- **Outputs:** `float` — °C.
-- **Raises:** `PsychrometricError` for `rh` outside 0–100.
-- **Example:**
-  ```python
-  wet_bulb_temperature(20.0, 50.0)          # ≈ 13.7 °C
-  ```
+again = engine.get_result(result.result_id)         # stored results are reloadable
+assert again == result
+```
 
 ---
 
-## 3. `energytools.gebaeude.ahu`
+<a id="1-energytoolsgebaeudemodel"></a>
+<a id="11-energycarrier"></a>
+<a id="12-enduse"></a>
+<a id="17-generationcatalog"></a>
+<a id="18-weightingfactors"></a>
+<a id="19-resultate"></a>
+## Classes
 
-The AHU temperature-bin engine — the port of `Berechnung LU` (assessment §2.2: ≈13,500 formula
-cells; a single row-32 template driven per system; fans, WRG/KRG, recirculation, heating/cooling
-coils, dehumidification, humidification, IST/SOLL comparison, results in rows 254–260). It is a
-**pure function of the inputs**; the Excel backend exists only to produce the same numbers via
-the original workbook during the port phase.
+<a id="4-energytoolsgebaeudeengine"></a>
+<a id="41-calculationengine"></a>
+<a id="engine--calculationengine"></a>
+### `Engine` / `CalculationEngine` ✅ (user-facing)
 
-### 3.1 `AhuInput`
+`class Engine` — the orchestration facade: **validate → calculate → explain → retrieve**.
+`CalculationEngine` is a type alias for `Engine` (kept for the API-reference name); use either.
 
-`@dataclass(frozen=True) class AhuInput`
+**Methods:**
 
-- **Purpose:** All inputs of one AHU calculation — the row-32 template as data (no cells).
-- **Inputs (constructor):** `system: VentilationSystem`, `served_area: Quantity` (m²),
-  `room_use: RoomUse | None = None`, `climate_station: ClimateStation`,
-  `value_kind: ValueKind`, `bin_temperatures: tuple[float, ...]` (bin centres, from
-  `Klimadaten`), `bin_hours: tuple[float, ...]` (annual hours per bin),
-  `supply_setpoint: Quantity` (°C), `return_setpoint: Quantity` (°C), `recirculation_ratio:
-  float = 0.0`, `air_pressure: Quantity = Quantity(1013.0, "mbar")`.
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; validation results are returned by its methods).
-- **Methods:**
-  - **`validate() -> ValidationReport`** — bins/hours length match, positive areas.
-- **Raises:** constructor: `ValueError` on mismatched bin arrays.
-- **Example:**
-  ```python
-  AhuInput(system=la03, served_area=Quantity(1200.0, "m2"), climate_station=zurich,
-           value_kind=ValueKind.STANDARD, bin_temperatures=(-25.0, …, 34.0),
-           bin_hours=(0.0, …, 120.0), supply_setpoint=Quantity(21.0, "°C"),
-           return_setpoint=Quantity(24.0, "°C"))
-  ```
+| Method | Signature | Returns | One-liner |
+|---|---|---|---|
+| `validate_input` | `(input_: BuildingInput, dataset: str, model_release: str) -> ValidationReport` | `ValidationReport` | Structural + domain validation and version compatibility; never raises. |
+| `calculate` | `(input_, dataset, model_release, backend=None, result_id=None) -> Results` | `Results` | Validate, run the backend, store the result, return it. |
+| `explain` | `(result_id: str) -> CalculationTrace` | `CalculationTrace` | The stored step-by-step trace of a result. |
+| `get_result` | `(result_id: str) -> Results` | `Results` | The stored result. |
 
-### 3.2 `AhuBinResult`
+**Raises:** `ModelVersionMismatchError` (unknown model / incompatible dataset),
+`CalculationInputError` (hard validation errors), `BackendError` / `CalculationError`
+(runtime failures). All engine exceptions come from `energytools.engine.errors` — see
+[02-common-foundation.md](02-common-foundation.md) for the exception classes.
 
-`@dataclass(frozen=True) class AhuBinResult`
+```python
+engine = Engine()
+report = engine.validate_input(project, "V221", "1.0.0")
+print(report.valid)                  # True
+```
 
-- **Purpose:** Per-temperature-bin result of the psychrometric loop: one row of the
-  `Berechnung LU` template for one outdoor bin.
-- **Inputs (constructor):** `bin_index: int`, `t_a: float` (°C), `hours: float` (h/a),
-  `x_a: float` (g/kg), `h_a: float` (kJ/kg), `t_mil: float` (°C, mixed air), `x_mil: float`,
-  `t_zul_ist: float` (°C, supply IST after case selection), `x_zul_ist: float` (g/kg),
-  `case: str` (`"fall1_heizen_befeuchten" | "fall2_entfeuchten_heizen" |
-  "fall3_kuehlen_entfeuchten" | "fall4_kuehlen_befeuchten"` — the `Fallunterscheidung`
-  classification of the workbook's `AW{n}` detector, **live code** per textbook ch04 §4.9:
-  Fall 1 heat+humidify, Fall 2 dehumidify+heat, Fall 3 cool (±reheat), Fall 4 cool+humidify),
-  `fan_power: float` (kW), `heating_power: float` (kW), `cooling_power: float` (kW),
-  `humidification_power: float` (kW), `dehumidification_power: float` (kW),
-  `energy: dict[str, float]` (kWh per function).
-- **Attributes:** all constructor fields; `as_dict()`.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:** `bin = result.bins[30]; bin.case, bin.heating_power`
+The engine resolves versions explicitly — `"latest"` is never resolved silently inside a
+calculation; the concrete ids are recorded in `Results.versions`:
 
-### 3.3 `AhuResult`
+```python
+engine.calculate(project, "V221", "latest")      # resolves to the newest installed model
+engine.calculate(project, "V222", "1.0.0")       # → ModelVersionMismatchError
+```
 
-`@dataclass(frozen=True) class AhuResult`
+<a id="16-buildingproject"></a>
+### `BuildingInput` ✅ (user-facing)
 
-- **Purpose:** Aggregated result of one AHU over all bins: annual energies (rows 254–260 of
-  `Berechnung LU`) plus the full bin trace for explanation.
-- **Inputs (constructor):** `system_id: str`, `input: AhuInput`, `bins: tuple[AhuBinResult,
-  ...]`, `annual: dict[str, Quantity]` (e.g. `{"heating": …, "cooling": …,
-  "humidification": …, "fans": …, "total_electric": …}` in kWh/a),
-  `full_load_hours: Quantity | None` (h/a), `provenance: Provenance | None = None`.
-- **Attributes:** all constructor fields; `as_dict()`.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:** `ahu_result.annual["cooling"].format()  # '12 400.00 kWh/a'`
+`@dataclass(frozen=True) class BuildingInput` — the complete, validated calculation request.
+Construct it directly; `validate()` reports problems instead of raising.
 
-### 3.4 `calculate_ahu`
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `name` | `str` | **yes** | Project name. |
+| `rooms` | `tuple[RoomRow, ...]` | **yes** | At least one room. |
+| `author` | `str \| None` | no | Author name. |
+| `date` | `date \| None` | no | Project date. |
+| `climate_station_id` | `int` | no (default `1`) | Climate station 1–40. |
+| `value_kind` | `ValueKind` | no (default `STANDARD`) | `standard` / `zielwert` / `bestand`. |
+| `ventilation` | `tuple[VentilationSystem, ...]` | no | AHU systems `LA01`–`LA16`. |
+| `generation` | `tuple[GenerationSystem, ...]` | no | Generators (cooling/heating/ww). |
+| `note` | `str \| None` | no | Free-text note. |
 
-`def calculate_ahu(input: AhuInput) -> AhuResult`
+**Methods:** `validate() -> ValidationReport` (climate station 1–40, room uses known, LA ids
+`LA01`–`LA16`, no duplicate system ids), `total_ngf() -> float` (m²), `total_ebf_area() ->
+float` (m²), `canonical_json() -> str`, `inputs_hash() -> str` (SHA-256 of the canonical
+input), `as_dict()` / `from_dict()`.
 
-- **Purpose:** Runs the temperature-bin psychrometric calculation for one AHU: for each bin —
-  outdoor state from climate, mixed-air state, **Fall 1–4 case selection** (the live
-  `Fallunterscheidung` logic — workbook `Fall1Tzul/Fall1xzul/Fall2Tzul/Fall2xzul`, textbook
-  ch04 §4.9; bin state machine per ch04 §4.16-2), fan power (P ∝ V^2.5, stage-dependent),
-  coil/heater/humidifier models with WRG/KRG — then aggregates annual energies (rows 254–260).
-  Deterministic: same inputs → bit-identical outputs.
-- **Inputs:** `input: AhuInput` (see 3.1).
-- **Outputs:** `AhuResult`.
-- **Raises:** `PsychrometricError` (out-of-domain state, e.g. humidity > saturation in a bin),
-  `CalculationError` for internal inconsistency (e.g. negative annual energy).
-- **Example:**
-  ```python
-  result = calculate_ahu(AhuInput(system=la03, …))
-  print(result.annual["heating"])
-  ```
+<a id="13-roomrow"></a>
+### `RoomRow` ✅ (user-facing)
 
-### 3.5 `FanModel`
+`@dataclass(frozen=True) class RoomRow` — one building room row.
 
-`@dataclass(frozen=True) class FanModel`
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `name` | `str` | **yes** | Room label. |
+| `room_use_id` | `int \| str` | **yes** | nutzid (1–45) or SIA code (`"1.01"`). |
+| `ebf` | `bool` | **yes** | Counts toward the energy reference area (EBF). |
+| `ngf` | `float` | **yes** | Net floor area (m²). |
+| `share` | `float \| None` | no | Share of the total NGF (0–1). |
+| `geraete` / `prozessanlagen` / `beleuchtung` | `float \| None` | no | Power densities (W/m²). |
+| `lueftung_system` | `str \| None` | no | LA id of the served AHU system. |
+| `lueftung_volume_flow` | `float \| None` | no | Volume flow (m³/h). |
+| `gekuehlt` / `beheizt` / `warmwasser` | `bool` | no | Demand flags. |
 
-- **Purpose:** Stage-dependent fan power model of the workbook: fan power scales with
-  `(V/V_ref)^2.5` between stages (observed "Leistung" column of `Berechnung LU`).
-- **Inputs (constructor):** `reference_power: Quantity` (kW at reference flow),
-  `reference_flow: Quantity` (m³/h), `stages: tuple[float, ...] = (0.33, 0.66, 1.0)`
-  (relative flows per stage).
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; power results are returned by its methods).
-- **Methods:**
-  - **`fan_power(volume_flow: Quantity, stage: int = -1) -> Quantity`** — power at the given
-    flow (or at the given stage index). **Raises:** `ValueError` for out-of-range stage.
-- **Raises:** —.
-- **Example:**
-  ```python
-  FanModel(reference_power=Quantity(7.5, "kW"), reference_flow=Quantity(4000.0, "m3/h"))
-      .fan_power(Quantity(2000.0, "m3/h"))      # 7.5 * (0.5)^2.5 ≈ 1.33 kW
-  ```
+```python
+room = RoomRow(name="Büro 1", room_use_id="1.01", ebf=True, ngf=1200.0,
+               geraete=8.0, lueftung_system="LA03")
+print(room.effective_area())          # 1200.0  (share × ngf, or ngf)
+```
 
-### 3.6 `HeatRecoveryModel`
+<a id="14-ventilationsystem"></a>
+### `VentilationSystem` ✅ (user-facing)
 
-`@dataclass(frozen=True) class HeatRecoveryModel`
+`@dataclass(frozen=True) class VentilationSystem` — one of the 16 workbook systems `LA01`–`LA16`.
 
-- **Purpose:** WRG/KRG recovery: temperature efficiency model for the recovery wheel/plate
-  used in `Berechnung LU` (wrga = recovery ratio of `VentilationSystem`).
-- **Inputs (constructor):** `efficiency: float` (0–1), `frost_protection: bool = True`
-  (recovery limited above the frost threshold).
-- **Attributes:** all constructor fields.
-- **Outputs:** — (value object; temperature results are returned by its methods).
-- **Methods:**
-  - **`recovery_temperature(t_exhaust: float, t_outdoor: float) -> float`** — pre-heated
-    outdoor temperature after recovery, °C. **Raises:** `PsychrometricError` on invalid
-    efficiency.
-- **Raises:** —.
-- **Example:**
-  ```python
-  HeatRecoveryModel(0.7).recovery_temperature(22.0, -10.0)   # ≈ 12.4 °C
-  ```
+| Field | Type | Meaning |
+|---|---|---|
+| `id` | `str` | System id, `"LA01"`…`"LA16"` (required). |
+| `room_use` | `str \| None` | Served room use (SIA code). |
+| `volume_flow_standard` / `volume_flow_prozess` / `volume_flow_projekt` | `float \| None` | Volume flows (m³/h). |
+| `sfp` | `float \| None` | Specific fan power (W/(m³/h)). |
+| `fan_power` | `float \| None` | Fan power (kW). |
+| `regulation` | `str \| None` | `"1-stufig" \| "2-stufig" \| "stufenlos"`. |
+| `full_load_hours` | `float \| None` | Full-load hours (h/a). |
+| `wrg` | `float \| None` | WRG recovery ratio 0–1. |
+| `kuehlfall_t` / `heizfall_t` | `float \| None` | Kühlfall/Heizfall setpoints (°C). |
+| `humidity_setpoints` | `dict[str, float] \| None` | Humidity setpoints. |
 
----
+```python
+sys = VentilationSystem(id="LA03", regulation="2-stufig", volume_flow_standard=4000.0,
+                        sfp=1.8, wrg=0.7)
+print(sys.effective_volume_flow())    # 4000.0  (Projekt → Prozess → Standard priority)
+```
 
-## 4. `energytools.gebaeude.engine`
+<a id="15-generationsystem"></a>
+### `GenerationSystem` ✅ (user-facing)
 
-### 4.1 `CalculationEngine`
+`@dataclass(frozen=True) class GenerationSystem` — one generator of the `Erzeugung` sheet.
 
-`class CalculationEngine`
+| Field | Type | Required | Meaning |
+|---|---|---|---|
+| `id` | `str` | **yes** | Generator id (e.g. `"KE1"`). |
+| `kind` | `str` | **yes** | `"cooling" \| "heating" \| "ww"`. |
+| `catalog_code` | `str` | **yes** | `Nutzungsgrad` catalog code (KE/WE/WW pattern). |
+| `coverage` | `float` | **yes** | Deckungsgrad 0–1. |
+| `losses` | `float` | **yes** | Speicher-/Verteilverluste 0–1. |
+| `nominal_power` | `float \| None` | no | Nominal power (kW). |
 
-- **Purpose:** The orchestration facade of the calculation service (assessment §6.2): validate
-  input → calculate over a chosen backend → explain; stores results for reproducibility.
-  Backend-agnostic: `ExcelBackend` (reference) and `NativeBackend` (ported) are interchangeable
-  behind it, and the engine records which backend produced a result.
-- **Inputs (constructor):** `store: CalculationStore | None = None`,
-  `resolver: VersionResolver | None = None`, `default_backend: CalculationBackend | None =
-  None`.
-- **Attributes:** `store`, `resolver`, `default_backend`.
-- **Outputs:** — (service object; results are returned by its methods).
-- **Methods:**
-  - **`validate_input(project: BuildingProject, dataset: Dataset, model_release: ModelRelease |
-    str) -> ValidationReport`** — structural + domain validation (project, rooms, systems,
-    station, generation) **and** version compatibility. **Raises:** — (report).
-  - **`calculate(project: BuildingProject, dataset: Dataset, model_release: ModelRelease | str,
-    backend: CalculationBackend | None = None, result_id: str | None = None) ->
-    CalculationResult`** — validates first, then runs the backend, stores the result.
-    **Raises:** `ModelVersionMismatchError`, `CalculationInputError` (hard errors),
-    `BackendError`, `CalculationError`.
-  - **`explain(result_id: str) -> CalculationTrace`** — the stored trace. **Raises:**
-    `KeyError`-derived `CalculationError` for unknown `result_id`.
-  - **`get_result(result_id: str) -> CalculationResult`** — stored result. **Raises:**
-    `CalculationError` for unknown id.
-- **Raises:** constructor: —.
-- **Example:**
-  ```python
-  engine = CalculationEngine()
-  report = engine.validate_input(project, ds, "1.0.0")
-  result = engine.calculate(project, ds, "1.0.0", backend=NativeBackend())
-  trace = engine.explain(result.result_id)
-  ```
+<a id="42-calculationresult"></a>
+### `Results` ✅ (user-facing)
 
-### 4.2 `CalculationResult`
+`@dataclass(frozen=True) class Results` — the complete, reproducible outcome of one
+calculation. `as_dict()` is JSON-ready (the `POST /calculations` response shape).
 
-`@dataclass(frozen=True) class CalculationResult`
+| Attribute | Type | Meaning |
+|---|---|---|
+| `result_id` | `str` | Stable id of the stored result. |
+| `versions` | `VersionInfo` | dataset / model / implementation / climate quadruple. |
+| `inputs_hash` | `str` | SHA-256 of the canonical input JSON. |
+| `input_` | `BuildingInput` | The input that produced this result. |
+| `backend` | `str` | Backend identity, e.g. `"stub@0.1.0"`. |
+| `per_room` | `dict[str, Any]` | Per-room KPIs keyed by room name. |
+| `per_system` | `dict[str, Any]` | Per-system values keyed by LA id. |
+| `per_carrier` | `dict[str, float]` | Totals per Energieträger. |
+| `totals` | `dict[str, float]` | Building totals (ngf, ebf, rooms, …). |
+| `intermediates` | `dict[str, Any]` | Intermediate values (stub: data sources). |
+| `assumptions` | `tuple[str, ...]` | Documented assumptions of the run. |
+| `warnings` | `tuple[str, ...]` | Warnings (e.g. placeholder values). |
+| `overridden_values` | `tuple[dict, ...]` | Values overridden vs. the catalog. |
+| `computed_at` | `datetime` | UTC timestamp. |
+| `trace` | `CalculationTrace \| None` | The explain trace. |
+| `trace_id` | *(property)* | Alias of `result_id` — pass it to `Engine.explain`. |
 
-- **Purpose:** The complete, reproducible outcome of one calculation (assessment §6.2 response):
-  versions, inputs hash, assumptions, warnings, overridden values, results per room/system/
-  carrier, totals and intermediates.
-- **Inputs (constructor):** `result_id: str` (UUID), `versions: VersionInfo`, `inputs_hash:
-  str` (SHA-256 of the canonical input JSON), `project: BuildingProject`, `backend: str`
-  (backend name + version), `per_room: Mapping[str, dict]`, `per_system: Mapping[str,
-  AhuResult]`, `per_carrier: Resultate`, `totals: dict[str, Quantity]`,
-  `intermediates: dict[str, object]` (e.g. `{"ahu_bins": …, "full_load_hours": …,
-  "qhc": …}`), `assumptions: tuple[str, ...]`, `warnings: tuple[str, ...]`,
-  `overridden_values: tuple[dict, ...]`, `computed_at: datetime`, `trace: CalculationTrace |
-  None = None`.
-- **Attributes:** all constructor fields; `as_dict()` → JSON-ready.
-- **Outputs:** — (value object).
-- **Raises:** —.
-- **Example:**
-  ```python
-  result.versions.as_dict()          # {'dataset': 'V221', 'model': '1.0.0', …}
-  result.totals["endenergie_el"]
-  ```
+```python
+print(result.per_room["Büro 1"])
+# {'room_use_id': '1.01', 'ebf': True, 'ngf_m2': 1200.0, 'effective_area_m2': 1200.0,
+#  'geraete_kw': 9.6, 'beleuchtung_kw': 12.0, 'installed_electric_kw': 21.6, ...}
+```
 
-### 4.3 `CalculationTrace`
+<a id="43-calculationtrace"></a>
+### `CalculationTrace` ✅ (user-facing)
 
-`class CalculationTrace`
+`@dataclass(frozen=True) class CalculationTrace` — the step-by-step trace of one calculation
+(the `GET /calculations/{id}/explain` payload). `steps` is a tuple of `TraceStep`
+(`id`, `kind`, `label`, `inputs`, `formula`, `outputs`, `provenance`); `step(step_id)`
+returns one step (raises `KeyError` for unknown ids).
 
-- **Purpose:** Step-by-step explainable trace: the calculation graph nodes (room KPI
-  derivation → building aggregation → AHU bins → generation → resultate) with their inputs,
-  formula reference and outputs — the payload of `GET /calculations/{id}/explain`
-  (assessment §6.2).
-- **Inputs (constructor):** `result_id: str`, `steps: tuple[TraceStep, ...]`
-  (`TraceStep` = `{id, kind, label, inputs: dict, formula: str | None, outputs: dict,
-  provenance: Provenance | None}`).
-- **Attributes:** `result_id`, `steps`.
-- **Outputs:** — (value object; step access via its methods).
-- **Methods:**
-  - **`steps() -> tuple[TraceStep, ...]`** — ordered steps.
-  - **`step(step_id: str) -> TraceStep`** — **Raises:** `KeyError`.
-- **Raises:** —.
-- **Example:**
-  ```python
-  for s in trace.steps():
-      print(s.label, s.outputs)
-  ```
+<a id="110-validationreport"></a>
+### `ValidationReport` ✅ (user-facing)
 
-### 4.4 `CalculationStore`
+`@dataclass(frozen=True) class ValidationReport` — hard errors (invalid) and warnings
+(suspicious but acceptable). `valid` is `True` when there are no errors; `as_dict()` is
+JSON-ready.
 
-`class CalculationStore`
+<a id="5-energytoolsgebaeudebackends"></a>
+<a id="51-calculationbackend"></a>
+### `EngineBase` ⚙ (internal — writing custom backends)
 
-- **Purpose:** Persistence of calculation results by `result_id` (in-memory or on-disk),
-  enabling `GET /calculations/{result_id}` and reproducibility (assessment §6.2).
-- **Inputs (constructor):** `directory: str | None = None` (None = in-memory).
-- **Attributes:** `directory`.
-- **Outputs:** — (store object; persistence results via its methods).
-- **Methods:**
-  - **`save(result: CalculationResult) -> None`** — **Raises:** `OSError` on write failure.
-  - **`get(result_id: str) -> CalculationResult`** — **Raises:** `CalculationError` (unknown
-    id).
-  - **`list(limit: int = 100) -> list[str]`** — newest-first result ids.
-- **Raises:** —.
-- **Example:**
-  ```python
-  store.save(result); store.get(result.result_id)
-  ```
+`class EngineBase(ABC)` — the backend contract. A backend executes one **validated**
+calculation and reports its identity (`name`, `version`). Implement `calculate` and `validate`
+to plug a custom backend into `Engine`.
+
+```python
+from energytools.engine import EngineBase, Results, ValidationReport
+
+class MyBackend(EngineBase):
+    name = "my-backend"
+    version = "0.1.0"
+
+    def validate(self, input_, dataset):        # capability check
+        return ValidationReport()
+
+    def calculate(self, input_, dataset, model_release) -> Results:
+        ...  # must return a full Results with a trace
+```
+
+<a id="52-excelbackend"></a>
+<a id="53-nativebackend"></a>
+### `StubBackend` ⚙ (internal — default, structural only)
+
+`class StubBackend(EngineBase)` — the deterministic structural backend (`name = "stub"`).
+It computes **no physics**: it aggregates per-room effective areas and installed electric
+power, per-system effective volume flows and building totals so the engine I/O contract and
+the explain trace can be exercised without Excel or the ported model. Energy values are
+placeholders — stated explicitly in `assumptions`/`warnings`.
+
+<a id="44-calculationstore"></a>
+### `CalculationStore` ⚙ (internal)
+
+`class CalculationStore` — persistence of results by `result_id`. In-memory when `directory`
+is `None`; otherwise every result is also written as `<result_id>.json` so a fresh process can
+reload it. Methods: `save(result)`, `get(result_id)`, `list(limit=100)`.
+
+```python
+from energytools.engine import CalculationStore, Engine
+
+store = CalculationStore(directory=".tmp/results")
+engine = Engine(store=store)
+```
 
 ---
 
-## 5. `energytools.gebaeude.backends`
+## Functions and constants
 
-### 5.1 `CalculationBackend`
+### `DEFAULT_MODEL` ✅ (user-facing)
 
-`class CalculationBackend(abc.ABC)`
+`DEFAULT_MODEL: ModelRelease` — the model release installed with this milestone: model
+`1.0.0`, compatible with the `V221` dataset release and the `meteoschweiz-2024` climate data.
+This is what `Engine()` uses when you do not pass `models`.
 
-- **Purpose:** The backend contract. A backend executes one validated calculation and reports
-  its identity; the engine treats all backends uniformly (assessment §5.3 [4]).
-- **Inputs (constructor):** — (abstract).
-- **Attributes:** `name: str` (e.g. `"excel"` / `"native"`), `version: str`.
-- **Outputs:** — (backend object; calculation results are returned by its methods).
-- **Methods (abstract):**
-  - **`calculate(project: BuildingProject, dataset: Dataset, model_release: ModelRelease) ->
-    CalculationResult`** — full calculation (per-room, per-system, per-carrier, totals,
-    intermediates, trace). **Raises:** `BackendError` subclasses, `ModelVersionMismatchError`.
-  - **`validate(project: BuildingProject, dataset: Dataset) -> ValidationReport`** — backend
-    capability validation (e.g. Excel: all inputs mappable to workbook ranges).
-- **Raises:** —.
-- **Example:**
-  ```python
-  backend: CalculationBackend = NativeBackend() if use_native else ExcelBackend(path)
-  ```
+```python
+from energytools.engine import DEFAULT_MODEL
+print(DEFAULT_MODEL.id)                     # 1.0.0
+print(sorted(DEFAULT_MODEL.compatible_dataset_releases))   # ['V221']
+```
 
-### 5.2 `ExcelBackend`
-
-`class ExcelBackend(CalculationBackend)`
-
-- **Purpose:** **Excel backend — the reference runtime** (assessment §7.3): executes the
-  original Gebäude-Tool workbook on a **copy** via Excel COM to produce the oracle values. Inputs
-  are mapped API-side to workbook cells; outputs are read back from result ranges; **no cell
-  address ever crosses the API** (assessment §5.3 rule 1). Deterministic configuration: links
-  not updated, `Application.Calculation` fixed, `AutomationSecurity = ForceDisable`,
-  no save.
-- **Inputs (constructor):** `workbook_path: str` (path to a copy of
-  `2024_Gebaeude-Tool_dfi_V221.xlsm`), `excel_app: object | None = None` (injected COM
-  application for tests), `timeout_s: float = 120.0`.
-- **Attributes:** `name = "excel"`, `version` (from the workbook + runner version),
-  `workbook_path`.
-- **Outputs:** — (backend object; calculation results are returned by its methods).
-- **Methods:**
-  - **`calculate(project, dataset, model_release) -> CalculationResult`** — recalculates the
-    workbook copy and reads results. **Raises:** `ExcelBackendError` (Excel missing/denied,
-    recalc failure, non-deterministic results, cached-value mismatch),
-    `ModelVersionMismatchError`.
-  - **`close() -> None`** — releases the COM application deterministically.
-  - **`__enter__() / __exit__(...)`** — context manager wrapping open/close.
-- **Raises:** constructor: `FileNotFoundError` if the copy is missing.
-- **Example:**
-  ```python
-  with ExcelBackend("data/raw/_copies/Gebaeude_V221.xlsm") as backend:
-      result = engine.calculate(project, ds, "1.0.0", backend=backend)
-  # Excel process guaranteed released even on failure
-  ```
-
-### 5.3 `NativeBackend`
-
-`class NativeBackend(CalculationBackend)`
-
-- **Purpose:** **Native backend — the ported runtime** (assessment §7.5/7.6): pure-Python
-  execution of the model (physics + AHU + generation + resultate). Verified module-by-module
-  against the Excel oracle within defined tolerances (exact for pure arithmetic; ≤1e-9 relative
-  for transcendental physics; normative `ROUND(…,-1)` rules applied where the workbook defines
-  them). No Excel required.
-- **Inputs (constructor):** `tolerances: dict[str, float] | None = None` (per-result-kind
-  tolerances for the self-check against stored reference cases), `self_check: bool = True`.
-- **Attributes:** `name = "native"`, `version` (library version).
-- **Outputs:** — (backend object; calculation results are returned by its methods).
-- **Methods:**
-  - **`calculate(project, dataset, model_release) -> CalculationResult`** — runs
-    `calculate_ahu` per system, aggregates via `ResultateAggregator`, builds the trace.
-    **Raises:** `CalculationError`, `PsychrometricError` (wrapped), `ModelVersionMismatchError`.
-- **Raises:** —.
-- **Example:**
-  ```python
-  result = engine.calculate(project, ds, "1.0.0", backend=NativeBackend())
-  ```
+There is currently no `example_building()` helper in the public API; the Quickstart above is
+the canonical minimal example (the tests use the same shape via `tests/helpers.py`).
 
 ---
 
-## 6. `energytools.gebaeude.resultate`
+<a id="2-energytoolsgebaeudephysics"></a>
+## Native module (advanced)
 
-### 6.1 `ResultateAggregator`
+`energytools.engine.native` is the pure-Python port of the workbook's physical model — the
+future `NativeBackend` runtime. These are **low-level physics / computation primitives**,
+usually called by the engine internally; advanced users can call them directly. All functions
+are verified against the Excel-oracle golden files in `data/golden/`.
 
-`class ResultateAggregator`
+<a id="21-physics-constants"></a>
+<a id="22-saturation_pressure_glueck"></a>
+<a id="23-absolute_humidity"></a>
+<a id="24-relative_humidity"></a>
+<a id="25-enthalpy_from_rel_humidity"></a>
+<a id="26-enthalpy_from_absolute_humidity"></a>
+<a id="27-dew_point"></a>
+<a id="28-dew_point_from_absolute_humidity"></a>
+<a id="29-temperature_from_enthalpy"></a>
+<a id="210-wet_bulb_temperature"></a>
+<a id="psychrometrics--moist-air-functions-advanced"></a>
+### `psychrometrics` — moist-air functions (advanced)
 
-- **Purpose:** Aggregates room KPIs, AHU results and generation results into the `Resultate`
-  table (per Energieträger × end use, with losses and Deckungsgrad applied — the `Erzeugung` →
-  `Resultate` flow of assessment §2.2).
-- **Inputs (constructor):** `catalog: GenerationCatalog`, `weighting: WeightingFactors | None
-  = None`.
-- **Attributes:** `catalog`, `weighting`.
-- **Outputs:** — (service object; aggregation results are returned by its methods).
-- **Methods:**
-  - **`aggregate(project: BuildingProject, ahu_results: Mapping[str, AhuResult], dataset:
-    Dataset) -> Resultate`** — full aggregation incl. per-generator Endenergie and carrier
-    totals. **Raises:** `CalculationError` for unknown catalog codes or inconsistent units.
-- **Raises:** —.
-- **Example:**
-  ```python
-  agg = ResultateAggregator(catalog, factors)
-  resultate = agg.aggregate(project, ahu_results, ds)
-  ```
+Port of `FeuchteLuft_Formeln.bas`. Unit conventions: `t` in °C, `x` in g/kg, `p` in mbar,
+`h` in kJ/kg, relative humidity as a **decimal fraction 0–1** (except `wet_bulb_temperature`,
+which takes % 0–100 exactly like the VBA).
 
-### 6.2 `weight_resultate`
+| Function | Signature | Returns | One-liner |
+|---|---|---|---|
+| `saturation_pressure_glueck` | `(t: float) -> float` | `float` | Saturation vapour pressure after Glück in mbar. |
+| `absolute_humidity` | `(t, rh, p) -> float` | `float` | Absolute humidity in g/kg (VBA `AbsFeuchte`). |
+| `relative_humidity` | `(t, x, p) -> float` | `float` | Relative humidity as a decimal fraction (VBA `RelFeuchte`). |
+| `enthalpy_from_rel_humidity` | `(t, rh, p) -> float` | `float` | Enthalpy in kJ/kg (VBA `EnthalpieR`, reference-only). |
+| `enthalpy_from_absolute_humidity` | `(t, x, p) -> float` | `float` | Enthalpy in kJ/kg (VBA `EnthalpieA`). |
+| `dew_point` | `(t, rh, p) -> float` | `float` | Dew-point temperature in °C (VBA `TaupunktR`, reference-only). |
+| `dew_point_from_absolute_humidity` | `(x, p) -> float` | `float` | Dew point from x/p (VBA `TaupunktA`, reference-only). |
+| `temperature_from_enthalpy` | `(h, x) -> float` | `float` | Temperature in °C from enthalpy (VBA `TemperaturH`). |
+| `wet_bulb_temperature` | `(t, rh) -> float` | `float` | Wet-bulb temperature in °C (VBA `Feuchtkugel`, reference-only; rh in %). |
 
-`def weight_resultate(resultate: Resultate, factors: WeightingFactors) -> dict[str, dict]`
+Module constants: `CP_AIR = 1.006`, `CP_WATER_VAPOUR = 1.86`, `CP_WATER = 4.19`,
+`HEAT_OF_VAPORIZATION = 2501.6`, `HEAT_OF_VAPORIZATION_100 = 2256.0`, `AIR_DENSITY = 1.15`,
+`MOLAR_MASS_RATIO = 622`, `PS_0 = 611`, `DEW_POINT_P = 2.8858`, `DEW_POINT_N = 8.02`,
+`DEW_POINT_K = 1.098`.
 
-- **Purpose:** Applies the NEGF/PEne/THGE weighting factors to the resultate table (assessment
-  §2.1 weighting columns).
-- **Inputs:** `resultate: Resultate`, `factors: WeightingFactors`.
-- **Outputs:** `{"negf": {carrier: value}, "pene": …, "thge": …}` (also aggregated totals).
-- **Raises:** `CalculationError` if a carrier of the resultate is missing from `factors`.
-- **Example:**
-  ```python
-  weighted = weight_resultate(resultate, factors)
-  weighted["pene"]["el"]
-  ```
+```python
+from energytools.engine.native import psychrometrics as ps
+
+ps.saturation_pressure_glueck(20.0)          # 23.3673815296201   mbar
+ps.absolute_humidity(20.0, 0.5, 1013.0)      # 7.2577022751807725 g/kg
+ps.enthalpy_from_absolute_humidity(20.0, 7.28, 1013.0)   # 38.602464 kJ/kg
+```
+
+**Raises:** `PsychrometricError` (from `energytools.common.errors`) on out-of-domain inputs —
+the cases where the VBA returned `"Fehler"` (rh outside 0–1, p ≤ 0, x < 0, NaN).
+
+<a id="3-energytoolsgebaeudeahu"></a>
+<a id="31-ahuinput"></a>
+<a id="32-ahubinresult"></a>
+<a id="33-ahuresult"></a>
+<a id="34-calculate_ahu"></a>
+<a id="35-fanmodel"></a>
+<a id="36-heatrecoverymodel"></a>
+### `ahu` — AHU temperature-bin engine (advanced)
+
+Port of the `Berechnung LU` sheet: the year-round psychrometric calculation of **one**
+air-handling unit with the temperature-bin method (61 bins, t_A = −25…+35 °C).
+
+| Symbol | Kind | Purpose |
+|---|---|---|
+| `AhuInput` | `@dataclass(frozen=True)` | All inputs of one AHU calculation (system, climate bins, IST block, temperature curves). Defaults match the workbook example LA01 (Zürich-MeteoSchweiz). |
+| `compute_ahu_annual` | `(inp: AhuInput) -> AhuAnnualResult` | Annual summary (rows 254–260): `luftkuehlung_kwh`, `lufterwaermung_kwh`, `ventilator_kwh`, `total_kwh`, power maxima, water. |
+| `compute_ahu_bins` | `(inp) -> tuple[AhuBinResult, ...]` | The 61 per-bin state results. |
+| `compute_bin_hours` | `(climate_hours, full_load_hours) -> tuple[float, ...]` | Formula 1: annual operating hours per bin. |
+| `compute_fan_model` | `(inp) -> FanModelResult` | Formula 10: staged fan powers, motor efficiencies, annual average power. |
+| `AhuBinResult` | `@dataclass(frozen=True)` | One bin: psychrometric states, Fall 1–4 case, per-bin treatment energies (MWh). |
+| `AhuAnnualResult` | `@dataclass(frozen=True)` | Annual energies (kWh) and powers (kW) + `fan` model. |
+| `FanModelResult` | `@dataclass(frozen=True)` | Fan stages, motor efficiencies, annual power. |
+
+```python
+from energytools.engine.native.ahu import AhuInput, compute_ahu_annual
+
+annual = compute_ahu_annual(AhuInput())          # default LA01 example
+print(round(annual.total_kwh, 1))                # depends on supplied bin hours
+print(round(annual.ventilator_kwh, 1))
+```
+
+Note: `AhuInput()` defaults to zero bin hours (safe no-op). Feed the station's
+`bin_hours`/`bin_humidity_ratio` (from the dataset climate block or the golden files) to get
+real annual energies; the golden case-02 (Zürich-MeteoSchweiz) reproduces the workbook totals
+`total_kwh ≈ 32301.6`, `ventilator_kwh ≈ 26765.1`, `lufterwaermung_kwh ≈ 3786.3` at rel 1e-6.
+
+<a id="6-energytoolsgebaeuderesultate"></a>
+<a id="61-resultateaggregator"></a>
+<a id="62-weight_resultate"></a>
+### `aggregation` — building aggregation and `Resultate` summary (advanced)
+
+Port of the room-KPI derivation (`Gebäude!F12:W32`), the ventilation/generation aggregation
+and the final-energy matrix by Energieträger (`Resultate!D7:U15`).
+
+| Symbol | Kind | Purpose |
+|---|---|---|
+| `aggregate` | `(inp: AggregationInput) -> AggregationResult` | Run the full chain: rooms → ventilation → generation → Resultate. |
+| `compute_room_row` | `(room, value_kind, lookup, total_ngf, row_index) -> RoomResult` | One room row from the KPI lookup. |
+| `res_column` | `(target, value_kind) -> int` | Res matrix column for a target column and value kind. |
+| `AggregationInput` | `@dataclass(frozen=True)` | Everything the aggregation needs beyond `BuildingInput` (KPI lookup, AHU results, generation groups, weights). |
+| `AggregationResult` | `@dataclass(frozen=True)` | Rooms, totals, ventilation, generation, Resultate matrix + weighted indicators. |
+| `KpiLookup` | `class` | The room-KPI interface (`Res` matrix + `Std` table); implement or use `ResMatrixKpiProvider` / `DatasetResLookup`. |
+| `ResMatrixKpiProvider` | `@dataclass(frozen=True)` | Dict-backed `KpiLookup` implementation. |
+| `DatasetResLookup` | `class` | Dataset-backed `KpiLookup` over a V221 package. |
+| `GenerationCatalog` | `class` | The `Nutzungsgrad` catalogue lookup (by group kind + name). |
+| `RESULTATE_CARRIERS` / `RESULTATE_USES` / `RES_SELECTORS` / `DEFAULT_WEIGHTS` | constants | Workbook matrix conventions (carrier rows, use columns, Res column selectors, NEGF/PEne/THGE weights). |
+
+```python
+from energytools.engine.native import aggregation
+print(aggregation.RESULTATE_CARRIERS)
+# ('El', 'HEL', 'Gas', 'Pell', 'HSch', 'StH', 'Bio', 'FW')
+```
+
+**Raises:** `KpiLookupError` (a `KeyError`) when the KPI lookup cannot provide a needed
+value; `KeyError` when a generator name is absent from the catalogue.
+
+---
+
+## What to import for a new project
+
+```python
+# The engine — everything a typical project needs
+from energytools.engine import (
+    Engine,                # or CalculationEngine (alias)
+    BuildingInput,         # the calculation request
+    RoomRow,
+    VentilationSystem,
+    GenerationSystem,
+    Results,               # what calculate() returns
+    CalculationTrace,      # explain() payload
+    ValueKind,             # standard / zielwert / bestand
+)
+
+# The dataset it calculates against (part 03)
+from energytools.raumdaten import load_dataset
+
+# Errors to catch
+from energytools.engine.errors import (
+    EnergyToolsError,            # engine error base (note: engine-specific hierarchy)
+    CalculationInputError,       # invalid building input
+    ModelVersionMismatchError,   # incompatible dataset/model versions
+    CalculationError,            # runtime failure / unknown result id
+)
+```
+
+Typical flow: `load_dataset("V221")` (part [03](03-raumdaten-service.md)) → build a
+`BuildingInput` → `Engine().calculate(project, "V221", "1.0.0")` → read `Results.totals` /
+`per_carrier` / `versions` → keep `result_id` for `explain` / `get_result`.
