@@ -2,16 +2,27 @@
 
 The native backend runtime of the calculation engine (doc part 04 §5.3): pure
 Python implementations of the workbook formulas, verified against the Excel
-oracle. Currently ships the psychrometric port of ``FeuchteLuft_Formeln.bas``
-(:mod:`energytools.engine.native.psychrometrics`); the AHU temperature-bin
-engine (``Berechnung LU``) arrives in a later milestone.
+oracle. Ships the psychrometric port of ``FeuchteLuft_Formeln.bas``
+(:mod:`energytools.engine.native.psychrometrics`) and the AHU temperature-bin
+engine of the sheet ``Berechnung LU``
+(:mod:`energytools.engine.native.ahu`).
 
 Example:
-    from energytools.engine.native.psychrometrics import absolute_humidity
+    from energytools.engine.native.ahu import AhuInput, compute_ahu_annual
 
-    x = absolute_humidity(20.0, 0.5, 1013.0)   # ≈ 7.28 g/kg
+    result = compute_ahu_annual(AhuInput())
 """
 
+from energytools.engine.native.ahu import (
+    AhuAnnualResult,
+    AhuBinResult,
+    AhuInput,
+    FanModelResult,
+    compute_ahu_annual,
+    compute_ahu_bins,
+    compute_bin_hours,
+    compute_fan_model,
+)
 from energytools.engine.native.psychrometrics import (
     absolute_humidity,
     dew_point,
@@ -25,7 +36,15 @@ from energytools.engine.native.psychrometrics import (
 )
 
 __all__ = [
+    "AhuAnnualResult",
+    "AhuBinResult",
+    "AhuInput",
+    "FanModelResult",
     "absolute_humidity",
+    "compute_ahu_annual",
+    "compute_ahu_bins",
+    "compute_bin_hours",
+    "compute_fan_model",
     "dew_point",
     "dew_point_from_absolute_humidity",
     "enthalpy_from_absolute_humidity",
