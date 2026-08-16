@@ -107,20 +107,28 @@
    "P12": true,
    "Q12": {
     "formula": "IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,Q$9,FALSE))*$D12/1000)",
-    "value": 109.1411731092437
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R12": {
     "formula": "IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,R$9,FALSE))*$D12/1000)",
-    "value": 36.075336348375735
+    "value": {
+     "error": "#N/A"
+    }
    },
    "S12": true,
    "T12": {
     "formula": "IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,T$9,FALSE))*$D12/1000)",
-    "value": 49.5583774509804
+    "value": {
+     "error": "#N/A"
+    }
    },
    "U12": {
     "formula": "IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,U$9,FALSE))*$D12/1000)",
-    "value": 26.90399192102285
+    "value": {
+     "error": "#N/A"
+    }
    },
    "V12": {
     "formula": "IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$I$50,$V$8,0))*$D12",
@@ -148,14 +156,16 @@
    "N13": "{\"sharedFormula\":\"N12\"}",
    "O13": "{\"sharedFormula\":\"O12\"}",
    "P13": true,
-   "Q13": "{\"sharedFormula\":\"Q12\"}",
+   "Q13": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"Q12\"}",
    "R13": {
     "formula": "IF($B13=\"\",0,IF(P13=FALSE,0,VLOOKUP($B13,Res,R$9,FALSE))*$D13/1000)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "S13": true,
-   "T13": "{\"sharedFormula\":\"T12\"}",
-   "U13": "{\"sharedFormula\":\"U12\"}",
+   "T13": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U13": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V13": {
     "formula": "IF($B13=\"\",0,VLOOKUP($B13,Std!$B$6:$I$50,$V$8,0))*$D13",
     "error": "no-cached-value"
@@ -182,14 +192,16 @@
    "N14": "{\"result\":1.0633333333333332,\"sharedFormula\":\"N12\"}",
    "O14": "{\"result\":1.1590333333333331,\"sharedFormula\":\"O12\"}",
    "P14": true,
-   "Q14": "{\"result\":13.964262274509803,\"sharedFormula\":\"Q12\"}",
+   "Q14": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"Q12\"}",
    "R14": {
     "formula": "IF($B14=\"\",0,IF(P14=FALSE,0,VLOOKUP($B14,Res,R$9,FALSE))*$D14/1000)",
-    "value": 1.5225332626168717
+    "value": {
+     "error": "#N/A"
+    }
    },
    "S14": true,
-   "T14": "{\"result\":3.964670196078432,\"sharedFormula\":\"T12\"}",
-   "U14": "{\"result\":3.6826790396303575,\"sharedFormula\":\"U12\"}",
+   "T14": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U14": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V14": {
     "formula": "IF($B14=\"\",0,VLOOKUP($B14,Std!$B$6:$I$50,$V$8,0))*$D14",
     "error": "no-cached-value"
@@ -216,14 +228,16 @@
    "N15": "{\"result\":0.2658333333333333,\"sharedFormula\":\"N12\"}",
    "O15": "{\"result\":1.03675,\"sharedFormula\":\"O12\"}",
    "P15": true,
-   "Q15": "{\"result\":5.877748183006537,\"sharedFormula\":\"Q12\"}",
+   "Q15": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"Q12\"}",
    "R15": {
     "formula": "IF($B15=\"\",0,IF(P15=FALSE,0,VLOOKUP($B15,Res,R$9,FALSE))*$D15/1000)",
-    "value": 1.086859286639234
+    "value": {
+     "error": "#N/A"
+    }
    },
    "S15": true,
-   "T15": "{\"result\":2.867761568627451,\"sharedFormula\":\"T12\"}",
-   "U15": "{\"result\":2.417948665774974,\"sharedFormula\":\"U12\"}",
+   "T15": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U15": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V15": {
     "formula": "IF($B15=\"\",0,VLOOKUP($B15,Std!$B$6:$I$50,$V$8,0))*$D15",
     "error": "no-cached-value"
@@ -250,8 +264,8 @@
    "Q16": "{\"sharedFormula\":\"Q12\"}",
    "R16": "{\"sharedFormula\":\"R15\"}",
    "S16": true,
-   "T16": "{\"result\":19.551676470588237,\"sharedFormula\":\"T12\"}",
-   "U16": "{\"result\":17.681625271928997,\"sharedFormula\":\"U12\"}",
+   "T16": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U16": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V16": {
     "formula": "IF($B16=\"\",0,VLOOKUP($B16,Std!$B$6:$I$50,$V$8,0))*$D16",
     "error": "no-cached-value"
@@ -278,8 +292,8 @@
    "Q17": "{\"sharedFormula\":\"Q12\"}",
    "R17": "{\"sharedFormula\":\"R15\"}",
    "S17": true,
-   "T17": "{\"result\":7.014200000000001,\"sharedFormula\":\"T12\"}",
-   "U17": "{\"result\":5.391636841588556,\"sharedFormula\":\"U12\"}",
+   "T17": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U17": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V17": {
     "formula": "IF($B17=\"\",0,VLOOKUP($B17,Std!$B$6:$I$50,$V$8,0))*$D17",
     "error": "no-cached-value"
@@ -306,8 +320,8 @@
    "Q18": "{\"sharedFormula\":\"Q12\"}",
    "R18": "{\"sharedFormula\":\"R15\"}",
    "S18": true,
-   "T18": "{\"result\":2.6136176470588235,\"sharedFormula\":\"T12\"}",
-   "U18": "{\"result\":4.015686556186429,\"sharedFormula\":\"U12\"}",
+   "T18": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U18": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V18": {
     "formula": "IF($B18=\"\",0,VLOOKUP($B18,Std!$B$6:$I$50,$V$8,0))*$D18",
     "error": "no-cached-value"
@@ -334,8 +348,8 @@
    "Q19": "{\"sharedFormula\":\"Q12\"}",
    "R19": "{\"sharedFormula\":\"R15\"}",
    "S19": true,
-   "T19": "{\"result\":5.1615,\"sharedFormula\":\"T12\"}",
-   "U19": "{\"result\":6.847177344242238,\"sharedFormula\":\"U12\"}",
+   "T19": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U19": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V19": {
     "formula": "IF($B19=\"\",0,VLOOKUP($B19,Std!$B$6:$I$50,$V$8,0))*$D19",
     "error": "no-cached-value"
@@ -359,11 +373,11 @@
    "N20": "{\"result\":1.375,\"sharedFormula\":\"N12\"}",
    "O20": "{\"result\":7.535000000000001,\"sharedFormula\":\"O12\"}",
    "P20": true,
-   "Q20": "{\"result\":32.55711111111111,\"sharedFormula\":\"Q12\"}",
-   "R20": "{\"sharedFormula\":\"R15\"}",
+   "Q20": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"Q12\"}",
+   "R20": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"R15\"}",
    "S20": true,
-   "T20": "{\"result\":8.55,\"sharedFormula\":\"T12\"}",
-   "U20": "{\"sharedFormula\":\"U12\"}",
+   "T20": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T12\"}",
+   "U20": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U12\"}",
    "V20": {
     "formula": "IF($B20=\"\",0,VLOOKUP($B20,Std!$B$6:$I$50,$V$8,0))*$D20",
     "error": "no-cached-value"
@@ -1094,27 +1108,39 @@
    "I7": 10,
    "L7": {
     "formula": "(Gebäude!Q$35+Lüftung!Q$23)*F7%*(100+IF($J7<>\"\",$J7,$H7))%",
-    "value": 130.66251766641383
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M7": {
     "formula": "(Gebäude!R$35+Lüftung!R$23)*G7%*(100+IF($J7<>\"\",$J7,$H7))%",
-    "value": 35.90231390939556
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N7": {
     "formula": "IF(L7=0,0,M7*1000/L7)",
-    "value": 274.77133114069846
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O7": {
     "formula": "IF(L7=0,0,M7*1000/L7)",
-    "value": 274.77133114069846
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P7": {
     "formula": "IF(D7=0,0,$L7/IF($E7<>\"\",$E7,$D7))",
-    "value": 10.888543138867819
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q7": {
     "formula": "IF(D7=0,0,$M7/IF($E7<>\"\",$E7,$D7))",
-    "value": 2.99185949244963
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R7": {
     "formula": "IF(D7=0,\"\",VLOOKUP($B7,Nutzungsgrad!$C$3:$G$8,4,FALSE))",
@@ -1136,27 +1162,39 @@
    "I8": 10,
    "L8": {
     "formula": "(Gebäude!Q$35+Lüftung!Q$23)*F8%*(100+IF($J8<>\"\",$J8,$H8))%",
-    "value": 87.10834511094257
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M8": {
     "formula": "(Gebäude!R$35+Lüftung!R$23)*G8%*(100+IF($J8<>\"\",$J8,$H8))%",
-    "value": 8.97557847734889
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N8": {
     "formula": "IF(L8=0,0,M8*1000/L8)",
-    "value": 103.03924917776192
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O8": {
     "formula": "IF(L8=0,0,M8*1000/L8)",
-    "value": 103.03924917776192
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P8": {
     "formula": "IF(D8=0,0,$L8/IF($E8<>\"\",$E8,$D8))",
-    "value": 21.77708627773564
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q8": {
     "formula": "IF(D8=0,0,$M8/IF($E8<>\"\",$E8,$D8))",
-    "value": 2.2438946193372225
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R8": {
     "formula": "IF(D8=0,\"\",VLOOKUP($B8,Nutzungsgrad!$C$3:$G$8,4,FALSE))",
@@ -1174,19 +1212,27 @@
    "I9": 10,
    "L9": {
     "formula": "(Gebäude!Q$35+Lüftung!Q$23)*F9%*(100+IF($J9<>\"\",$J9,$H9))%",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M9": {
     "formula": "(Gebäude!R$35+Lüftung!R$23)*G9%*(100+IF($J9<>\"\",$J9,$H9))%",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N9": {
     "formula": "IF(L9=0,0,M9*1000/L9)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O9": {
     "formula": "IF(L9=0,0,M9*1000/L9)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P9": {
     "formula": "IF(D9=0,0,$L9/IF($E9<>\"\",$E9,$D9))",
@@ -1218,23 +1264,33 @@
    },
    "L10": {
     "formula": "SUM(L7:L9)",
-    "value": 217.7708627773564
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M10": {
     "formula": "SUM(M7:M9)",
-    "value": 44.87789238674445
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N10": {
     "formula": "M10*1000/L10",
-    "value": 206.07849835552383
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O10": {
     "formula": "M10*1000/L10",
-    "value": 206.07849835552383
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P10": {
     "formula": "SUM(P7:P9)",
-    "value": 32.66562941660346
+    "value": {
+     "error": "#N/A"
+    }
    },
    "A13": {
     "formula": "Begriffe!F173",
@@ -1355,27 +1411,39 @@
    "I16": 10,
    "L16": {
     "formula": "(Gebäude!T$35+Lüftung!S$23)*F16%*(100+IF($J16<>\"\",$J16,$H16))%",
-    "value": 94.61898871284059
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M16": {
     "formula": "(Gebäude!U$35+Lüftung!T$23)*G16%*(100+IF($J16<>\"\",$J16,$H16))%",
-    "value": 63.34489539192664
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N16": {
     "formula": "IF(L16=0,0,M16*1000/L16)",
-    "value": 669.4733927475406
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O16": {
     "formula": "IF(L16=0,0,M16*1000/L16)",
-    "value": 669.4733927475406
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P16": {
     "formula": "IF(D16=0,0,$L16/IF($E16<>\"\",$E16,$D16))",
-    "value": 17.203452493243745
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q16": {
     "formula": "IF(D16=0,0,$M16/IF($E16<>\"\",$E16,$D16))",
-    "value": 11.517253707623025
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R16": {
     "formula": "IF(D16=0,\"\",VLOOKUP($B16,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
@@ -1397,27 +1465,39 @@
    "I17": 10,
    "L17": {
     "formula": "(Gebäude!T$35+Lüftung!S$23)*F17%*(100+IF($J17<>\"\",$J17,$H17))%",
-    "value": 40.55099516264597
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M17": {
     "formula": "(Gebäude!U$35+Lüftung!T$23)*G17%*(100+IF($J17<>\"\",$J17,$H17))%",
-    "value": 15.83622384798166
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N17": {
     "formula": "IF(L17=0,0,M17*1000/L17)",
-    "value": 390.5261457693987
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O17": {
     "formula": "IF(L17=0,0,M17*1000/L17)",
-    "value": 390.5261457693987
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P17": {
     "formula": "IF(D17=0,0,$L17/IF($E17<>\"\",$E17,$D17))",
-    "value": 57.929993089494246
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q17": {
     "formula": "IF(D17=0,0,$M17/IF($E17<>\"\",$E17,$D17))",
-    "value": 22.62317692568809
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R17": {
     "formula": "IF(D17=0,\"\",VLOOKUP($B17,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
@@ -1435,19 +1515,27 @@
    "I18": 10,
    "L18": {
     "formula": "(Gebäude!T$35+Lüftung!S$23)*F18%*(100+IF($J18<>\"\",$J18,$H18))%",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M18": {
     "formula": "(Gebäude!U$35+Lüftung!T$23)*G18%*(100+IF($J18<>\"\",$J18,$H18))%",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N18": {
     "formula": "IF(L18=0,0,M18*1000/L18)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O18": {
     "formula": "IF(L18=0,0,M18*1000/L18)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P18": {
     "formula": "IF(D18=0,0,$L18/IF($E18<>\"\",$E18,$D18))",
@@ -1479,23 +1567,33 @@
    },
    "L19": {
     "formula": "SUM(L16:L18)",
-    "value": 135.16998387548657
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M19": {
     "formula": "SUM(M16:M18)",
-    "value": 79.1811192399083
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N19": {
     "formula": "M19*1000/L19",
-    "value": 585.7892186540979
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O19": {
     "formula": "M19*1000/L19",
-    "value": 585.7892186540979
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P19": {
     "formula": "SUM(P16:P18)",
-    "value": 75.13344558273799
+    "value": {
+     "error": "#N/A"
+    }
    },
    "A22": {
     "formula": "Begriffe!F191",
@@ -1951,7 +2049,9 @@
    "P5": 0,
    "Q5": {
     "formula": "AbsFeuchte(M5,N5,$F$44)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "S5": 0,
    "T5": 0,
@@ -2038,7 +2138,7 @@
     "formula": "O6+P5",
     "error": "no-cached-value"
    },
-   "Q6": "{\"sharedFormula\":\"Q5\"}",
+   "Q6": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S6": 0,
    "T6": 0,
    "U6": 0,
@@ -2124,7 +2224,7 @@
     "formula": "O7+P6",
     "error": "no-cached-value"
    },
-   "Q7": "{\"sharedFormula\":\"Q5\"}",
+   "Q7": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S7": 0,
    "T7": 0,
    "U7": 0,
@@ -2207,7 +2307,7 @@
    "CT7": 0,
    "O8": "{\"sharedFormula\":\"O5\"}",
    "P8": "{\"sharedFormula\":\"P7\"}",
-   "Q8": "{\"sharedFormula\":\"Q5\"}",
+   "Q8": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S8": 0,
    "T8": 0,
    "U8": 0,
@@ -2290,7 +2390,7 @@
    "CT8": 0,
    "O9": "{\"sharedFormula\":\"O5\"}",
    "P9": "{\"sharedFormula\":\"P7\"}",
-   "Q9": "{\"sharedFormula\":\"Q5\"}",
+   "Q9": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S9": 0,
    "T9": 0,
    "U9": 0,
@@ -2373,7 +2473,7 @@
    "CT9": 0,
    "O10": "{\"sharedFormula\":\"O5\"}",
    "P10": "{\"sharedFormula\":\"P7\"}",
-   "Q10": "{\"sharedFormula\":\"Q5\"}",
+   "Q10": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S10": 0,
    "T10": 0,
    "U10": 0,
@@ -2456,7 +2556,7 @@
    "CT10": 0,
    "O11": "{\"sharedFormula\":\"O5\"}",
    "P11": "{\"sharedFormula\":\"P7\"}",
-   "Q11": "{\"sharedFormula\":\"Q5\"}",
+   "Q11": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S11": 0,
    "T11": 0,
    "U11": 0,
@@ -2539,7 +2639,7 @@
    "CT11": 0,
    "O12": "{\"sharedFormula\":\"O5\"}",
    "P12": "{\"sharedFormula\":\"P7\"}",
-   "Q12": "{\"sharedFormula\":\"Q5\"}",
+   "Q12": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S12": 0,
    "T12": 0,
    "U12": 0,
@@ -2622,7 +2722,7 @@
    "CT12": 1,
    "O13": "{\"sharedFormula\":\"O5\"}",
    "P13": "{\"sharedFormula\":\"P7\"}",
-   "Q13": "{\"sharedFormula\":\"Q5\"}",
+   "Q13": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S13": 0,
    "T13": 0,
    "U13": 0,
@@ -2705,7 +2805,7 @@
    "CT13": 10,
    "O14": "{\"sharedFormula\":\"O5\"}",
    "P14": "{\"sharedFormula\":\"P7\"}",
-   "Q14": "{\"sharedFormula\":\"Q5\"}",
+   "Q14": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S14": 0,
    "T14": 0,
    "U14": 0,
@@ -2788,7 +2888,7 @@
    "CT14": 9,
    "O15": "{\"sharedFormula\":\"O5\"}",
    "P15": "{\"sharedFormula\":\"P7\"}",
-   "Q15": "{\"sharedFormula\":\"Q5\"}",
+   "Q15": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S15": 0,
    "T15": 0,
    "U15": 0,
@@ -2871,7 +2971,7 @@
    "CT15": 26,
    "O16": "{\"sharedFormula\":\"O5\"}",
    "P16": "{\"sharedFormula\":\"P7\"}",
-   "Q16": "{\"sharedFormula\":\"Q5\"}",
+   "Q16": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S16": 0.8655555555555555,
    "T16": 9,
    "U16": 0,
@@ -2954,7 +3054,7 @@
    "CT16": 24,
    "O17": "{\"sharedFormula\":\"O5\"}",
    "P17": "{\"sharedFormula\":\"P7\"}",
-   "Q17": "{\"sharedFormula\":\"Q5\"}",
+   "Q17": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S17": 0.8655555555555555,
    "T17": 9,
    "U17": 0,
@@ -3037,7 +3137,7 @@
    "CT17": 36,
    "O18": "{\"sharedFormula\":\"O5\"}",
    "P18": "{\"sharedFormula\":\"P7\"}",
-   "Q18": "{\"sharedFormula\":\"Q5\"}",
+   "Q18": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S18": 0.8614814814814815,
    "T18": 27,
    "U18": 0,
@@ -3120,7 +3220,7 @@
    "CT18": 64,
    "O19": "{\"sharedFormula\":\"O5\"}",
    "P19": "{\"sharedFormula\":\"P7\"}",
-   "Q19": "{\"sharedFormula\":\"Q5\"}",
+   "Q19": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S19": 0.8318965517241379,
    "T19": 58,
    "U19": 0,
@@ -3206,7 +3306,7 @@
     "value": 6
    },
    "P20": "{\"result\":6,\"sharedFormula\":\"P7\"}",
-   "Q20": "{\"result\":1.501516346575252,\"sharedFormula\":\"Q5\"}",
+   "Q20": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S20": 0.8110416666666667,
    "T20": 48,
    "U20": 0.91,
@@ -3289,7 +3389,7 @@
    "CT20": 82,
    "O21": "{\"result\":45,\"sharedFormula\":\"O5\"}",
    "P21": "{\"result\":51,\"sharedFormula\":\"P7\"}",
-   "Q21": "{\"result\":1.6443161150095276,\"sharedFormula\":\"Q5\"}",
+   "Q21": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S21": 0.8358333333333333,
    "T21": 60,
    "U21": 0.915,
@@ -3372,7 +3472,7 @@
    "CT21": 92,
    "O22": "{\"result\":48,\"sharedFormula\":\"O5\"}",
    "P22": "{\"result\":99,\"sharedFormula\":\"P7\"}",
-   "Q22": "{\"result\":1.7250087090245703,\"sharedFormula\":\"Q5\"}",
+   "Q22": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S22": 0.8366129032258064,
    "T22": 124,
    "U22": 0.9186666666666666,
@@ -3455,7 +3555,7 @@
    "CT22": 106,
    "O23": "{\"result\":68,\"sharedFormula\":\"O5\"}",
    "P23": "{\"result\":167,\"sharedFormula\":\"P7\"}",
-   "Q23": "{\"result\":1.8427124559848516,\"sharedFormula\":\"Q5\"}",
+   "Q23": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S23": 0.8192063492063493,
    "T23": 126,
    "U23": 0.9169565217391304,
@@ -3538,7 +3638,7 @@
    "CT23": 129,
    "O24": "{\"result\":45,\"sharedFormula\":\"O5\"}",
    "P24": "{\"result\":212,\"sharedFormula\":\"P7\"}",
-   "Q24": "{\"result\":1.899063744632537,\"sharedFormula\":\"Q5\"}",
+   "Q24": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S24": 0.7467153284671533,
    "T24": 137,
    "U24": 0.9129999999999999,
@@ -3621,7 +3721,7 @@
    "CT24": 210,
    "O25": "{\"result\":57,\"sharedFormula\":\"O5\"}",
    "P25": "{\"result\":269,\"sharedFormula\":\"P7\"}",
-   "Q25": "{\"result\":2.129588221769916,\"sharedFormula\":\"Q5\"}",
+   "Q25": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S25": 0.7644954128440367,
    "T25": 109,
    "U25": 0.9257894736842105,
@@ -3704,7 +3804,7 @@
    "CT25": 268,
    "O26": "{\"result\":56,\"sharedFormula\":\"O5\"}",
    "P26": "{\"result\":325,\"sharedFormula\":\"P7\"}",
-   "Q26": "{\"result\":2.270167880624591,\"sharedFormula\":\"Q5\"}",
+   "Q26": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S26": 0.8017763157894737,
    "T26": 152,
    "U26": 0.9113333333333334,
@@ -3787,7 +3887,7 @@
    "CT26": 304,
    "O27": "{\"result\":128,\"sharedFormula\":\"O5\"}",
    "P27": "{\"result\":453,\"sharedFormula\":\"P7\"}",
-   "Q27": "{\"result\":2.6026589843261188,\"sharedFormula\":\"Q5\"}",
+   "Q27": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S27": 0.8038823529411765,
    "T27": 170,
    "U27": 0.9155,
@@ -3870,7 +3970,7 @@
    "CT27": 368,
    "O28": "{\"result\":180,\"sharedFormula\":\"O5\"}",
    "P28": "{\"result\":633,\"sharedFormula\":\"P7\"}",
-   "Q28": "{\"result\":2.9561836544515754,\"sharedFormula\":\"Q5\"}",
+   "Q28": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S28": 0.7868032786885246,
    "T28": 244,
    "U28": 0.906470588235294,
@@ -3953,7 +4053,7 @@
    "CT28": 392,
    "O29": "{\"result\":197,\"sharedFormula\":\"O5\"}",
    "P29": "{\"result\":830,\"sharedFormula\":\"P7\"}",
-   "Q29": "{\"result\":3.2480380336969135,\"sharedFormula\":\"Q5\"}",
+   "Q29": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S29": 0.7483625730994151,
    "T29": 342,
    "U29": 0.8860399999999999,
@@ -4036,7 +4136,7 @@
    "CT29": 520,
    "O30": "{\"result\":249,\"sharedFormula\":\"O5\"}",
    "P30": "{\"result\":1079,\"sharedFormula\":\"P7\"}",
-   "Q30": "{\"result\":3.49554885575434,\"sharedFormula\":\"Q5\"}",
+   "Q30": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S30": 0.7242771084337349,
    "T30": 332,
    "U30": 0.8904697986577181,
@@ -4119,7 +4219,7 @@
    "CT30": 399,
    "O31": "{\"result\":332,\"sharedFormula\":\"O5\"}",
    "P31": "{\"result\":1411,\"sharedFormula\":\"P7\"}",
-   "Q31": "{\"result\":3.6380720602590477,\"sharedFormula\":\"Q5\"}",
+   "Q31": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S31": 0.7473513513513513,
    "T31": 370,
    "U31": 0.875406162464986,
@@ -4202,7 +4302,7 @@
    "CT31": 416,
    "O32": "{\"result\":381,\"sharedFormula\":\"O5\"}",
    "P32": "{\"result\":1792,\"sharedFormula\":\"P7\"}",
-   "Q32": "{\"result\":3.855569564859213,\"sharedFormula\":\"Q5\"}",
+   "Q32": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S32": 0.7452445652173912,
    "T32": 368,
    "U32": 0.8820714285714285,
@@ -4285,7 +4385,7 @@
    "CT32": 388,
    "O33": "{\"result\":451,\"sharedFormula\":\"O5\"}",
    "P33": "{\"result\":2243,\"sharedFormula\":\"P7\"}",
-   "Q33": "{\"result\":4.10518316732949,\"sharedFormula\":\"Q5\"}",
+   "Q33": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S33": 0.6999423631123919,
    "T33": 347,
    "U33": 0.8712658227848101,
@@ -4368,7 +4468,7 @@
    "CT33": 361,
    "O34": "{\"result\":459,\"sharedFormula\":\"O5\"}",
    "P34": "{\"result\":2702,\"sharedFormula\":\"P7\"}",
-   "Q34": "{\"result\":4.373310291319655,\"sharedFormula\":\"Q5\"}",
+   "Q34": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S34": 0.6972748815165876,
    "T34": 422,
    "U34": 0.8616985645933015,
@@ -4451,7 +4551,7 @@
    "CT34": 358,
    "O35": "{\"result\":335,\"sharedFormula\":\"O5\"}",
    "P35": "{\"result\":3037,\"sharedFormula\":\"P7\"}",
-   "Q35": "{\"result\":4.499803421613228,\"sharedFormula\":\"Q5\"}",
+   "Q35": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S35": 0.7196969696969697,
    "T35": 462,
    "U35": 0.8312256267409471,
@@ -4534,7 +4634,7 @@
    "CT35": 345,
    "O36": "{\"result\":417,\"sharedFormula\":\"O5\"}",
    "P36": "{\"result\":3454,\"sharedFormula\":\"P7\"}",
-   "Q36": "{\"result\":5.016895900091342,\"sharedFormula\":\"Q5\"}",
+   "Q36": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q5\"}",
    "S36": 0.7217450980392157,
    "T36": 510,
    "U36": 0.8196330275229358,
@@ -4619,7 +4719,9 @@
    "P37": "{\"result\":3860,\"sharedFormula\":\"P7\"}",
    "Q37": {
     "formula": "AbsFeuchte(M37,N37,$F$44)",
-    "value": 5.091548178378688
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "S37": 0.732867469879518,
    "T37": 415,
@@ -4703,7 +4805,7 @@
    "CT37": 346,
    "O38": "{\"result\":336,\"sharedFormula\":\"O5\"}",
    "P38": "{\"result\":4196,\"sharedFormula\":\"P7\"}",
-   "Q38": "{\"result\":5.510833399227258,\"sharedFormula\":\"Q37\"}",
+   "Q38": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S38": 0.7311111111111112,
    "T38": 432,
    "U38": 0.8369009584664536,
@@ -4786,7 +4888,7 @@
    "CT38": 353,
    "O39": "{\"result\":339,\"sharedFormula\":\"O5\"}",
    "P39": "{\"result\":4535,\"sharedFormula\":\"P7\"}",
-   "Q39": "{\"result\":5.844490980424946,\"sharedFormula\":\"Q37\"}",
+   "Q39": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S39": 0.7564137931034484,
    "T39": 435,
    "U39": 0.835565749235474,
@@ -4869,7 +4971,7 @@
    "CT39": 396,
    "O40": "{\"result\":318,\"sharedFormula\":\"O5\"}",
    "P40": "{\"result\":4853,\"sharedFormula\":\"P7\"}",
-   "Q40": "{\"result\":6.315056628208842,\"sharedFormula\":\"Q37\"}",
+   "Q40": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S40": 0.7558707865168539,
    "T40": 356,
    "U40": 0.8200909090909092,
@@ -4955,7 +5057,7 @@
     "formula": "O41+P40",
     "value": 5221
    },
-   "Q41": "{\"result\":6.746744327431421,\"sharedFormula\":\"Q37\"}",
+   "Q41": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S41": 0.7480382775119616,
    "T41": 418,
    "U41": 0.824523076923077,
@@ -5038,7 +5140,7 @@
    "CT41": 308,
    "O42": "{\"result\":321,\"sharedFormula\":\"O5\"}",
    "P42": "{\"result\":5542,\"sharedFormula\":\"P7\"}",
-   "Q42": "{\"result\":6.810595211012464,\"sharedFormula\":\"Q37\"}",
+   "Q42": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S42": 0.7218227848101266,
    "T42": 395,
    "U42": 0.8136023054755043,
@@ -5121,7 +5223,7 @@
    "CT42": 281,
    "O43": "{\"result\":350,\"sharedFormula\":\"O5\"}",
    "P43": "{\"result\":5892,\"sharedFormula\":\"P7\"}",
-   "Q43": "{\"result\":7.645338174169924,\"sharedFormula\":\"Q37\"}",
+   "Q43": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S43": 0.7229828850855746,
    "T43": 409,
    "U43": 0.7972455089820358,
@@ -5204,7 +5306,7 @@
    "CT43": 248,
    "O44": "{\"result\":378,\"sharedFormula\":\"O5\"}",
    "P44": "{\"result\":6270,\"sharedFormula\":\"P7\"}",
-   "Q44": "{\"result\":7.960905180402722,\"sharedFormula\":\"Q37\"}",
+   "Q44": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S44": 0.709364161849711,
    "T44": 346,
    "U44": 0.7812903225806451,
@@ -5287,7 +5389,7 @@
    "CT44": 212,
    "O45": "{\"result\":330,\"sharedFormula\":\"O5\"}",
    "P45": "{\"result\":6600,\"sharedFormula\":\"P7\"}",
-   "Q45": "{\"result\":8.426811370048695,\"sharedFormula\":\"Q37\"}",
+   "Q45": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S45": 0.6640310077519379,
    "T45": 258,
    "U45": 0.8025984251968503,
@@ -5370,7 +5472,7 @@
    "CT45": 194,
    "O46": "{\"result\":390,\"sharedFormula\":\"O5\"}",
    "P46": "{\"result\":6990,\"sharedFormula\":\"P7\"}",
-   "Q46": "{\"result\":9.08751007667435,\"sharedFormula\":\"Q37\"}",
+   "Q46": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S46": 0.6324757281553398,
    "T46": 206,
    "U46": 0.7657692307692308,
@@ -5453,7 +5555,7 @@
    "CT46": 159,
    "O47": "{\"result\":365,\"sharedFormula\":\"O5\"}",
    "P47": "{\"result\":7355,\"sharedFormula\":\"P7\"}",
-   "Q47": "{\"result\":9.430311668588425,\"sharedFormula\":\"Q37\"}",
+   "Q47": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S47": 0.6172067039106145,
    "T47": 179,
    "U47": 0.7479224376731303,
@@ -5536,7 +5638,7 @@
    "CT47": 151,
    "O48": "{\"result\":295,\"sharedFormula\":\"O5\"}",
    "P48": "{\"result\":7650,\"sharedFormula\":\"P7\"}",
-   "Q48": "{\"result\":9.502784356511844,\"sharedFormula\":\"Q37\"}",
+   "Q48": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S48": 0.6011764705882353,
    "T48": 136,
    "U48": 0.7128486646884273,
@@ -5619,7 +5721,7 @@
    "CT48": 117,
    "O49": "{\"result\":238,\"sharedFormula\":\"O5\"}",
    "P49": "{\"result\":7888,\"sharedFormula\":\"P7\"}",
-   "Q49": "{\"result\":9.762800605394874,\"sharedFormula\":\"Q37\"}",
+   "Q49": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S49": 0.5636633663366336,
    "T49": 101,
    "U49": 0.667728813559322,
@@ -5702,7 +5804,7 @@
    "CT49": 92,
    "O50": "{\"result\":188,\"sharedFormula\":\"O5\"}",
    "P50": "{\"result\":8076,\"sharedFormula\":\"P7\"}",
-   "Q50": "{\"result\":9.216475765386784,\"sharedFormula\":\"Q37\"}",
+   "Q50": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S50": 0.5501219512195122,
    "T50": 82,
    "U50": 0.645,
@@ -5785,7 +5887,7 @@
    "CT50": 104,
    "O51": "{\"result\":146,\"sharedFormula\":\"O5\"}",
    "P51": "{\"result\":8222,\"sharedFormula\":\"P7\"}",
-   "Q51": "{\"result\":9.645893861910121,\"sharedFormula\":\"Q37\"}",
+   "Q51": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S51": 0.5281666666666667,
    "T51": 60,
    "U51": 0.6134183673469388,
@@ -5868,7 +5970,7 @@
    "CT51": 60,
    "O52": "{\"result\":134,\"sharedFormula\":\"O5\"}",
    "P52": "{\"result\":8356,\"sharedFormula\":\"P7\"}",
-   "Q52": "{\"result\":10.036723173953218,\"sharedFormula\":\"Q37\"}",
+   "Q52": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S52": 0.4827906976744186,
    "T52": 43,
    "U52": 0.5901886792452831,
@@ -5951,7 +6053,7 @@
    "CT52": 54,
    "O53": "{\"result\":114,\"sharedFormula\":\"O5\"}",
    "P53": "{\"result\":8470,\"sharedFormula\":\"P7\"}",
-   "Q53": "{\"result\":10.455194597031547,\"sharedFormula\":\"Q37\"}",
+   "Q53": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S53": 0.4551724137931034,
    "T53": 29,
    "U53": 0.5533070866141733,
@@ -6034,7 +6136,7 @@
    "CT53": 23,
    "O54": "{\"result\":103,\"sharedFormula\":\"O5\"}",
    "P54": "{\"result\":8573,\"sharedFormula\":\"P7\"}",
-   "Q54": "{\"result\":10.106875028410924,\"sharedFormula\":\"Q37\"}",
+   "Q54": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S54": 0.415,
    "T54": 12,
    "U54": 0.5460169491525424,
@@ -6117,7 +6219,7 @@
    "CT54": 23,
    "O55": "{\"result\":46,\"sharedFormula\":\"O5\"}",
    "P55": "{\"result\":8619,\"sharedFormula\":\"P7\"}",
-   "Q55": "{\"result\":10.654876344186441,\"sharedFormula\":\"Q37\"}",
+   "Q55": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S55": 0.37333333333333335,
    "T55": 9,
    "U55": 0.5314285714285715,
@@ -6200,7 +6302,7 @@
    "CT55": 8,
    "O56": "{\"result\":47,\"sharedFormula\":\"O5\"}",
    "P56": "{\"result\":8666,\"sharedFormula\":\"P7\"}",
-   "Q56": "{\"result\":10.588087791667846,\"sharedFormula\":\"Q37\"}",
+   "Q56": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S56": 0.35111111111111115,
    "T56": 9,
    "U56": 0.5102597402597402,
@@ -6286,7 +6388,7 @@
     "value": 29
    },
    "P57": "{\"result\":8695,\"sharedFormula\":\"P7\"}",
-   "Q57": "{\"result\":10.526445754832219,\"sharedFormula\":\"Q37\"}",
+   "Q57": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S57": 0.2675,
    "T57": 4,
    "U57": 0.49725806451612903,
@@ -6369,7 +6471,7 @@
    "CT57": 2,
    "O58": "{\"result\":24,\"sharedFormula\":\"O5\"}",
    "P58": "{\"result\":8719,\"sharedFormula\":\"P7\"}",
-   "Q58": "{\"result\":10.096823845730837,\"sharedFormula\":\"Q37\"}",
+   "Q58": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S58": 0,
    "T58": 0,
    "U58": 0.462,
@@ -6452,7 +6554,7 @@
    "CT58": 1,
    "O59": "{\"result\":14,\"sharedFormula\":\"O5\"}",
    "P59": "{\"result\":8733,\"sharedFormula\":\"P7\"}",
-   "Q59": "{\"result\":10.590957931484501,\"sharedFormula\":\"Q37\"}",
+   "Q59": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S59": 0,
    "T59": 0,
    "U59": 0.4548148148148148,
@@ -6535,7 +6637,7 @@
    "CT59": 0,
    "O60": "{\"result\":16,\"sharedFormula\":\"O5\"}",
    "P60": "{\"result\":8749,\"sharedFormula\":\"P7\"}",
-   "Q60": "{\"result\":10.918959306969693,\"sharedFormula\":\"Q37\"}",
+   "Q60": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S60": 0,
    "T60": 0,
    "U60": 0.43578947368421056,
@@ -6618,7 +6720,7 @@
    "CT60": 0,
    "O61": "{\"result\":6,\"sharedFormula\":\"O5\"}",
    "P61": "{\"result\":8755,\"sharedFormula\":\"P7\"}",
-   "Q61": "{\"result\":10.943572231900754,\"sharedFormula\":\"Q37\"}",
+   "Q61": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S61": 0,
    "T61": 0,
    "U61": 0.436,
@@ -6701,7 +6803,7 @@
    "CT61": 0,
    "O62": "{\"result\":2,\"sharedFormula\":\"O5\"}",
    "P62": "{\"result\":8757,\"sharedFormula\":\"P7\"}",
-   "Q62": "{\"result\":9.33754639888188,\"sharedFormula\":\"Q37\"}",
+   "Q62": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S62": 0,
    "T62": 0,
    "U62": 0.35,
@@ -6784,7 +6886,7 @@
    "CT62": 0,
    "O63": "{\"result\":3,\"sharedFormula\":\"O5\"}",
    "P63": "{\"result\":8760,\"sharedFormula\":\"P7\"}",
-   "Q63": "{\"result\":8.358750343870948,\"sharedFormula\":\"Q37\"}",
+   "Q63": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S63": 0,
    "T63": 0,
    "U63": 0,
@@ -6867,7 +6969,7 @@
    "CT63": 0,
    "O64": "{\"sharedFormula\":\"O5\"}",
    "P64": "{\"result\":8760,\"sharedFormula\":\"P7\"}",
-   "Q64": "{\"sharedFormula\":\"Q37\"}",
+   "Q64": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S64": 0,
    "T64": 0,
    "U64": 0,
@@ -6950,7 +7052,7 @@
    "CT64": 0,
    "O65": "{\"sharedFormula\":\"O5\"}",
    "P65": "{\"result\":8760,\"sharedFormula\":\"P7\"}",
-   "Q65": "{\"sharedFormula\":\"Q37\"}",
+   "Q65": "{\"result\":{\"error\":\"#NAME?\"},\"sharedFormula\":\"Q37\"}",
    "S65": 0,
    "T65": 0,
    "U65": 0,
@@ -7947,19 +8049,27 @@
    },
    "Q33": {
     "formula": "SUM(Q12:Q32)",
-    "value": 161.54029467787115
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R33": {
     "formula": "SUM(R12:R32)",
-    "value": 38.68472889763184
+    "value": {
+     "error": "#N/A"
+    }
    },
    "T33": {
     "formula": "SUM(T12:T32)",
-    "value": 99.28180333333334
+    "value": {
+     "error": "#N/A"
+    }
    },
    "U33": {
     "formula": "SUM(U12:U32)",
-    "value": 66.9407456403744
+    "value": {
+     "error": "#N/A"
+    }
    },
    "V33": {
     "formula": "SUM(V12:V32)",
@@ -7992,19 +8102,27 @@
    },
    "Q35": {
     "formula": "IF(Q34<>\"\",Q34,Q33)",
-    "value": 161.54029467787115
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R35": {
     "formula": "IF(R34<>\"\",R34,R33)",
-    "value": 38.68472889763184
+    "value": {
+     "error": "#N/A"
+    }
    },
    "T35": {
     "formula": "IF(T34<>\"\",T34,T33)",
-    "value": 99.28180333333334
+    "value": {
+     "error": "#N/A"
+    }
    },
    "U35": {
     "formula": "IF(U34<>\"\",U34,U33)",
-    "value": 66.9407456403744
+    "value": {
+     "error": "#N/A"
+    }
    },
    "V35": {
     "formula": "IF(V34<>\"\",V34,V33)",
@@ -8081,19 +8199,27 @@
    },
    "N7": {
     "formula": "Erzeugung!P10",
-    "value": 32.66562941660346
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O7": {
     "formula": "SUMIF(Erzeugung!$R$7:$R$9,$B7,Erzeugung!$Q$7:$Q$9)",
-    "value": 5.235754111786852
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P7": {
     "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$P$16:$P$18)",
-    "value": 17.203452493243745
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q7": {
     "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$Q$16:$Q$18)",
-    "value": 11.517253707623025
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R7": {
     "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B7,Erzeugung!$P$25:$P$27)",
@@ -8105,11 +8231,15 @@
    },
    "T7": {
     "formula": "SUM(D7,F7,H7,J7,L7,N7,P7,R7)",
-    "value": 969.3497732722857
+    "value": {
+     "error": "#N/A"
+    }
    },
    "U7": {
     "formula": "E7+G7+I7+K7+M7+O7+Q7+S7",
-    "value": 5520.050112328262
+    "value": {
+     "error": "#N/A"
+    }
    },
    "A8": "HEL",
    "B8": {
@@ -8173,11 +8303,15 @@
    },
    "P10": {
     "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B10,Erzeugung!$P$16:$P$18)",
-    "value": 57.929993089494246
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q10": {
     "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B10,Erzeugung!$Q$16:$Q$18)",
-    "value": 22.62317692568809
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R10": {
     "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B10,Erzeugung!$P$25:$P$27)",
@@ -8187,8 +8321,8 @@
     "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B10,Erzeugung!$Q$25:$Q$27)",
     "value": 2.7947076923076923
    },
-   "T10": "{\"result\":65.75638197838313,\"sharedFormula\":\"T9\"}",
-   "U10": "{\"result\":25.41788461799578,\"sharedFormula\":\"U8\"}",
+   "T10": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"T9\"}",
+   "U10": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"U8\"}",
    "A11": "HSch",
    "B11": {
     "formula": "Begriffe!F262",
@@ -8284,18 +8418,24 @@
    "B15": "Total",
    "P15": {
     "formula": "SUM(P7:P14)",
-    "value": 75.13344558273799
+    "value": {
+     "error": "#N/A"
+    }
    },
-   "Q15": "{\"result\":34.14043063331111,\"sharedFormula\":\"P15\"}",
+   "Q15": "{\"result\":{\"error\":\"#N/A\"},\"sharedFormula\":\"P15\"}",
    "R15": "{\"result\":8.63387345679012,\"sharedFormula\":\"P15\"}",
    "S15": "{\"result\":4.476707692307692,\"sharedFormula\":\"P15\"}",
    "T15": {
     "formula": "SUM(T7:T14)",
-    "value": 1035.1061552506687
+    "value": {
+     "error": "#N/A"
+    }
    },
    "U15": {
     "formula": "SUM(U7:U14)",
-    "value": 5545.467996946258
+    "value": {
+     "error": "#N/A"
+    }
    },
    "A18": {
     "formula": "Begriffe!F254",
@@ -8438,19 +8578,27 @@
    },
    "N21": {
     "formula": "O21*1000/Gebäude!$D$39",
-    "value": 0.9615710030829846
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O21": {
     "formula": "SUMPRODUCT(O$7:O$17*$W7:$W17)",
-    "value": 10.471508223573704
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P21": {
     "formula": "Q21*1000/Gebäude!$D$39",
-    "value": 3.5693968102137474
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q21": {
     "formula": "SUMPRODUCT(Q$7:Q$17*$W7:$W17)",
-    "value": 38.87073126322771
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R21": {
     "formula": "S21*1000/Gebäude!$D$39",
@@ -8462,11 +8610,15 @@
    },
    "T21": {
     "formula": "D21+F21+H21+J21+L21+N21+P21+R21",
-    "value": 116.95915921846844
+    "value": {
+     "error": "#N/A"
+    }
    },
    "U21": {
     "formula": "E21+G21+I21+K21+M21+O21+Q21+S21",
-    "value": 1273.6852438891212
+    "value": {
+     "error": "#N/A"
+    }
    }
   },
   "Lueftung_results": {
@@ -8632,23 +8784,33 @@
    },
    "L10": {
     "formula": "SUM(L7:L9)",
-    "value": 217.7708627773564
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M10": {
     "formula": "SUM(M7:M9)",
-    "value": 44.87789238674445
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N10": {
     "formula": "M10*1000/L10",
-    "value": 206.07849835552383
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O10": {
     "formula": "M10*1000/L10",
-    "value": 206.07849835552383
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P10": {
     "formula": "SUM(P7:P9)",
-    "value": 32.66562941660346
+    "value": {
+     "error": "#N/A"
+    }
    },
    "A13": {
     "formula": "Begriffe!F173",
@@ -8769,27 +8931,39 @@
    "I16": 10,
    "L16": {
     "formula": "(Gebäude!T$35+Lüftung!S$23)*F16%*(100+IF($J16<>\"\",$J16,$H16))%",
-    "value": 94.61898871284059
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M16": {
     "formula": "(Gebäude!U$35+Lüftung!T$23)*G16%*(100+IF($J16<>\"\",$J16,$H16))%",
-    "value": 63.34489539192664
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N16": {
     "formula": "IF(L16=0,0,M16*1000/L16)",
-    "value": 669.4733927475406
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O16": {
     "formula": "IF(L16=0,0,M16*1000/L16)",
-    "value": 669.4733927475406
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P16": {
     "formula": "IF(D16=0,0,$L16/IF($E16<>\"\",$E16,$D16))",
-    "value": 17.203452493243745
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q16": {
     "formula": "IF(D16=0,0,$M16/IF($E16<>\"\",$E16,$D16))",
-    "value": 11.517253707623025
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R16": {
     "formula": "IF(D16=0,\"\",VLOOKUP($B16,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
@@ -8811,27 +8985,39 @@
    "I17": 10,
    "L17": {
     "formula": "(Gebäude!T$35+Lüftung!S$23)*F17%*(100+IF($J17<>\"\",$J17,$H17))%",
-    "value": 40.55099516264597
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M17": {
     "formula": "(Gebäude!U$35+Lüftung!T$23)*G17%*(100+IF($J17<>\"\",$J17,$H17))%",
-    "value": 15.83622384798166
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N17": {
     "formula": "IF(L17=0,0,M17*1000/L17)",
-    "value": 390.5261457693987
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O17": {
     "formula": "IF(L17=0,0,M17*1000/L17)",
-    "value": 390.5261457693987
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P17": {
     "formula": "IF(D17=0,0,$L17/IF($E17<>\"\",$E17,$D17))",
-    "value": 57.929993089494246
+    "value": {
+     "error": "#N/A"
+    }
    },
    "Q17": {
     "formula": "IF(D17=0,0,$M17/IF($E17<>\"\",$E17,$D17))",
-    "value": 22.62317692568809
+    "value": {
+     "error": "#N/A"
+    }
    },
    "R17": {
     "formula": "IF(D17=0,\"\",VLOOKUP($B17,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
@@ -8849,19 +9035,27 @@
    "I18": 10,
    "L18": {
     "formula": "(Gebäude!T$35+Lüftung!S$23)*F18%*(100+IF($J18<>\"\",$J18,$H18))%",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M18": {
     "formula": "(Gebäude!U$35+Lüftung!T$23)*G18%*(100+IF($J18<>\"\",$J18,$H18))%",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N18": {
     "formula": "IF(L18=0,0,M18*1000/L18)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O18": {
     "formula": "IF(L18=0,0,M18*1000/L18)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P18": {
     "formula": "IF(D18=0,0,$L18/IF($E18<>\"\",$E18,$D18))",
@@ -8893,23 +9087,33 @@
    },
    "L19": {
     "formula": "SUM(L16:L18)",
-    "value": 135.16998387548657
+    "value": {
+     "error": "#N/A"
+    }
    },
    "M19": {
     "formula": "SUM(M16:M18)",
-    "value": 79.1811192399083
+    "value": {
+     "error": "#N/A"
+    }
    },
    "N19": {
     "formula": "M19*1000/L19",
-    "value": 585.7892186540979
+    "value": {
+     "error": "#N/A"
+    }
    },
    "O19": {
     "formula": "M19*1000/L19",
-    "value": 585.7892186540979
+    "value": {
+     "error": "#N/A"
+    }
    },
    "P19": {
     "formula": "SUM(P16:P18)",
-    "value": 75.13344558273799
+    "value": {
+     "error": "#N/A"
+    }
    },
    "A22": {
     "formula": "Begriffe!F191",
@@ -9166,11 +9370,15 @@
    },
    "I253": {
     "formula": "LOOKUP(B88,$DA$122:$DA$181,$BS$122:$BS$181)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J253": {
     "formula": "AbsFeuchte(D88,I253,$N$19)",
-    "error": "no-cached-value"
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "A254": "Luftkühlung",
    "C254": {
@@ -9197,11 +9405,15 @@
    },
    "I254": {
     "formula": "LOOKUP(B89,$DA$122:$DA$181,$BS$122:$BS$181)",
-    "value": 0.5048770905933516
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J254": {
     "formula": "AbsFeuchte(D89,I254,$N$19)",
-    "value": 10.036723173953218
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "A255": "Lufterwärmung",
    "C255": {
@@ -9228,11 +9440,15 @@
    },
    "I255": {
     "formula": "LOOKUP(B90,$DA$122:$DA$181,$BS$122:$BS$181)",
-    "value": 0.4788229753336957
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J255": {
     "formula": "AbsFeuchte(D90,I255,$N$19)",
-    "value": 10.106875028410922
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "A256": "Erwärmung Bef.",
    "C256": {
@@ -9259,11 +9475,15 @@
    },
    "I256": {
     "formula": "LOOKUP(B91,$DA$122:$DA$181,$BS$122:$BS$181)",
-    "value": 0.5166325217674574
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J256": {
     "formula": "AbsFeuchte(D91,I256,$N$19)",
-    "value": 10.918959306969693
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "A257": "Entfeuchtung",
    "B257": "Kühlung Entf.",
@@ -9334,11 +9554,15 @@
    },
    "I259": {
     "formula": "LOOKUP(B94,$DA$190:$DA$249,$BS$190:$BS$249)",
-    "value": 0.01
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J259": {
     "formula": "AbsFeuchte(D94,I259,$N$19)",
-    "value": 0.195700066854932
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "A260": "Total",
    "C260": {
@@ -9365,11 +9589,15 @@
    },
    "I260": {
     "formula": "LOOKUP(B95,$DA$190:$DA$249,$BS$190:$BS$249)",
-    "value": 0.5288286435488682
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J260": {
     "formula": "AbsFeuchte(D95,I260,$N$19)",
-    "value": 10.52092282236691
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "C261": "Liter/a",
    "D261": "[CHF/a]",
@@ -9381,11 +9609,15 @@
    },
    "I261": {
     "formula": "LOOKUP(B96,$DA$190:$DA$249,$BS$190:$BS$249)",
-    "value": 0.4796803738788023
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J261": {
     "formula": "AbsFeuchte(D96,I261,$N$19)",
-    "value": 10.755466781354569
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "A262": "Wasser Bef.",
    "C262": {
@@ -9410,11 +9642,15 @@
    },
    "I262": {
     "formula": "LOOKUP(B97,$DA$190:$DA$249,$BS$190:$BS$249)",
-    "value": 0.5329118658488368
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "J262": {
     "formula": "AbsFeuchte(D97,I262,$N$19)",
-    "value": 11.972004694348753
+    "value": {
+     "error": "#NAME?"
+    }
    },
    "A263": "Entfeuchtung",
    "C263": {

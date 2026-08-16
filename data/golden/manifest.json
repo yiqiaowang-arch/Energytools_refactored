@@ -2,7 +2,7 @@
   {
     "case": "case-01",
     "file": "C:\\Users\\wangy\\Documents\\GitHub\\Energytools_refactored\\data\\golden\\case-01.json",
-    "sha256_12": "0ade62bef5a1",
+    "sha256_12": "dc5762c4b225",
     "input_cells": 758,
     "output_cells": 330
   },
@@ -16,7 +16,7 @@
   {
     "case": "case-03",
     "file": "C:\\Users\\wangy\\Documents\\GitHub\\Energytools_refactored\\data\\golden\\case-03.json",
-    "sha256_12": "ccc412a5044a",
+    "sha256_12": "33efc48d3499",
     "input_cells": 758,
     "output_cells": 330
   },
@@ -30,14 +30,14 @@
   {
     "case": "case-05",
     "file": "C:\\Users\\wangy\\Documents\\GitHub\\Energytools_refactored\\data\\golden\\case-05.json",
-    "sha256_12": "dd00fe2926db",
+    "sha256_12": "33ed74c765c0",
     "input_cells": 758,
     "output_cells": 330
   },
   {
     "case": "case-06",
     "file": "C:\\Users\\wangy\\Documents\\GitHub\\Energytools_refactored\\data\\golden\\case-06.json",
-    "sha256_12": "52b8b1fcdf9f",
+    "sha256_12": "fc9dffb773d8",
     "input_cells": 758,
     "output_cells": 330
   }
