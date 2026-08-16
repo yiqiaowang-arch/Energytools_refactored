@@ -658,9 +658,12 @@ class AggregationInput:
             (LA01…LA16).  A missing id is treated as a zero AHU.
         generation_groups: the three generator groups (Kälte/Wärme/Warmwasser).
         generation_catalog: the ``Nutzungsgrad`` catalogue lookup.
-        ag_power_kw / ag_energy_mwh: ``Gebäude!L58/I58`` — the Allg.
-            Gebäudetechnik totals (AG01–AG10, ch02 §2.8) — passed through,
-            since the AG input block is not part of this module's scope.
+        ag_power_kw: ``Gebäude!L58`` — the Allg. Gebäudetechnik power total
+            (AG01–AG10, ch02 §2.8) — passed through, since the AG input block
+            is not part of this module's scope.
+        ag_energy_mwh: ``Gebäude!I58`` — the Allg. Gebäudetechnik energy total
+            (AG01–AG10, ch02 §2.8) — passed through, since the AG input block
+            is not part of this module's scope.
         construction_factor_pct: ``Gebäude!D37`` (default 10 %).
         aufheizzeit_h: ``Erzeugung!L29`` (default 6 h/d).
         weights: the Resultate weight factors (defaults: ch05 §5.8).

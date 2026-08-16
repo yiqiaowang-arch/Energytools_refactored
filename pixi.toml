@@ -64,6 +64,12 @@ uvicorn = "*"
 mkdocs = "*"
 mkdocs-material = "*"
 
+# Docstring-driven API reference (mkdocstrings renders `:::` directives from
+# the source docstrings, keeping the API reference in sync with the code).
+[feature.docs.pypi-dependencies]
+mkdocstrings = "*"
+mkdocstrings-python = "*"
+
 [environments]
 default = []
 dev = ["dev"]

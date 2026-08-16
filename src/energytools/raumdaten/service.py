@@ -141,8 +141,9 @@ class RaumdatenService:
     def list_room_uses(self, release_id: str, language: Language | str = Language.DE) -> list[dict]:
         """The room uses with id, code, category and localized name (dropdown/selector data).
 
-        Raises:
-            DatasetNotFoundError, UnknownLanguageError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownLanguageError: unknown language.
         """
         lang = self._language(language)
         dataset = self._dataset(release_id)
@@ -159,8 +160,9 @@ class RaumdatenService:
     def get_room_use(self, release_id: str, room_use_id: int | str) -> dict:
         """One room use (all languages).
 
-        Raises:
-            DatasetNotFoundError, UnknownRoomUseError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownRoomUseError: unknown room use.
         """
         dataset = self._dataset(release_id)
         return dataset.room_use(room_use_id).as_dict()
@@ -173,8 +175,10 @@ class RaumdatenService:
     ) -> dict:
         """The full data-sheet content of one room use: all parameters per kind.
 
-        Raises:
-            DatasetNotFoundError, UnknownRoomUseError, UnknownValueKindError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownRoomUseError: unknown room use.
+            UnknownValueKindError: unknown value kind.
         """
         dataset = self._dataset(release_id)
         room_use = dataset.room_use(room_use_id)
@@ -189,8 +193,9 @@ class RaumdatenService:
     ) -> list[dict]:
         """The parameter catalog (clause ids, labels, symbols, units, types, categories, flags).
 
-        Raises:
-            DatasetNotFoundError, UnknownLanguageError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownLanguageError: unknown language.
         """
         lang = self._language(language)
         dataset = self._dataset(release_id)
@@ -214,8 +219,9 @@ class RaumdatenService:
     def get_parameter(self, release_id: str, parameter_id: str) -> dict:
         """One parameter incl. applicable value kinds and flags.
 
-        Raises:
-            DatasetNotFoundError, UnknownParameterError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownParameterError: unknown parameter.
         """
         dataset = self._dataset(release_id)
         return dataset.parameter(parameter_id).as_dict()
@@ -225,8 +231,9 @@ class RaumdatenService:
     def compare_room_use_profiles(self, release_id: str, a: int | str, b: int | str) -> dict:
         """Compare two room-use profiles: per-parameter diffs across all value kinds.
 
-        Raises:
-            DatasetNotFoundError, UnknownRoomUseError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownRoomUseError: unknown room use.
         """
         dataset = self._dataset(release_id)
         profile_a = dataset.profile(dataset.room_use(a).nutzid)
@@ -240,8 +247,9 @@ class RaumdatenService:
     ) -> list[dict]:
         """The stations with ids and names.
 
-        Raises:
-            DatasetNotFoundError, UnknownLanguageError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownLanguageError: unknown language.
         """
         lang = self._language(language)
         dataset = self._dataset(release_id)
@@ -253,8 +261,9 @@ class RaumdatenService:
     def get_climate_station(self, release_id: str, station_id: int | str) -> dict:
         """Full station data (winter/summer design, monthly values, bins, HDD).
 
-        Raises:
-            DatasetNotFoundError, UnknownClimateStationError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownClimateStationError: unknown climate station.
         """
         dataset = self._dataset(release_id)
         station = dataset.climate().station(station_id)
@@ -265,8 +274,8 @@ class RaumdatenService:
     def list_profiles(self, release_id: str) -> dict:
         """Hourly/monthly/weekly profile sets.
 
-        Raises:
-            DatasetNotFoundError.
+Raises:
+            DatasetNotFoundError: unknown release id.
         """
         dataset = self._dataset(release_id)
         return {
@@ -292,8 +301,10 @@ class RaumdatenService:
         response echoes the resolved version in ``standard_version`` and the
         configured default in ``default_standard_version``.
 
-        Raises:
-            DatasetNotFoundError, UnknownRoomUseError, TableLookupError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownRoomUseError: unknown room use.
+            TableLookupError: no result for the requested combination.
         """
         dataset = self._dataset(release_id)
         room_use = dataset.room_use(room_use_id)
@@ -321,9 +332,12 @@ class RaumdatenService:
     ) -> dict:
         """Annual cooling energy Qhc for one use x station x kind.
 
-        Raises:
-            DatasetNotFoundError, UnknownRoomUseError, UnknownClimateStationError,
-            UnknownValueKindError, TableLookupError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownRoomUseError: unknown room use.
+            UnknownClimateStationError: unknown climate station.
+            UnknownValueKindError: unknown value kind.
+            TableLookupError: no result for the requested combination.
         """
         dataset = self._dataset(release_id)
         room_use = dataset.room_use(room_use_id)
@@ -346,9 +360,10 @@ class RaumdatenService:
     def get_sia3801(self, release_id: str, room_use_id: int | str, variant: str = "de") -> dict:
         """SIA 380/1 result (incl. Qc variant) of one room use.
 
-        Raises:
-            DatasetNotFoundError, UnknownRoomUseError, TableLookupError (no
-            result for the requested variant).
+Raises:
+            DatasetNotFoundError: unknown release id.
+            UnknownRoomUseError: unknown room use.
+            TableLookupError: no result for the requested variant.
         """
         dataset = self._dataset(release_id)
         room_use = dataset.room_use(room_use_id)
@@ -375,8 +390,8 @@ class RaumdatenService:
     def validate(self, release_id: str) -> dict:
         """Validation report of a release (schema + value rules).
 
-        Raises:
-            DatasetNotFoundError.
+Raises:
+            DatasetNotFoundError: unknown release id.
         """
         dataset = self._dataset(release_id)
         report = dataset.validate()
@@ -394,8 +409,9 @@ class RaumdatenService:
         ``csv``/``xlsx``/``pdf`` raise :class:`ExportError` until the export
         layer (part 05) lands.
 
-        Raises:
-            DatasetNotFoundError, ExportError.
+Raises:
+            DatasetNotFoundError: unknown release id.
+            ExportError: export failed.
         """
         dataset = self._dataset(release_id)
         if fmt not in _EXPORT_FORMATS:

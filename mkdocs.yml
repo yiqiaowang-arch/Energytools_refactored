@@ -82,6 +82,12 @@ nav:
       - Versioning & Export: architecture+api-reference/05-versioning-export.md
       - FastAPI Layer: architecture+api-reference/06-fastapi-layer.md
       - MCP Layer: architecture+api-reference/07-mcp-layer.md
+  - API Reference (auto):
+      - Overview: api-reference/index.md
+      - raumdaten: api-reference/raumdaten.md
+      - engine: api-reference/engine.md
+      - native: api-reference/native.md
+      - common: api-reference/common.md
   - Installation: installation.md
   - Release & Deployment:
       - Build & Release Pipeline: deployment/readthedocs.md
@@ -113,6 +119,15 @@ markdown_extensions:
 # Plugins
 plugins:
   - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_signature_annotations: true
+            docstring_style: google
+            members_order: source
 
 # Math rendering (MathJax 3, paired with pymdownx.arithmatex)
 extra_javascript:

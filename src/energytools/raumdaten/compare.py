@@ -44,7 +44,8 @@ class ProfileDiff:
     """Structured comparison result of two room-use profiles.
 
     Args:
-        a_id / b_id: The compared room uses (nutzids).
+        a_id: The first compared room use (nutzid).
+        b_id: The second compared room use (nutzid).
         changed: Parameters with at least one differing value.
         added: Parameter ids only present in ``b``.
         removed: Parameter ids only present in ``a``.
@@ -74,7 +75,8 @@ def compare_profiles(a: RoomUseProfile, b: RoomUseProfile) -> ProfileDiff:
     """Compare two room-use profiles across all value kinds.
 
     Args:
-        a / b: Profiles of the same release.
+        a: First room-use profile.
+        b: Second room-use profile.
 
     Raises:
         ValueError: if the profiles belong to different releases (checked via
