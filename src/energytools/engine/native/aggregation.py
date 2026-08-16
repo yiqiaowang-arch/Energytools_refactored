@@ -360,10 +360,16 @@ class DatasetResLookup(KpiLookup):
         return self._profile_value(room_use, param, value_kind)
 
     def hygienic_fresh_air(self, room_use: str) -> float:
-        return self._profile_value(room_use, "1.1.5.2", "standard")
+        # A use without a hygienic fresh-air value (garage/parking, storage,
+        # traffic areas) has no mechanical fresh-air demand — 0, not an error.
+        nutzid = self._resolve_nutzid(room_use)
+        entry = self._profiles.get(nutzid, {}).get("1.1.5.2", {}).get("standard")
+        return float(entry["value"]) if entry else 0.0
 
     def process_fresh_air(self, room_use: str) -> float:
-        return self._profile_value(room_use, "1.1.5.3", "standard")
+        nutzid = self._resolve_nutzid(room_use)
+        entry = self._profiles.get(nutzid, {}).get("1.1.5.3", {}).get("standard")
+        return float(entry["value"]) if entry else 0.0
 
     def ww_demand(self, room_use: str) -> float:
         # Std!I = Std!H / Std!C (l/(d·P) ÷ m²/P).  The dataset carries the WW
