@@ -46,7 +46,7 @@ class TestRoomUses:
 
     def test_get_room_use_by_code(self, service) -> None:
         data = service.get_room_use("V221", "3.01")
-        assert data["nutzid"] == 4
+        assert data["nutzid"] == 5
         assert data["name"]["de"] == "Einzel-, Gruppenbüro"
         with pytest.raises(UnknownRoomUseError):
             service.get_room_use("V221", 99)
@@ -54,9 +54,10 @@ class TestRoomUses:
     def test_get_room_use_profile(self, service) -> None:
         profile = service.get_room_use_profile("V221", 1, "zielwert")
         assert profile["room_use"]["code"] == "1.01"
-        first = profile["parameters"][0]
-        assert first["id"] == "1.1.2.7"
-        assert first["values"]["zielwert"]["value"] == 0.6
+        assert len(profile["parameters"]) == 193  # one entry per Datenblatt row
+        uop = next(p for p in profile["parameters"] if p["id"] == "Uop")
+        assert uop["label"] == "U-Wert opake Bauteile"
+        assert uop["values"]["zielwert"]["value"] == 0.1
         with pytest.raises(UnknownValueKindError):
             service.get_room_use_profile("V221", 1, "optimal")
 
@@ -64,7 +65,10 @@ class TestRoomUses:
 class TestParameters:
     def test_list_parameters(self, service) -> None:
         parameters = service.list_parameters("V221")
-        assert [p["id"] for p in parameters][:3] == ["1.1.2.7", "1.1.1.12", "1.1.2.9"]
+        assert len(parameters) == 193
+        # the catalog preserves the Datenblatt rows 4..196 one-to-one (the
+        # first entries are the sheet header row and the Raum section)
+        assert [p["id"] for p in parameters][:3] == ["Symbol", "qo", "norm-lufttemperatur-k-hlerauslegung"]
         assert parameters[0]["unit"] == "-"
 
     def test_get_parameter(self, service) -> None:
@@ -81,16 +85,16 @@ class TestCompare:
         assert diff["a"] == 1 and diff["b"] == 2
         assert not diff["identical"]
         changed = {entry["parameter_id"]: entry for entry in diff["changed"]}
-        assert "1.1.7.6" in changed  # Norm-Heizlast differs between Wohnen MFH and EFH
-        assert changed["1.1.7.6"]["diffs"]["standard"] == [15.5, 19.7]
-        assert "1.1.2.7" not in changed  # Jahresgleichzeitigkeit is equal in the sample
+        assert "1.1.2.9" in changed  # Personenfläche differs between Wohnen MFH and EFH
+        assert changed["1.1.2.9"]["diffs"]["standard"] == [35, 50]
+        assert "1.1.2.7" not in changed  # Jahresgleichzeitigkeit is equal for both
 
 
 class TestClimate:
     def test_list_climate_stations(self, service) -> None:
         stations = service.list_climate_stations("V221")
         assert stations[0]["name"] == "Adelboden"
-        assert len(stations) == 2
+        assert len(stations) == 40
 
     def test_get_climate_station(self, service) -> None:
         station = service.get_climate_station("V221", 1)
@@ -104,10 +108,10 @@ class TestClimate:
 class TestProfilesAndTables:
     def test_list_profiles(self, service) -> None:
         data = service.list_profiles("V221")
-        assert len(data["hourly"]) == 3
+        assert len(data["hourly"]) == 6
         assert len(data["hourly"][0]["values"]) == 24
-        assert len(data["monthly"]) == 4
-        assert len(data["weekly"]) == 1
+        assert len(data["monthly"]) == 360  # 40 stations x 9 monthly series
+        assert len(data["weekly"]) == 0
 
     def test_get_full_load_hours(self, service) -> None:
         data = service.get_full_load_hours("V221", 1, "2-stufig", "prSIA 2024-C1:2024")
@@ -118,7 +122,7 @@ class TestProfilesAndTables:
 
     def test_get_qhc(self, service) -> None:
         data = service.get_qhc("V221", 4, 1)
-        assert data["qhc"]["value"] == 1.96
+        assert data["qhc"]["value"] == pytest.approx(5.657977024881182)
         assert data["qhc"]["unit"] == "kWh/m2"
 
     def test_get_sia3801(self, service) -> None:
@@ -129,7 +133,12 @@ class TestProfilesAndTables:
 class TestValidateAndExport:
     def test_validate(self, service) -> None:
         report = service.validate("V221")
-        assert report == {"release_id": "V221", "valid": True, "errors": [], "warnings": []}
+        assert report["release_id"] == "V221"
+        assert report["valid"] is True
+        assert report["errors"] == []
+        # the workbook's matrix/row inconsistencies are reported as warnings
+        # (e.g. profile values for kinds the Datenblatt row does not carry)
+        assert len(report["warnings"]) == 107
         with pytest.raises(DatasetNotFoundError):
             service.validate("V999")
 

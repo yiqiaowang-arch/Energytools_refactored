@@ -1237,24 +1237,31 @@
             "minItems": 1
           },
           "name": {
-            "type": "object",
-            "properties": {
-              "de": {
-                "type": "string"
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "de": {
+                    "type": "string"
+                  },
+                  "fr": {
+                    "type": "string"
+                  },
+                  "it": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "de",
+                  "fr",
+                  "it"
+                ],
+                "additionalProperties": false
               },
-              "fr": {
-                "type": "string"
-              },
-              "it": {
-                "type": "string"
+              {
+                "type": "null"
               }
-            },
-            "required": [
-              "de",
-              "fr",
-              "it"
-            ],
-            "additionalProperties": false
+            ]
           },
           "provenance": {
             "type": [

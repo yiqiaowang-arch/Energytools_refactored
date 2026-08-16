@@ -14,9 +14,9 @@ from energytools.raumdaten.dataset import DatasetStore, load_dataset
 class TestLoadDataset:
     def test_load_sample_release(self, dataset) -> None:
         assert dataset.release_id == "V221"
-        assert len(dataset.room_uses()) == 6
-        assert len(dataset.parameters()) == 11
-        assert len(dataset.climate().stations) == 2
+        assert len(dataset.room_uses()) == 45
+        assert len(dataset.parameters()) == 193
+        assert len(dataset.climate().stations) == 40
         assert dataset.validate().valid
 
     def test_identical_frozen_object_is_cached(self, datasets_dir: Path) -> None:

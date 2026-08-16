@@ -557,13 +557,32 @@ class DatasetExtractor:
     def _extract_parameters(
         self, ws: Any, ws_begriffe: Any, by_nutzid: dict[int, RoomUse]
     ) -> tuple[list[Parameter], int]:
-        """``Datenblatt`` rows 4-196; ids from ``Begriffe`` Ziffern or documented slugs."""
+        """``Datenblatt`` rows 4-196 = the 193 data-sheet parameters.
+
+        One catalog entry per non-empty row of the block (assessment 1.2).
+        Labels come from column C and are joined with the ``Begriffe``
+        dictionaries (rows 25-127: SIA Ziffern + DE/FR/IT; rows 183+: sheet
+        labels) for trilingual labels and SIA clause ids.  Rows without a
+        label stay in the catalog for a 1:1 row mapping: sub-case rows (F
+        column carries a designator such as "Auslegung Heizung") get the
+        label ``"<parent> (<designator>)"``, purely structural rows (section
+        markers, table headers, spacing rows) an empty label.
+        """
         ziffer_by_label: dict[str, str] = {}
-        for row in ws_begriffe.iter_rows(min_row=25, max_row=127, min_col=2, max_col=3):
+        translations: dict[str, tuple[str, str]] = {}
+        for row in ws_begriffe.iter_rows(min_row=25, max_row=300, min_col=2, max_col=5):
             ziffer = row[0].value
             label = row[1].value
+            if ziffer is None and label is None:
+                continue
+            de = _normalize_label(str(label or ""))
+            if not de:
+                continue
+            fr = str(row[2].value or "").strip()
+            it = str(row[3].value or "").strip()
             if ziffer and label:
-                ziffer_by_label.setdefault(_normalize_label(str(label)), str(ziffer).strip())
+                ziffer_by_label.setdefault(de, str(ziffer).strip())
+            translations.setdefault(de, (fr, it))
 
         nutzid_cell = _cell(ws, 1, 3)
         selected_nutzid = int(nutzid_cell) if nutzid_cell not in (None, "") else 1
@@ -573,40 +592,52 @@ class DatasetExtractor:
                 {"release_id": self.release_id, "errors": [f"nutzid {selected_nutzid} unknown"]},
             )
 
+        matrix = _read_matrix(ws, 4, 196, 1, 19)
         parameters: list[Parameter] = []
         used_ids: set[str] = set()
         used_symbols: set[str] = set()
         category = ""
-        for row_index, row in enumerate(
-            ws.iter_rows(min_row=4, max_row=196, min_col=1, max_col=19), start=4
-        ):
-            section = row[0].value
+        parent_label = ""
+        for row_index, row in enumerate(matrix, start=4):
+            # Every row of the block is a parameter row (rows 4-196 = 193
+            # parameters, assessment 1.2); the empty row 112 (spacer) is kept
+            # as a structural entry to preserve the 1:1 row mapping.
+            section = row[0]
             if isinstance(section, str) and section.strip() in _SECTION_HEADERS:
                 category = section.strip()
-            label = row[2].value
-            if not isinstance(label, str) or not label.strip():
-                continue
-            label = label.strip()
-            symbol = str(row[8].value or "").strip()
-            unit = _safe_unit(str(row[9].value or ""))
-            values_raw = (row[12].value, row[13].value, row[14].value)
-            flags = tuple(_to_bool(row[idx].value) for idx in (15, 16, 17, 18))
+            designator = ""
+            if isinstance(row[5], str) and row[5].strip():
+                designator = row[5].strip()
+            label = row[2]
+            if isinstance(label, str) and label.strip():
+                label = label.strip()
+                if label != "berechnet!":  # computed-marker row: not a parent label
+                    parent_label = label
+            elif designator and parent_label:
+                label = f"{parent_label} ({designator})"
+            else:
+                label = ""
+            symbol = str(row[8] or "").strip()
+            unit = _safe_unit(str(row[9] or ""))
+            values_raw = (row[12], row[13], row[14])
+            flags = tuple(_to_bool(row[idx]) for idx in (15, 16, 17, 18))
 
             parameter_id = self._parameter_id(
-                label, symbol, ziffer_by_label, used_ids, used_symbols
+                label, symbol, ziffer_by_label, used_ids, used_symbols, row_index
             )
             value_kinds = tuple(
                 kind
                 for kind, raw in zip(
                     (ValueKind.STANDARD, ValueKind.ZIELWERT, ValueKind.BESTAND), values_raw
                 )
-                if raw is not None
+                if _clean_cell_value(raw) is not None
             )
             data_type = _infer_data_type(values_raw)
+            fr, it = translations.get(_normalize_label(label), ("", ""))
             parameters.append(
                 Parameter(
                     id=parameter_id,
-                    label=TrilingualText(de=label),
+                    label=TrilingualText(de=label, fr=fr, it=it),
                     symbol=symbol,
                     unit=unit,
                     data_type=data_type,
@@ -638,16 +669,25 @@ class DatasetExtractor:
         ziffer_by_label: dict[str, str],
         used_ids: set[str],
         used_symbols: set[str],
+        row_index: int | None = None,
     ) -> str:
         base = ziffer_by_label.get(_normalize_label(label))
+        # Sub-case rows (symbol ends with ",C" / ",H", e.g. qi,des,C) get a
+        # ".C" / ".H" suffix; the symbol base is the raw symbol without it.
+        sub_suffix = ""
+        symbol_base = symbol
+        match = re.search(r",([CH])$", symbol)
+        if match:
+            sub_suffix = "." + match.group(1)
+            symbol_base = symbol[:-2]
         if base is None:
-            if symbol and symbol not in ("-", "–", "—") and symbol not in used_symbols:
-                base = symbol
-            else:
+            if symbol_base and symbol_base not in ("-", "–", "—") and symbol_base not in used_symbols:
+                base = symbol_base
+            elif label:
                 base = _slugify(label)
-        # Sub-case rows (symbol ends with ",C" / ",H", e.g. qi,des,C) get a suffix.
-        if re.search(r",[CH]$", symbol):
-            base = f"{base}.{symbol[-1]}"
+            else:
+                base = f"row-{row_index}" if row_index else "parameter"
+        base = f"{base}{sub_suffix}"
         candidate = base
         counter = 2
         while candidate in used_ids:
@@ -663,41 +703,53 @@ class DatasetExtractor:
     ) -> tuple[dict[int, RoomUseProfile], list[Parameter]]:
         """Per-room-use values from the ``Eingabedaten`` master matrix (rows 9-53).
 
-        Returns the profiles and the merged parameter catalog (Datenblatt
-        parameters plus matrix-only parameters referenced by the profiles).
+        Only matrix columns whose name matches a catalog parameter are used
+        (the workbook's own MATCH semantics); matrix-only columns (profile
+        hour indices, monthly/weekly profile sections, comments, SIA 380/1
+        system requirements) are not part of the canonical catalog.  When
+        several columns share one label, the first matching catalog parameter
+        that is not yet assigned takes the column (rows 136/137 = IDA codes /
+        regulation names in the real workbook).
+
+        Returns the profiles and the merged parameter catalog (the catalog is
+        unchanged: no matrix-only parameters enter the canonical dataset).
         """
         catalog_by_label: dict[str, list[Parameter]] = {}
         for catalog_parameter in catalog:
-            catalog_by_label.setdefault(_normalize_label(catalog_parameter.label.de), []).append(
-                catalog_parameter
-            )
-
-        raw_parameters: dict[str, Parameter] = {}
-        raw_values: dict[str, dict[int, dict[ValueKind, Any]]] = {}
+            catalog_by_label.setdefault(
+                _normalize_label(catalog_parameter.label.de), []
+            ).append(catalog_parameter)
+            # Sub-case parameters carry a " (<designator>)" label suffix; the
+            # matrix columns use the bare base label.
+            base_label = re.sub(r"\s+\([^)]*\)$", "", catalog_parameter.label.de)
+            if base_label != catalog_parameter.label.de:
+                catalog_by_label.setdefault(_normalize_label(base_label), []).append(
+                    catalog_parameter
+                )
 
         max_col = ws.max_column or 1
+        matrix = _read_matrix(ws, 6, 53, 4, max_col)
         name_by_col: dict[int, str] = {}
         kind_by_col: dict[int, str] = {}
         unit_by_col: dict[int, str] = {}
-        for row in ws.iter_rows(min_row=6, max_row=8, min_col=4, max_col=max_col):
-            for cell in row:
-                if cell.value is None or not str(cell.value).strip():
-                    continue
-                if cell.row == 6:
-                    name_by_col[cell.column] = str(cell.value).strip()
-                elif cell.row == 7:
-                    kind_by_col[cell.column] = str(cell.value).strip()
-                else:
-                    unit_by_col[cell.column] = str(cell.value).strip()
-        # Read the value matrix once (rows 9-53, columns D..max); pads short
-        # sheets (e.g. synthetic test workbooks) with empty rows.
-        matrix = [
-            [cell.value for cell in row]
-            for row in ws.iter_rows(min_row=9, max_row=53, min_col=4, max_col=max_col)
-        ]
-        if len(matrix) < 45:
-            matrix.extend([None] * (max_col - 3) for _ in range(45 - len(matrix)))
+        for col in range(4, max_col + 1):
+            name = matrix[0][col - 4]
+            if name is None or not str(name).strip():
+                continue
+            name_by_col[col] = str(name).strip()
+            kind = matrix[1][col - 4]
+            if kind is not None and str(kind).strip():
+                kind_by_col[col] = str(kind).strip()
+            unit = matrix[2][col - 4]
+            if unit is not None and str(unit).strip():
+                unit_by_col[col] = str(unit).strip()
 
+        value_matrix = matrix[3:]  # rows 9..53
+        if len(value_matrix) < 45:
+            value_matrix.extend([None] * (max_col - 3) for _ in range(45 - len(value_matrix)))
+
+        raw_values: dict[str, dict[int, dict[ValueKind, Any]]] = {}
+        used_parameters: set[str] = set()
         col = 4  # column D
         while col <= max_col:
             name = name_by_col.get(col)
@@ -709,7 +761,12 @@ class DatasetExtractor:
             matches = catalog_by_label.get(_normalize_label(name), [])
 
             kinds: tuple[ValueKind, ...]
-            if kind_text == "Standard" and col + 2 <= max_col:
+            if (
+                kind_text == "Standard"
+                and col + 2 <= max_col
+                and col + 1 not in name_by_col
+                and col + 2 not in name_by_col
+            ):
                 group = [col, col + 1, col + 2]
                 kinds = (ValueKind.STANDARD, ValueKind.ZIELWERT, ValueKind.BESTAND)
                 col += 3
@@ -720,32 +777,20 @@ class DatasetExtractor:
                 sub_kind = {"Kühlfall": ".C", "Heizfall": ".H"}.get(kind_text)
                 col += 1
 
-            parameter: Parameter | None = self._match_parameter(matches, sub_kind, name, unit)
+            parameter = self._match_parameter(matches, sub_kind, name, unit, used_parameters)
             if parameter is None:
-                parameter_id = _slugify(name) + (sub_kind or "")
-                parameter = Parameter(
-                    id=parameter_id,
-                    label=TrilingualText(de=name),
-                    symbol="",
-                    unit=unit,
-                    data_type="number",
-                    category="",
-                    value_kinds=frozenset(kinds),
-                )
-            raw_parameters[parameter.id] = parameter
+                continue  # matrix-only column: not part of the canonical catalog
+            used_parameters.add(parameter.id)
             for nutzid in range(1, 46):
-                row_values = matrix[nutzid - 1]
+                row_values = value_matrix[nutzid - 1]
+                by_kind = raw_values.setdefault(parameter.id, {}).setdefault(nutzid, {})
                 for offset, kind in enumerate(kinds):
                     cell_value = row_values[group[offset] - 4]
-                    raw_values.setdefault(parameter.id, {}).setdefault(nutzid, {})[kind] = (
-                        _clean_cell_value(cell_value)
-                    )
+                    cleaned = _clean_cell_value(cell_value)
+                    if cleaned is not None:
+                        by_kind.setdefault(kind, cleaned)
 
         catalog_dict = {parameter.id: parameter for parameter in catalog}
-        for parameter_id, parameter in raw_parameters.items():
-            if parameter_id not in catalog_dict:
-                catalog_dict[parameter_id] = parameter
-
         profiles: dict[int, RoomUseProfile] = {}
         for nutzid, room_use in by_nutzid.items():
             values = {}
@@ -759,7 +804,6 @@ class DatasetExtractor:
                         unit=catalog_dict[parameter_id].unit,
                     )
                     for kind, value in by_kind.items()
-                    if value is not None
                 }
             profiles[nutzid] = RoomUseProfile(
                 room_use=room_use,
@@ -770,10 +814,17 @@ class DatasetExtractor:
 
     @staticmethod
     def _match_parameter(
-        matches: list[Parameter], sub_kind: str | None, name: str, unit: str
+        matches: list[Parameter],
+        sub_kind: str | None,
+        name: str,
+        unit: str,
+        used: set[str] | None = None,
     ) -> Parameter | None:
         """Pick the catalog parameter matching a matrix column (label + sub-case)."""
+        used = used if used is not None else set()
         for parameter in matches:
+            if parameter.id in used:
+                continue
             if sub_kind is not None:
                 if parameter.id.endswith(sub_kind):
                     return parameter
@@ -781,6 +832,10 @@ class DatasetExtractor:
                 (".C", ".H")
             ):
                 return parameter
+        for parameter in matches:
+            if parameter.id in used:
+                continue
+            return parameter
         if matches:
             return matches[0]
         return None
@@ -788,19 +843,23 @@ class DatasetExtractor:
     def _extract_climate(self, ws_winter: Any, ws_monatswerte: Any) -> ClimateData:
         stations = []
         monthly_blocks: dict[str, dict[str, MonthlyProfile]] = {}
-        for row_index, row in enumerate(
-            ws_monatswerte.iter_rows(min_row=1, max_row=450, min_col=1, max_col=23), start=1
-        ):
-            if row_index % 11 != 1:
-                continue
-            name = str(row[0].value or "").strip()
+        # Monatswerte: 11-row blocks per station starting at rows 1, 12, 23, ...
+        # (row 1 is a formula-driven preview of the selected station; the
+        # literal blocks repeat the same data).  The air temperature row is
+        # the row BELOW the block header.  Block names are joined to the
+        # Winter_Auslegung stations by a normalized key (the workbook spells
+        # station 5 "Bern Liebefeld" in Monatswerte but "Bern-Liebefeld" in
+        # Winter_Auslegung).
+        monthly = _read_matrix(ws_monatswerte, 1, 450, 1, 23)
+        for block in range(0, 450, 11):
+            name = str(monthly[block][0] or "").strip()
             if not name:
                 continue
-            monthly = monthly_blocks.setdefault(name, {})
-            values = [_month_value(row[offset].value) for offset in range(11, 23)]
+            monthly_block = monthly_blocks.setdefault(_normalize_station_name(name), {})
+            values = [_month_value(value) for value in monthly[block + 1][11:23]]
             if all(value is None for value in values):
                 continue  # header-only block
-            monthly["t_aussen"] = MonthlyProfile(
+            monthly_block["t_aussen"] = MonthlyProfile(
                 id="t_aussen",
                 values=tuple(value if value is not None else 0.0 for value in values),
                 unit="°C",
@@ -815,27 +874,18 @@ class DatasetExtractor:
                 ("mixing_ratio", 8),
                 ("absolute_humidity", 9),
             ):
-                values_row = next(
-                    ws_monatswerte.iter_rows(
-                        min_row=row_index + row_offset,
-                        max_row=row_index + row_offset,
-                        min_col=12,
-                        max_col=23,
-                    ),
-                    (),
-                )
-                values = [_month_value(cell.value) for cell in values_row]
+                values_row = monthly[block + row_offset]
+                values = [_month_value(value) for value in values_row[11:23]]
                 if any(value is not None for value in values):
-                    monthly[key] = MonthlyProfile(
+                    monthly_block[key] = MonthlyProfile(
                         id=key,
                         values=tuple(value if value is not None else 0.0 for value in values),
                         unit=_MONTHLY_BLOCK_UNITS[key],
                     )
 
-        for index, row in enumerate(
-            ws_winter.iter_rows(min_row=5, max_row=44, min_col=1, max_col=15), start=5
-        ):
-            name = str(row[0].value or "").strip()
+        winter = _read_matrix(ws_winter, 1, 44, 1, 15)
+        for index, row in enumerate(winter[4:44], start=5):  # sheet rows 5..44
+            name = str(row[0] or "").strip()
             if not name:
                 continue
             station_id = index - 4
@@ -846,10 +896,10 @@ class DatasetExtractor:
                 ("t_ventilation", 6, "°C"),  # G column: Lüftung
                 ("radiation", 9, "W/m2"),  # J column: horizontal
             ):
-                value = row[column].value
+                value = row[column]
                 if isinstance(value, (int, float)):
                     winter_design[key] = Quantity(float(value), unit)
-            hdd_value = row[4].value  # E column: Heizgradtage
+            hdd_value = row[4]  # E column: Heizgradtage
             hdd = Quantity(float(hdd_value), "K·d") if isinstance(hdd_value, (int, float)) else None
             stations.append(
                 ClimateStation(
@@ -857,7 +907,7 @@ class DatasetExtractor:
                     name=TrilingualText(de=name),
                     winter_design=winter_design,
                     summer_design={},
-                    monthly=monthly_blocks.get(name, {}),
+                    monthly=monthly_blocks.get(_normalize_station_name(name), {}),
                     hdd=hdd,
                     provenance=Provenance(
                         sources=(
@@ -905,10 +955,11 @@ class DatasetExtractor:
     def _extract_qhc(self, ws: Any, by_code: dict[str, RoomUse]) -> QhcTable:
         """``Qhc_Klimastat``: 12 columns per station block, E/I/M = annual cooling per kind."""
         rows: dict[tuple[int, int, ValueKind], float] = {}
+        matrix = _read_matrix(ws, 1, 51, 1, ws.max_column or 1)
         station_start = 4  # column D
         station_id = 1
         while station_start <= (ws.max_column or 1):
-            station_name_cell = _cell(ws, 3, station_start)
+            station_name_cell = matrix[2][station_start - 1]
             if station_name_cell is None:
                 break
             for kind, offset in (
@@ -917,14 +968,15 @@ class DatasetExtractor:
                 (ValueKind.BESTAND, 8),
             ):
                 value_column = station_start + offset + 1  # E/I/M: annual cooling kWh/m2
-                for row_index, row in enumerate(
-                    ws.iter_rows(min_row=7, max_row=51, min_col=1, max_col=1), start=7
-                ):
-                    code = str(row[0].value or "").strip()
+                for row_index in range(7, 52):  # sheet rows 7..51
+                    code = str(matrix[row_index - 1][0] or "").strip()
                     room_use = by_code.get(normalize_room_use_code(code))
                     if room_use is None:
                         continue
-                    value_cell = _cell(ws, row_index, value_column)
+                    row_values = matrix[row_index - 1]
+                    if value_column - 1 >= len(row_values):
+                        continue  # block extends beyond the sheet (short sheets)
+                    value_cell = row_values[value_column - 1]
                     if isinstance(value_cell, (int, float)):
                         rows[(room_use.nutzid, station_id, kind)] = float(value_cell)
             station_start += 12
@@ -953,14 +1005,13 @@ class DatasetExtractor:
             ("lueftung_zweistufig", "ventilation", 6),
             ("lueftung_stufenlos", "ventilation", 8),
         )
+        matrix = _read_matrix(ws, 63, 86, 1, 10)
         profiles = []
         for profile_id, profile_type, column_index in columns:
-            values = []
-            for row in ws.iter_rows(
-                min_row=63, max_row=86, min_col=column_index + 1, max_col=column_index + 1
-            ):
-                value = row[0].value
-                values.append(float(value) if isinstance(value, (int, float)) else 0.0)
+            values = [
+                float(row[column_index]) if isinstance(row[column_index], (int, float)) else 0.0
+                for row in matrix
+            ]
             profiles.append(
                 HourlyProfile(
                     id=profile_id,
@@ -983,35 +1034,42 @@ class DatasetExtractor:
     def _extract_mappings_and_areas(
         self, ws_flaeche: Any, ws_gepamod: Any, by_code: dict[str, RoomUse]
     ) -> tuple[list[BuildingCategoryMapping], list[AreaTable]]:
-        """``Fläche-E`` rows 3-49: category columns (row 1) x room-use codes (column A)."""
-        category_names: dict[str, str] = {}
-        for row in ws_gepamod.iter_rows(min_row=1, max_row=2, min_col=1, max_col=41):
-            for cell in row:
-                if cell.value is not None:
-                    category_names.setdefault(str(cell.value).strip(), "")
+        """``Fläche-E`` rows 3-49: category columns (row 1) x room-use codes (column A).
 
+        Only the first category block of row 1 is read (columns D..Y in the
+        real workbook; the later blocks hold variant metrics of other
+        standards).  Category names come from ``GEPAMOD`` row 2 per category
+        column of row 1.
+        """
+        gepamod = _read_matrix(ws_gepamod, 1, 2, 1, ws_gepamod.max_column or 41)
+        category_names: dict[str, str] = {}
+        for col in range(len(gepamod[0])):
+            code = gepamod[0][col]
+            name = gepamod[1][col]
+            if code is None or name is None:
+                continue
+            code = str(code).strip()
+            name = str(name).strip()
+            if code and name:
+                category_names.setdefault(code, name)
+
+        flaeche = _read_matrix(ws_flaeche, 1, 49, 1, ws_flaeche.max_column or 1)
         categories: list[str] = []
-        for cell in next(
-            ws_flaeche.iter_rows(
-                min_row=1, max_row=1, min_col=4, max_col=ws_flaeche.max_column or 4
-            ),
-            (),
-        ):
-            if cell.value is not None:
-                categories.append(str(cell.value).strip())
+        for cell in flaeche[0][3:]:  # first block: consecutive row-1 cells from column D
+            if cell is None or not str(cell).strip():
+                break
+            categories.append(str(cell).strip())
 
         rows: dict[str, dict[str, float]] = {category: {} for category in categories}
-        for row_index, row in enumerate(
-            ws_flaeche.iter_rows(min_row=3, max_row=49, min_col=1, max_col=1), start=3
-        ):
-            code_raw = row[0].value
+        for row_index, row in enumerate(flaeche[2:49], start=3):  # sheet rows 3..49
+            code_raw = row[0]
             if code_raw is None:
                 continue
             code = normalize_room_use_code(str(code_raw).strip())
             if code not in by_code:
                 continue
             for column_index, category in enumerate(categories, start=4):
-                value_cell = _cell(ws_flaeche, row_index, column_index)
+                value_cell = row[column_index - 1]
                 if isinstance(value_cell, (int, float)):
                     rows[category][code] = float(value_cell)
 
@@ -1065,8 +1123,8 @@ class DatasetExtractor:
             "SIA 380-1_Qc": "de+qc",
             "SIA 380-1_Qc_EN": "en+qc",
         }
-        station_name_cell = _cell(wb["SIA 380-1"], 68, 2)
-        station_name = str(station_name_cell or "").strip()
+        station_matrix = _read_matrix(wb["SIA 380-1"], 1, 196, 1, 16)
+        station_name = str(station_matrix[67][1] or "").strip()
         station_id = next(
             (station.id for station in climate.stations if station.name.de == station_name),
             climate.stations[0].id,
@@ -1076,12 +1134,13 @@ class DatasetExtractor:
             if sheet_name not in wb.sheetnames:
                 continue
             ws = wb[sheet_name]
+            matrix = _read_matrix(ws, 1, 196, 1, 16)
             for kind, row_number in (
                 (ValueKind.STANDARD, 134),
                 (ValueKind.ZIELWERT, 166),
                 (ValueKind.BESTAND, 196),
             ):
-                value_cell = _cell(ws, row_number, 16)
+                value_cell = matrix[row_number - 1][15]
                 if not isinstance(value_cell, (int, float)):
                     continue
                 results.append(
@@ -1109,6 +1168,37 @@ class DatasetExtractor:
 
 def _normalize_label(label: str) -> str:
     return re.sub(r"\s+", " ", label).strip().lower()
+
+
+def _normalize_station_name(name: str) -> str:
+    """Normalized station-name join key (hyphens/spaces are ignored).
+
+    The workbook spells station 5 "Bern Liebefeld" in ``Monatswerte`` but
+    "Bern-Liebefeld" in ``Winter_Auslegung``; the join must tolerate that.
+    """
+    return re.sub(r"[\s-]+", "", name).lower()
+
+
+def _read_matrix(ws: Any, min_row: int, max_row: int, min_col: int, max_col: int) -> list[list[Any]]:
+    """One deterministic pass over a (possibly read-only) worksheet -> value rows.
+
+    openpyxl read-only worksheets cannot seek: every ``iter_rows`` call
+    re-parses the sheet XML from the start, so the naive per-cell access
+    pattern is quadratic in the number of lookups and effectively hangs on
+    the wide real-workbook tables (``Qhc_Klimastat``: 483 columns).  Reading
+    the requested range once into memory keeps extraction linear.  Sheets
+    shorter than the requested range are padded with empty rows so callers
+    can index the full range (synthetic test workbooks).
+    """
+    matrix = [
+        [cell.value for cell in row]
+        for row in ws.iter_rows(min_row=min_row, max_row=max_row, min_col=min_col, max_col=max_col)
+    ]
+    expected = max_row - min_row + 1
+    if len(matrix) < expected:
+        width = max_col - min_col + 1
+        matrix.extend([None] * width for _ in range(expected - len(matrix)))
+    return matrix
 
 
 def _cell(ws: Any, row: int, column: int) -> Any:
@@ -1147,10 +1237,12 @@ def _to_bool(value: Any) -> bool:
 
 
 def _infer_data_type(values_raw: tuple[Any, Any, Any]) -> str:
+    cleaned = [_clean_cell_value(raw) for raw in values_raw]
+    if all(value is None for value in cleaned):
+        return "text"  # no values (structural rows): nothing to type
     numeric = True
     enum_like = True
-    for raw in values_raw:
-        value = _clean_cell_value(raw)
+    for value in cleaned:
         if value is None:
             continue
         if not isinstance(value, (int, float)):

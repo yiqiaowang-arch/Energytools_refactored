@@ -133,6 +133,7 @@ _UNIT_REGISTRY: dict[str, tuple[str, float, float, str | None]] = {
     "W/K": ("power_per_temperature", 1.0, 0.0, None),
     "kW/K": ("power_per_temperature", 1000.0, 0.0, None),
     "mg/m3": ("mass_per_volume", 1e-06, 0.0, None),
+    "g/m3": ("mass_per_volume", 1e-03, 0.0, None),
     "Kd": ("degree_days", 86400.0, 0.0, None),
     "K·d": ("degree_days", 86400.0, 0.0, None),
     "°C·d": ("degree_days", 86400.0, 0.0, None),
