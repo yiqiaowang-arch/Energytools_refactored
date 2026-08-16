@@ -1,0 +1,3274 @@
+{
+ "case": "case-01",
+ "source": "Excel workbook recalculated by user in Excel (authoritative reference)",
+ "inputs": {
+  "Gebaeude": {
+   "B2": "Beispiel/exemple/esempio",
+   "D2": 8,
+   "B5": "Standard",
+   "F8": 28,
+   "G8": 2,
+   "H8": 29,
+   "I8": 3,
+   "J8": 30,
+   "K8": 4,
+   "M8": 3,
+   "N8": 31,
+   "O8": 5,
+   "Q8": 32,
+   "R8": 6,
+   "T8": 33,
+   "U8": 7,
+   "V8": 8,
+   "W8": 8,
+   "F9": {
+    "formula": "IF($B5=Begriffe!$F76,F8,IF($B5=Begriffe!$F77,F8+7,F8+14))",
+    "value": 28
+   },
+   "G9": {
+    "formula": "IF($B5=Begriffe!$F76,G8,IF($B5=Begriffe!$F77,G8+8,G8+16))",
+    "value": 2
+   },
+   "H9": {
+    "formula": "IF($B5=Begriffe!$F76,H8,IF($B5=Begriffe!$F77,H8+7,H8+14))",
+    "value": 29
+   },
+   "I9": {
+    "formula": "IF($B5=Begriffe!$F76,I8,IF($B5=Begriffe!$F77,I8+8,I8+16))",
+    "value": 3
+   },
+   "J9": {
+    "formula": "IF($B5=Begriffe!$F76,J8,IF($B5=Begriffe!$F77,J8+7,J8+14))",
+    "value": 30
+   },
+   "K9": {
+    "formula": "IF($B5=Begriffe!$F76,K8,IF($B5=Begriffe!$F77,K8+8,K8+16))",
+    "value": 4
+   },
+   "N9": {
+    "formula": "IF(B5=Begriffe!F76,N8,IF(B5=Begriffe!F77,N8+6,N8+12))",
+    "value": 31
+   },
+   "O9": {
+    "formula": "IF(B5=Begriffe!F76,O8,IF(B5=Begriffe!F77,O8+7,O8+14))",
+    "value": 5
+   },
+   "Q9": {
+    "formula": "IF(B5=Begriffe!F76,Q8,IF(B5=Begriffe!F77,Q8+7,Q8+14))",
+    "value": 32
+   },
+   "R9": {
+    "formula": "IF(B5=Begriffe!F76,R8,IF(B5=Begriffe!F77,R8+8,R8+16))",
+    "value": 6
+   },
+   "T9": {
+    "formula": "IF(B5=Begriffe!F76,T8,IF(B5=Begriffe!F77,T8+7,T8+14))",
+    "value": 33
+   },
+   "U9": {
+    "formula": "IF(B5=Begriffe!F76,U8,IF(B5=Begriffe!F77,U8+8,U8+16))",
+    "value": 7
+   },
+   "W9": {
+    "formula": "IF(B5=Begriffe!F76,W8,IF(B5=Begriffe!F77,W8+8,W8+16))",
+    "value": 8
+   }
+  },
+  "rooms": {
+   "B12": "Einzel-, Gruppenbüro",
+   "C12": true,
+   "D12": 2500,
+   "E12": {
+    "formula": "D12/$D$35",
+    "value": 0.37936267071320184
+   },
+   "F12": {
+    "formula": "IF($B12=\"\",0,VLOOKUP($B12,Res,F$9,FALSE))*$D12/1000",
+    "value": 27.5
+   },
+   "G12": "{\"result\":80.025,\"sharedFormula\":\"F12\"}",
+   "H12": "{\"sharedFormula\":\"F12\"}",
+   "I12": "{\"sharedFormula\":\"F12\"}",
+   "J12": "{\"result\":24.305555555555557,\"sharedFormula\":\"F12\"}",
+   "K12": "{\"result\":33.614583333333336,\"sharedFormula\":\"F12\"}",
+   "L12": "LA01",
+   "M12": {
+    "formula": "IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$H$50,M$8,0))*$D12+IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$H$50,4,0))*$D12",
+    "value": 5178.571428571429
+   },
+   "N12": {
+    "formula": "IF($B12=\"\",0,IF(L12=FALSE,0,VLOOKUP($B12,Res,N$9,FALSE))*$D12/1000)",
+    "value": 2.848214285714286
+   },
+   "O12": {
+    "formula": "IF($B12=\"\",0,IF(L12=FALSE,0,VLOOKUP($B12,Res,O$9,FALSE))*$D12/1000)",
+    "value": 11.108035714285716
+   },
+   "P12": true,
+   "Q12": {
+    "formula": "IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,Q$9,FALSE))*$D12/1000)",
+    "value": 88.14357142857143
+   },
+   "R12": {
+    "formula": "IF($B12=\"\",0,IF(P12=FALSE,0,VLOOKUP($B12,Res,R$9,FALSE))*$D12/1000)",
+    "value": 2.8290783429419433
+   },
+   "S12": true,
+   "T12": {
+    "formula": "IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,T$9,FALSE))*$D12/1000)",
+    "value": 58.99492647058825
+   },
+   "U12": {
+    "formula": "IF($B12=\"\",0,IF(S12=FALSE,0,VLOOKUP($B12,Res,U$9,FALSE))*$D12/1000)",
+    "value": 26.4335910745215
+   },
+   "V12": {
+    "formula": "IF($B12=\"\",0,VLOOKUP($B12,Std!$B$6:$I$50,$V$8,0))*$D12",
+    "value": 535.7142857142857
+   },
+   "W12": {
+    "formula": "IF($B12=\"\",0,VLOOKUP($B12,Res,W$9,FALSE))*$D12/1000",
+    "value": 6.487714285714286
+   },
+   "B13": "Grossraumbüro",
+   "C13": true,
+   "D13": 1000,
+   "E13": "{\"result\":0.15174506828528073,\"sharedFormula\":\"E12\"}",
+   "F13": "{\"result\":15,\"sharedFormula\":\"F12\"}",
+   "G13": "{\"result\":43.65,\"sharedFormula\":\"F12\"}",
+   "H13": "{\"sharedFormula\":\"F12\"}",
+   "I13": "{\"sharedFormula\":\"F12\"}",
+   "J13": "{\"result\":7.6388888888888875,\"sharedFormula\":\"F12\"}",
+   "K13": "{\"result\":14.750694444444441,\"sharedFormula\":\"F12\"}",
+   "L13": "LA01",
+   "M13": {
+    "formula": "IF($B13=\"\",0,VLOOKUP($B13,Std!$B$6:$H$50,M$8,0))*$D13+IF($B13=\"\",0,VLOOKUP($B13,Std!$B$6:$H$50,4,0))*$D13",
+    "value": 2900
+   },
+   "N13": "{\"result\":1.595,\"sharedFormula\":\"N12\"}",
+   "O13": "{\"result\":6.2205,\"sharedFormula\":\"O12\"}",
+   "P13": true,
+   "Q13": "{\"result\":30.502000000000006,\"sharedFormula\":\"Q12\"}",
+   "R13": {
+    "formula": "IF($B13=\"\",0,IF(P13=FALSE,0,VLOOKUP($B13,Res,R$9,FALSE))*$D13/1000)",
+    "value": 8.272633425904903
+   },
+   "S13": true,
+   "T13": "{\"result\":15.020235294117647,\"sharedFormula\":\"T12\"}",
+   "U13": "{\"result\":3.1748217722558274,\"sharedFormula\":\"U12\"}",
+   "V13": {
+    "formula": "IF($B13=\"\",0,VLOOKUP($B13,Std!$B$6:$I$50,$V$8,0))*$D13",
+    "value": 300
+   },
+   "W13": {
+    "formula": "IF($B13=\"\",0,VLOOKUP($B13,Res,W$9,FALSE))*$D13/1000",
+    "value": 3.633120000000001
+   },
+   "B14": "Sitzungszimmer",
+   "C14": true,
+   "D14": 200,
+   "E14": "{\"result\":0.030349013657056147,\"sharedFormula\":\"E12\"}",
+   "F14": "{\"result\":1.6,\"sharedFormula\":\"F12\"}",
+   "G14": "{\"result\":2.256,\"sharedFormula\":\"F12\"}",
+   "H14": "{\"sharedFormula\":\"F12\"}",
+   "I14": "{\"sharedFormula\":\"F12\"}",
+   "J14": "{\"result\":1.9444444444444446,\"sharedFormula\":\"F12\"}",
+   "K14": "{\"result\":1.4680555555555554,\"sharedFormula\":\"F12\"}",
+   "L14": "LA02",
+   "M14": {
+    "formula": "IF($B14=\"\",0,VLOOKUP($B14,Std!$B$6:$H$50,M$8,0))*$D14+IF($B14=\"\",0,VLOOKUP($B14,Std!$B$6:$H$50,4,0))*$D14",
+    "value": 1933.3333333333333
+   },
+   "N14": "{\"result\":1.0633333333333332,\"sharedFormula\":\"N12\"}",
+   "O14": "{\"result\":1.1590333333333331,\"sharedFormula\":\"O12\"}",
+   "P14": true,
+   "Q14": "{\"result\":9.644660392156862,\"sharedFormula\":\"Q12\"}",
+   "R14": {
+    "formula": "IF($B14=\"\",0,IF(P14=FALSE,0,VLOOKUP($B14,Res,R$9,FALSE))*$D14/1000)",
+    "error": "no-cached-value"
+   },
+   "S14": true,
+   "T14": "{\"result\":4.71959411764706,\"sharedFormula\":\"T12\"}",
+   "U14": "{\"result\":3.8372639748159756,\"sharedFormula\":\"U12\"}",
+   "V14": {
+    "formula": "IF($B14=\"\",0,VLOOKUP($B14,Std!$B$6:$I$50,$V$8,0))*$D14",
+    "error": "no-cached-value"
+   },
+   "W14": {
+    "formula": "IF($B14=\"\",0,VLOOKUP($B14,Res,W$9,FALSE))*$D14/1000",
+    "error": "no-cached-value"
+   },
+   "B15": "Schalterhalle, Empfang",
+   "C15": true,
+   "D15": 200,
+   "E15": "{\"result\":0.030349013657056147,\"sharedFormula\":\"E12\"}",
+   "F15": "{\"result\":0.8,\"sharedFormula\":\"F12\"}",
+   "G15": "{\"result\":2.328,\"sharedFormula\":\"F12\"}",
+   "H15": "{\"sharedFormula\":\"F12\"}",
+   "I15": "{\"sharedFormula\":\"F12\"}",
+   "J15": "{\"result\":1.1055555555555556,\"sharedFormula\":\"F12\"}",
+   "K15": "{\"result\":1.6240611111111112,\"sharedFormula\":\"F12\"}",
+   "L15": "LA03",
+   "M15": {
+    "formula": "IF($B15=\"\",0,VLOOKUP($B15,Std!$B$6:$H$50,M$8,0))*$D15+IF($B15=\"\",0,VLOOKUP($B15,Std!$B$6:$H$50,4,0))*$D15",
+    "value": 483.3333333333333
+   },
+   "N15": "{\"result\":0.2658333333333333,\"sharedFormula\":\"N12\"}",
+   "O15": "{\"result\":1.03675,\"sharedFormula\":\"O12\"}",
+   "P15": true,
+   "Q15": "{\"result\":4.425866666666668,\"sharedFormula\":\"Q12\"}",
+   "R15": {
+    "formula": "IF($B15=\"\",0,IF(P15=FALSE,0,VLOOKUP($B15,Res,R$9,FALSE))*$D15/1000)",
+    "error": "no-cached-value"
+   },
+   "S15": true,
+   "T15": "{\"result\":3.4427241830065354,\"sharedFormula\":\"T12\"}",
+   "U15": "{\"result\":2.515104032659242,\"sharedFormula\":\"U12\"}",
+   "V15": {
+    "formula": "IF($B15=\"\",0,VLOOKUP($B15,Std!$B$6:$I$50,$V$8,0))*$D15",
+    "error": "no-cached-value"
+   },
+   "W15": "{\"sharedFormula\":\"W14\"}",
+   "B16": "Verkehrsfläche",
+   "C16": true,
+   "D16": 1000,
+   "E16": "{\"result\":0.15174506828528073,\"sharedFormula\":\"E12\"}",
+   "F16": "{\"sharedFormula\":\"F12\"}",
+   "G16": "{\"sharedFormula\":\"F12\"}",
+   "H16": "{\"sharedFormula\":\"F12\"}",
+   "I16": "{\"sharedFormula\":\"F12\"}",
+   "J16": "{\"result\":2.7444444444444454,\"sharedFormula\":\"F12\"}",
+   "K16": "{\"result\":3.847711111111112,\"sharedFormula\":\"F12\"}",
+   "L16": "LA01",
+   "M16": {
+    "formula": "IF($B16=\"\",0,VLOOKUP($B16,Std!$B$6:$H$50,M$8,0))*$D16+IF($B16=\"\",0,VLOOKUP($B16,Std!$B$6:$H$50,4,0))*$D16",
+    "value": 500
+   },
+   "N16": "{\"result\":0.275,\"sharedFormula\":\"N12\"}",
+   "O16": "{\"result\":1.2155,\"sharedFormula\":\"O12\"}",
+   "P16": false,
+   "Q16": "{\"sharedFormula\":\"Q12\"}",
+   "R16": "{\"sharedFormula\":\"R15\"}",
+   "S16": true,
+   "T16": "{\"result\":23.31520588235295,\"sharedFormula\":\"T12\"}",
+   "U16": "{\"result\":11.595559860706247,\"sharedFormula\":\"U12\"}",
+   "V16": {
+    "formula": "IF($B16=\"\",0,VLOOKUP($B16,Std!$B$6:$I$50,$V$8,0))*$D16",
+    "error": "no-cached-value"
+   },
+   "W16": "{\"sharedFormula\":\"W14\"}",
+   "B17": "Treppenhaus",
+   "C17": true,
+   "D17": 400,
+   "E17": "{\"result\":0.06069802731411229,\"sharedFormula\":\"E12\"}",
+   "F17": "{\"sharedFormula\":\"F12\"}",
+   "G17": "{\"sharedFormula\":\"F12\"}",
+   "H17": "{\"sharedFormula\":\"F12\"}",
+   "I17": "{\"sharedFormula\":\"F12\"}",
+   "J17": "{\"result\":1.097777777777778,\"sharedFormula\":\"F12\"}",
+   "K17": "{\"result\":1.539084444444445,\"sharedFormula\":\"F12\"}",
+   "L17": "-",
+   "M17": {
+    "formula": "IF($B17=\"\",0,VLOOKUP($B17,Std!$B$6:$H$50,M$8,0))*$D17+IF($B17=\"\",0,VLOOKUP($B17,Std!$B$6:$H$50,4,0))*$D17",
+    "value": 200
+   },
+   "N17": "{\"sharedFormula\":\"N12\"}",
+   "O17": "{\"sharedFormula\":\"O12\"}",
+   "P17": false,
+   "Q17": "{\"sharedFormula\":\"Q12\"}",
+   "R17": "{\"sharedFormula\":\"R15\"}",
+   "S17": true,
+   "T17": "{\"result\":8.519611764705884,\"sharedFormula\":\"T12\"}",
+   "U17": "{\"result\":3.198144766184435,\"sharedFormula\":\"U12\"}",
+   "V17": {
+    "formula": "IF($B17=\"\",0,VLOOKUP($B17,Std!$B$6:$I$50,$V$8,0))*$D17",
+    "error": "no-cached-value"
+   },
+   "W17": "{\"sharedFormula\":\"W14\"}",
+   "B18": "WC",
+   "C18": true,
+   "D18": 100,
+   "E18": "{\"result\":0.015174506828528073,\"sharedFormula\":\"E12\"}",
+   "F18": "{\"sharedFormula\":\"F12\"}",
+   "G18": "{\"sharedFormula\":\"F12\"}",
+   "H18": "{\"sharedFormula\":\"F12\"}",
+   "I18": "{\"sharedFormula\":\"F12\"}",
+   "J18": "{\"result\":0.7666666666666667,\"sharedFormula\":\"F12\"}",
+   "K18": "{\"result\":0.6087333333333335,\"sharedFormula\":\"F12\"}",
+   "L18": "LA04",
+   "M18": {
+    "formula": "IF($B18=\"\",0,VLOOKUP($B18,Std!$B$6:$H$50,M$8,0))*$D18+IF($B18=\"\",0,VLOOKUP($B18,Std!$B$6:$H$50,4,0))*$D18",
+    "value": 800
+   },
+   "N18": "{\"result\":0.22400000000000003,\"sharedFormula\":\"N12\"}",
+   "O18": "{\"result\":0.30912,\"sharedFormula\":\"O12\"}",
+   "P18": false,
+   "Q18": "{\"sharedFormula\":\"Q12\"}",
+   "R18": "{\"sharedFormula\":\"R15\"}",
+   "S18": true,
+   "T18": "{\"result\":3.1131705882352945,\"sharedFormula\":\"T12\"}",
+   "U18": "{\"result\":3.931431081360895,\"sharedFormula\":\"U12\"}",
+   "V18": {
+    "formula": "IF($B18=\"\",0,VLOOKUP($B18,Std!$B$6:$I$50,$V$8,0))*$D18",
+    "error": "no-cached-value"
+   },
+   "W18": "{\"sharedFormula\":\"W14\"}",
+   "B19": "Nebenraum",
+   "C19": true,
+   "D19": 500,
+   "E19": "{\"result\":0.07587253414264036,\"sharedFormula\":\"E12\"}",
+   "F19": "{\"sharedFormula\":\"F12\"}",
+   "G19": "{\"sharedFormula\":\"F12\"}",
+   "H19": "{\"sharedFormula\":\"F12\"}",
+   "I19": "{\"sharedFormula\":\"F12\"}",
+   "J19": "{\"result\":1.1680555555555558,\"sharedFormula\":\"F12\"}",
+   "K19": "{\"result\":1.6376138888888894,\"sharedFormula\":\"F12\"}",
+   "L19": "LA05",
+   "M19": {
+    "formula": "IF($B19=\"\",0,VLOOKUP($B19,Std!$B$6:$H$50,M$8,0))*$D19+IF($B19=\"\",0,VLOOKUP($B19,Std!$B$6:$H$50,4,0))*$D19",
+    "value": 250
+   },
+   "N19": "{\"result\":0.07,\"sharedFormula\":\"N12\"}",
+   "O19": "{\"result\":0.3094,\"sharedFormula\":\"O12\"}",
+   "P19": false,
+   "Q19": "{\"sharedFormula\":\"Q12\"}",
+   "R19": "{\"sharedFormula\":\"R15\"}",
+   "S19": true,
+   "T19": "{\"result\":6.295005882352942,\"sharedFormula\":\"T12\"}",
+   "U19": "{\"result\":6.769357691258095,\"sharedFormula\":\"U12\"}",
+   "V19": {
+    "formula": "IF($B19=\"\",0,VLOOKUP($B19,Std!$B$6:$I$50,$V$8,0))*$D19",
+    "error": "no-cached-value"
+   },
+   "W19": "{\"sharedFormula\":\"W14\"}",
+   "B20": "Serverraum",
+   "C20": true,
+   "D20": 20,
+   "E20": "{\"result\":0.0030349013657056147,\"sharedFormula\":\"E12\"}",
+   "F20": "{\"sharedFormula\":\"F12\"}",
+   "G20": "{\"sharedFormula\":\"F12\"}",
+   "H20": "{\"result\":3,\"sharedFormula\":\"F12\"}",
+   "I20": "{\"result\":21.03,\"sharedFormula\":\"F12\"}",
+   "J20": "{\"result\":0.10344444444444442,\"sharedFormula\":\"F12\"}",
+   "K20": "{\"result\":0.007551444444444443,\"sharedFormula\":\"F12\"}",
+   "L20": "LA05",
+   "M20": {
+    "formula": "IF($B20=\"\",0,VLOOKUP($B20,Std!$B$6:$H$50,M$8,0))*$D20+IF($B20=\"\",0,VLOOKUP($B20,Std!$B$6:$H$50,4,0))*$D20",
+    "value": 10
+   },
+   "N20": "{\"result\":0.0055,\"sharedFormula\":\"N12\"}",
+   "O20": "{\"result\":0.03014,\"sharedFormula\":\"O12\"}",
+   "P20": true,
+   "Q20": "{\"result\":0.08304444444444443,\"sharedFormula\":\"Q12\"}",
+   "R20": "{\"sharedFormula\":\"R15\"}",
+   "S20": true,
+   "T20": "{\"result\":0.05973600000000001,\"sharedFormula\":\"T12\"}",
+   "U20": "{\"sharedFormula\":\"U12\"}",
+   "V20": {
+    "formula": "IF($B20=\"\",0,VLOOKUP($B20,Std!$B$6:$I$50,$V$8,0))*$D20",
+    "error": "no-cached-value"
+   },
+   "W20": "{\"sharedFormula\":\"W14\"}",
+   "B21": "Parkhaus",
+   "C21": false,
+   "D21": 670,
+   "E21": "{\"result\":0.10166919575113809,\"sharedFormula\":\"E12\"}",
+   "F21": "{\"result\":0.67,\"sharedFormula\":\"F12\"}",
+   "G21": "{\"result\":1.4270999999999998,\"sharedFormula\":\"F12\"}",
+   "H21": "{\"sharedFormula\":\"F12\"}",
+   "I21": "{\"sharedFormula\":\"F12\"}",
+   "J21": "{\"result\":0.5005673076923076,\"sharedFormula\":\"F12\"}",
+   "K21": "{\"result\":0.8039110961538459,\"sharedFormula\":\"F12\"}",
+   "L21": "LA06",
+   "M21": {
+    "formula": "IF($B21=\"\",0,VLOOKUP($B21,Std!$B$6:$H$50,M$8,0))*$D21+IF($B21=\"\",0,VLOOKUP($B21,Std!$B$6:$H$50,4,0))*$D21",
+    "value": 1340
+   },
+   "N21": "{\"sharedFormula\":\"N12\"}",
+   "O21": "{\"sharedFormula\":\"O12\"}",
+   "P21": false,
+   "Q21": "{\"sharedFormula\":\"Q12\"}",
+   "R21": "{\"sharedFormula\":\"R15\"}",
+   "S21": false,
+   "T21": "{\"sharedFormula\":\"T12\"}",
+   "U21": "{\"sharedFormula\":\"U12\"}",
+   "V21": {
+    "formula": "IF($B21=\"\",0,VLOOKUP($B21,Std!$B$6:$I$50,$V$8,0))*$D21",
+    "error": "no-cached-value"
+   },
+   "W21": "{\"sharedFormula\":\"W14\"}",
+   "C22": false,
+   "E22": "{\"sharedFormula\":\"E12\"}",
+   "F22": "{\"sharedFormula\":\"F12\"}",
+   "G22": "{\"sharedFormula\":\"F12\"}",
+   "H22": "{\"sharedFormula\":\"F12\"}",
+   "I22": "{\"sharedFormula\":\"F12\"}",
+   "J22": "{\"sharedFormula\":\"F12\"}",
+   "K22": "{\"sharedFormula\":\"F12\"}",
+   "M22": {
+    "formula": "IF($B22=\"\",0,VLOOKUP($B22,Std!$B$6:$H$50,M$8,0))*$D22+IF($B22=\"\",0,VLOOKUP($B22,Std!$B$6:$H$50,4,0))*$D22",
+    "error": "no-cached-value"
+   },
+   "N22": "{\"sharedFormula\":\"N12\"}",
+   "O22": "{\"sharedFormula\":\"O12\"}",
+   "P22": false,
+   "Q22": "{\"sharedFormula\":\"Q12\"}",
+   "R22": "{\"sharedFormula\":\"R15\"}",
+   "S22": false,
+   "T22": "{\"sharedFormula\":\"T12\"}",
+   "U22": "{\"sharedFormula\":\"U12\"}",
+   "V22": {
+    "formula": "IF($B22=\"\",0,VLOOKUP($B22,Std!$B$6:$I$50,$V$8,0))*$D22",
+    "error": "no-cached-value"
+   },
+   "W22": "{\"sharedFormula\":\"W14\"}",
+   "C23": false,
+   "E23": "{\"sharedFormula\":\"E12\"}",
+   "F23": "{\"sharedFormula\":\"F12\"}",
+   "G23": "{\"sharedFormula\":\"F12\"}",
+   "H23": "{\"sharedFormula\":\"F12\"}",
+   "I23": "{\"sharedFormula\":\"F12\"}",
+   "J23": "{\"sharedFormula\":\"F12\"}",
+   "K23": "{\"sharedFormula\":\"F12\"}",
+   "M23": {
+    "formula": "IF($B23=\"\",0,VLOOKUP($B23,Std!$B$6:$H$50,M$8,0))*$D23+IF($B23=\"\",0,VLOOKUP($B23,Std!$B$6:$H$50,4,0))*$D23",
+    "error": "no-cached-value"
+   },
+   "N23": "{\"sharedFormula\":\"N12\"}",
+   "O23": "{\"sharedFormula\":\"O12\"}",
+   "P23": false,
+   "Q23": "{\"sharedFormula\":\"Q12\"}",
+   "R23": "{\"sharedFormula\":\"R15\"}",
+   "S23": false,
+   "T23": "{\"sharedFormula\":\"T12\"}",
+   "U23": "{\"sharedFormula\":\"U12\"}",
+   "V23": {
+    "formula": "IF($B23=\"\",0,VLOOKUP($B23,Std!$B$6:$I$50,$V$8,0))*$D23",
+    "error": "no-cached-value"
+   },
+   "W23": "{\"sharedFormula\":\"W14\"}",
+   "C24": false,
+   "E24": "{\"sharedFormula\":\"E12\"}",
+   "F24": "{\"sharedFormula\":\"F12\"}",
+   "G24": "{\"sharedFormula\":\"F12\"}",
+   "H24": "{\"sharedFormula\":\"F12\"}",
+   "I24": "{\"sharedFormula\":\"F12\"}",
+   "J24": "{\"sharedFormula\":\"F12\"}",
+   "K24": "{\"sharedFormula\":\"F12\"}",
+   "M24": {
+    "formula": "IF($B24=\"\",0,VLOOKUP($B24,Std!$B$6:$H$50,M$8,0))*$D24+IF($B24=\"\",0,VLOOKUP($B24,Std!$B$6:$H$50,4,0))*$D24",
+    "error": "no-cached-value"
+   },
+   "N24": "{\"sharedFormula\":\"N12\"}",
+   "O24": "{\"sharedFormula\":\"O12\"}",
+   "P24": false,
+   "Q24": "{\"sharedFormula\":\"Q12\"}",
+   "R24": "{\"sharedFormula\":\"R15\"}",
+   "S24": false,
+   "T24": "{\"sharedFormula\":\"T12\"}",
+   "U24": "{\"sharedFormula\":\"U12\"}",
+   "V24": {
+    "formula": "IF($B24=\"\",0,VLOOKUP($B24,Std!$B$6:$I$50,$V$8,0))*$D24",
+    "error": "no-cached-value"
+   },
+   "W24": "{\"sharedFormula\":\"W14\"}",
+   "C25": false,
+   "E25": "{\"sharedFormula\":\"E12\"}",
+   "F25": "{\"sharedFormula\":\"F12\"}",
+   "G25": "{\"sharedFormula\":\"F12\"}",
+   "H25": "{\"sharedFormula\":\"F12\"}",
+   "I25": "{\"sharedFormula\":\"F12\"}",
+   "J25": "{\"sharedFormula\":\"F12\"}",
+   "K25": "{\"sharedFormula\":\"F12\"}",
+   "M25": {
+    "formula": "IF($B25=\"\",0,VLOOKUP($B25,Std!$B$6:$H$50,M$8,0))*$D25+IF($B25=\"\",0,VLOOKUP($B25,Std!$B$6:$H$50,4,0))*$D25",
+    "error": "no-cached-value"
+   },
+   "N25": "{\"sharedFormula\":\"N12\"}",
+   "O25": "{\"sharedFormula\":\"O12\"}",
+   "P25": false,
+   "Q25": "{\"sharedFormula\":\"Q12\"}",
+   "R25": "{\"sharedFormula\":\"R15\"}",
+   "S25": false,
+   "T25": "{\"sharedFormula\":\"T12\"}",
+   "U25": "{\"sharedFormula\":\"U12\"}",
+   "V25": {
+    "formula": "IF($B25=\"\",0,VLOOKUP($B25,Std!$B$6:$I$50,$V$8,0))*$D25",
+    "error": "no-cached-value"
+   },
+   "W25": "{\"sharedFormula\":\"W14\"}",
+   "C26": false,
+   "E26": "{\"sharedFormula\":\"E12\"}",
+   "F26": "{\"sharedFormula\":\"F12\"}",
+   "G26": "{\"sharedFormula\":\"F12\"}",
+   "H26": "{\"sharedFormula\":\"F12\"}",
+   "I26": "{\"sharedFormula\":\"F12\"}",
+   "J26": "{\"sharedFormula\":\"F12\"}",
+   "K26": "{\"sharedFormula\":\"F12\"}",
+   "M26": {
+    "formula": "IF($B26=\"\",0,VLOOKUP($B26,Std!$B$6:$H$50,M$8,0))*$D26+IF($B26=\"\",0,VLOOKUP($B26,Std!$B$6:$H$50,4,0))*$D26",
+    "error": "no-cached-value"
+   },
+   "N26": "{\"sharedFormula\":\"N12\"}",
+   "O26": "{\"sharedFormula\":\"O12\"}",
+   "P26": false,
+   "Q26": "{\"sharedFormula\":\"Q12\"}",
+   "R26": "{\"sharedFormula\":\"R15\"}",
+   "S26": false,
+   "T26": "{\"sharedFormula\":\"T12\"}",
+   "U26": "{\"sharedFormula\":\"U12\"}",
+   "V26": {
+    "formula": "IF($B26=\"\",0,VLOOKUP($B26,Std!$B$6:$I$50,$V$8,0))*$D26",
+    "error": "no-cached-value"
+   },
+   "W26": "{\"sharedFormula\":\"W14\"}",
+   "C27": false,
+   "E27": "{\"sharedFormula\":\"E12\"}",
+   "F27": "{\"sharedFormula\":\"F12\"}",
+   "G27": "{\"sharedFormula\":\"F12\"}",
+   "H27": "{\"sharedFormula\":\"F12\"}",
+   "I27": "{\"sharedFormula\":\"F12\"}",
+   "J27": "{\"sharedFormula\":\"F12\"}",
+   "K27": "{\"sharedFormula\":\"F12\"}",
+   "M27": {
+    "formula": "IF($B27=\"\",0,VLOOKUP($B27,Std!$B$6:$H$50,M$8,0))*$D27+IF($B27=\"\",0,VLOOKUP($B27,Std!$B$6:$H$50,4,0))*$D27",
+    "error": "no-cached-value"
+   },
+   "N27": "{\"sharedFormula\":\"N12\"}",
+   "O27": "{\"sharedFormula\":\"O12\"}",
+   "P27": false,
+   "Q27": "{\"sharedFormula\":\"Q12\"}",
+   "R27": "{\"sharedFormula\":\"R15\"}",
+   "S27": false,
+   "T27": "{\"sharedFormula\":\"T12\"}",
+   "U27": "{\"sharedFormula\":\"U12\"}",
+   "V27": {
+    "formula": "IF($B27=\"\",0,VLOOKUP($B27,Std!$B$6:$I$50,$V$8,0))*$D27",
+    "error": "no-cached-value"
+   },
+   "W27": "{\"sharedFormula\":\"W14\"}",
+   "C28": false,
+   "E28": "{\"sharedFormula\":\"E12\"}",
+   "F28": "{\"sharedFormula\":\"F12\"}",
+   "G28": "{\"sharedFormula\":\"F12\"}",
+   "H28": "{\"sharedFormula\":\"F12\"}",
+   "I28": "{\"sharedFormula\":\"F12\"}",
+   "J28": "{\"sharedFormula\":\"F12\"}",
+   "K28": "{\"sharedFormula\":\"F12\"}",
+   "M28": {
+    "formula": "IF($B28=\"\",0,VLOOKUP($B28,Std!$B$6:$H$50,M$8,0))*$D28+IF($B28=\"\",0,VLOOKUP($B28,Std!$B$6:$H$50,4,0))*$D28",
+    "error": "no-cached-value"
+   },
+   "N28": "{\"sharedFormula\":\"N12\"}",
+   "O28": "{\"sharedFormula\":\"O12\"}",
+   "P28": false,
+   "Q28": "{\"sharedFormula\":\"Q12\"}",
+   "R28": "{\"sharedFormula\":\"R15\"}",
+   "S28": false,
+   "T28": "{\"sharedFormula\":\"T12\"}",
+   "U28": "{\"sharedFormula\":\"U12\"}",
+   "V28": {
+    "formula": "IF($B28=\"\",0,VLOOKUP($B28,Std!$B$6:$I$50,$V$8,0))*$D28",
+    "error": "no-cached-value"
+   },
+   "W28": "{\"sharedFormula\":\"W14\"}",
+   "C29": false,
+   "E29": "{\"sharedFormula\":\"E12\"}",
+   "F29": "{\"sharedFormula\":\"F12\"}",
+   "G29": "{\"sharedFormula\":\"F12\"}",
+   "H29": "{\"sharedFormula\":\"F12\"}",
+   "I29": "{\"sharedFormula\":\"F12\"}",
+   "J29": "{\"sharedFormula\":\"F12\"}",
+   "K29": "{\"sharedFormula\":\"F12\"}",
+   "M29": {
+    "formula": "IF($B29=\"\",0,VLOOKUP($B29,Std!$B$6:$H$50,M$8,0))*$D29+IF($B29=\"\",0,VLOOKUP($B29,Std!$B$6:$H$50,4,0))*$D29",
+    "error": "no-cached-value"
+   },
+   "N29": "{\"sharedFormula\":\"N12\"}",
+   "O29": "{\"sharedFormula\":\"O12\"}",
+   "P29": false,
+   "Q29": "{\"sharedFormula\":\"Q12\"}",
+   "R29": "{\"sharedFormula\":\"R15\"}",
+   "S29": false,
+   "T29": "{\"sharedFormula\":\"T12\"}",
+   "U29": "{\"sharedFormula\":\"U12\"}",
+   "V29": {
+    "formula": "IF($B29=\"\",0,VLOOKUP($B29,Std!$B$6:$I$50,$V$8,0))*$D29",
+    "error": "no-cached-value"
+   },
+   "W29": "{\"sharedFormula\":\"W14\"}",
+   "C30": false,
+   "E30": "{\"sharedFormula\":\"E12\"}",
+   "F30": "{\"sharedFormula\":\"F12\"}",
+   "G30": "{\"sharedFormula\":\"F12\"}",
+   "H30": "{\"sharedFormula\":\"F12\"}",
+   "I30": "{\"sharedFormula\":\"F12\"}",
+   "J30": "{\"sharedFormula\":\"F12\"}",
+   "K30": "{\"sharedFormula\":\"F12\"}",
+   "M30": {
+    "formula": "IF($B30=\"\",0,VLOOKUP($B30,Std!$B$6:$H$50,M$8,0))*$D30+IF($B30=\"\",0,VLOOKUP($B30,Std!$B$6:$H$50,4,0))*$D30",
+    "error": "no-cached-value"
+   },
+   "N30": "{\"sharedFormula\":\"N12\"}",
+   "O30": "{\"sharedFormula\":\"O12\"}",
+   "P30": false,
+   "Q30": "{\"sharedFormula\":\"Q12\"}",
+   "R30": "{\"sharedFormula\":\"R15\"}",
+   "S30": false,
+   "T30": "{\"sharedFormula\":\"T12\"}",
+   "U30": "{\"sharedFormula\":\"U12\"}",
+   "V30": {
+    "formula": "IF($B30=\"\",0,VLOOKUP($B30,Std!$B$6:$I$50,$V$8,0))*$D30",
+    "error": "no-cached-value"
+   },
+   "W30": "{\"sharedFormula\":\"W14\"}",
+   "C31": false,
+   "E31": "{\"sharedFormula\":\"E12\"}",
+   "F31": "{\"sharedFormula\":\"F12\"}",
+   "G31": "{\"sharedFormula\":\"F12\"}",
+   "H31": "{\"sharedFormula\":\"F12\"}",
+   "I31": "{\"sharedFormula\":\"F12\"}",
+   "J31": "{\"sharedFormula\":\"F12\"}",
+   "K31": "{\"sharedFormula\":\"F12\"}",
+   "M31": {
+    "formula": "IF($B31=\"\",0,VLOOKUP($B31,Std!$B$6:$H$50,M$8,0))*$D31+IF($B31=\"\",0,VLOOKUP($B31,Std!$B$6:$H$50,4,0))*$D31",
+    "error": "no-cached-value"
+   },
+   "N31": "{\"sharedFormula\":\"N12\"}",
+   "O31": "{\"sharedFormula\":\"O12\"}",
+   "P31": false,
+   "Q31": "{\"sharedFormula\":\"Q12\"}",
+   "R31": "{\"sharedFormula\":\"R15\"}",
+   "S31": false,
+   "T31": "{\"sharedFormula\":\"T12\"}",
+   "U31": "{\"sharedFormula\":\"U12\"}",
+   "V31": {
+    "formula": "IF($B31=\"\",0,VLOOKUP($B31,Std!$B$6:$I$50,$V$8,0))*$D31",
+    "error": "no-cached-value"
+   },
+   "W31": "{\"sharedFormula\":\"W14\"}",
+   "C32": false,
+   "E32": "{\"sharedFormula\":\"E12\"}",
+   "F32": "{\"sharedFormula\":\"F12\"}",
+   "G32": "{\"sharedFormula\":\"F12\"}",
+   "H32": "{\"sharedFormula\":\"F12\"}",
+   "I32": "{\"sharedFormula\":\"F12\"}",
+   "J32": "{\"sharedFormula\":\"F12\"}",
+   "K32": "{\"sharedFormula\":\"F12\"}",
+   "M32": {
+    "formula": "IF($B32=\"\",0,VLOOKUP($B32,Std!$B$6:$H$50,M$8,0))*$D32+IF($B32=\"\",0,VLOOKUP($B32,Std!$B$6:$H$50,4,0))*$D32",
+    "error": "no-cached-value"
+   },
+   "N32": "{\"sharedFormula\":\"N12\"}",
+   "O32": "{\"sharedFormula\":\"O12\"}",
+   "P32": false,
+   "Q32": "{\"sharedFormula\":\"Q12\"}",
+   "R32": "{\"sharedFormula\":\"R15\"}",
+   "S32": false,
+   "T32": "{\"sharedFormula\":\"T12\"}",
+   "U32": "{\"sharedFormula\":\"U12\"}",
+   "V32": {
+    "formula": "IF($B32=\"\",0,VLOOKUP($B32,Std!$B$6:$I$50,$V$8,0))*$D32",
+    "error": "no-cached-value"
+   },
+   "W32": "{\"sharedFormula\":\"W14\"}"
+  },
+  "Lueftung": {
+   "B7": "Einzel-, Gruppenbüro",
+   "C7": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A7,Gebäude!M$12:M$32)",
+    "value": 8578.57142857143
+   },
+   "D7": 0,
+   "F7": {
+    "formula": "IF(OR(E7=0,E7=\"\"),C7,E7)",
+    "value": 8578.57142857143
+   },
+   "G7": 0.8,
+   "H7": {
+    "formula": "F7*G7/1000",
+    "value": 6.862857142857144
+   },
+   "I7": 26.76514285714287,
+   "J7": "einstufig",
+   "K7": {
+    "formula": "IF(H7=0,0,ROUND(I7*1000/H7,-1))",
+    "value": 3900
+   },
+   "L7": 80,
+   "M7": 20,
+   "N7": 21,
+   "O7": 0,
+   "P7": 0,
+   "Q7": 25.78085214123151,
+   "R7": 1.75015970360182,
+   "S7": 16.153470609180598,
+   "T7": 3.786295728565611,
+   "U7": 0,
+   "V7": 0,
+   "W7": 0,
+   "X7": 0,
+   "Y7": 4.461757242328502e-14,
+   "Z7": 33.272385507921896,
+   "B8": "Sitzungszimmer",
+   "C8": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A8,Gebäude!M$12:M$32)",
+    "value": 1933.3333333333333
+   },
+   "D8": 0,
+   "F8": {
+    "formula": "IF(OR(E8=0,E8=\"\"),C8,E8)",
+    "value": 1933.3333333333333
+   },
+   "G8": 0.5,
+   "H8": {
+    "formula": "F8*G8/1000",
+    "value": 0.9666666666666667
+   },
+   "I8": 1.0536666666666665,
+   "J8": "stufenlos",
+   "K8": {
+    "formula": "IF(H8=0,0,ROUND(I8*1000/H8,-1))",
+    "value": 1090
+   },
+   "L8": 80,
+   "M8": 20,
+   "N8": 21,
+   "O8": 0,
+   "P8": 0,
+   "Q8": 5.810172616897026,
+   "R8": 0.053028862120543384,
+   "S8": 3.6404713113113085,
+   "T8": 0.11472264715299853,
+   "U8": 0,
+   "V8": 0,
+   "W8": 0,
+   "X8": 0,
+   "Y8": 8.776518606518273e-15,
+   "Z8": 3.9600935980189207,
+   "B9": "Schalterhalle, Empfang",
+   "C9": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A9,Gebäude!M$12:M$32)",
+    "value": 483.3333333333333
+   },
+   "D9": 0,
+   "F9": "{\"result\":483.3333333333333,\"sharedFormula\":\"F8\"}",
+   "G9": 0.7,
+   "H9": "{\"result\":0.3383333333333333,\"sharedFormula\":\"H8\"}",
+   "I9": 1.3194999999999997,
+   "J9": "einstufig",
+   "K9": "{\"result\":3900,\"sharedFormula\":\"K8\"}",
+   "L9": 75,
+   "M9": 20,
+   "N9": 21,
+   "O9": 0,
+   "P9": 0,
+   "Q9": 1.5143796729879553,
+   "R9": 0.0993774753304814,
+   "S9": 1.1827753597347346,
+   "T9": 0.35537726901281824,
+   "U9": 0,
+   "V9": 0,
+   "W9": 0,
+   "X9": 0,
+   "Y9": 2.194129651629568e-15,
+   "Z9": 0.6776477260806535,
+   "B10": "WC",
+   "C10": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A10,Gebäude!M$12:M$32)",
+    "value": 800
+   },
+   "D10": 0,
+   "F10": "{\"result\":800,\"sharedFormula\":\"F8\"}",
+   "G10": 0.5,
+   "H10": "{\"result\":0.4,\"sharedFormula\":\"H8\"}",
+   "I10": 0.9639999999999999,
+   "J10": "zweistufig",
+   "K10": "{\"result\":2410,\"sharedFormula\":\"K8\"}",
+   "L10": 75,
+   "M10": 20,
+   "N10": 21,
+   "O10": 0,
+   "P10": 0,
+   "Q10": 2.5065594587386846,
+   "R10": 0.10527158766042718,
+   "S10": 1.9576971471471467,
+   "T10": 0.37645481738185427,
+   "U10": 0,
+   "V10": 0,
+   "W10": 0,
+   "X10": 0,
+   "Y10": 3.631662871662734e-15,
+   "Z10": -6.451622070207716e-16,
+   "B11": "Serverraum",
+   "C11": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A11,Gebäude!M$12:M$32)",
+    "value": 260
+   },
+   "D11": 0,
+   "F11": "{\"result\":260,\"sharedFormula\":\"F8\"}",
+   "G11": 0.4,
+   "H11": "{\"result\":0.104,\"sharedFormula\":\"H8\"}",
+   "I11": 0.5694,
+   "J11": "einstufig",
+   "K11": "{\"result\":5480,\"sharedFormula\":\"K8\"}",
+   "L11": 74,
+   "M11": 20,
+   "N11": 21,
+   "O11": 0,
+   "P11": 0,
+   "Q11": 0.8212530480521982,
+   "R11": 0.1055174616043787,
+   "S11": 0.6655857624624623,
+   "T11": 0.4092395701562217,
+   "U11": 0,
+   "V11": 0,
+   "W11": 0,
+   "X11": 0,
+   "Y11": 1.1802904332903886e-15,
+   "Z11": -2.392898342730395e-16,
+   "B12": "Parkhaus",
+   "C12": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A12,Gebäude!M$12:M$32)",
+    "value": 1340
+   },
+   "D12": {
+    "formula": "Gebäude!D21*Std!E47",
+    "value": 1340
+   },
+   "F12": "{\"result\":1340,\"sharedFormula\":\"F8\"}",
+   "G12": 0.4,
+   "H12": "{\"result\":0.536,\"sharedFormula\":\"H8\"}",
+   "I12": 1.8116800000000004,
+   "J12": "zweistufig",
+   "K12": "{\"result\":3380,\"sharedFormula\":\"K8\"}",
+   "O12": 0,
+   "P12": 0,
+   "Q12": 0,
+   "R12": 0,
+   "S12": 0,
+   "T12": 0,
+   "U12": 0,
+   "V12": 0,
+   "W12": 0,
+   "X12": 0,
+   "Y12": 0,
+   "Z12": -1.6090721440450057e-15,
+   "C13": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A13,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F13": "{\"sharedFormula\":\"F8\"}",
+   "G13": 0,
+   "H13": {
+    "formula": "F13*G13/1000",
+    "error": "no-cached-value"
+   },
+   "I13": 0,
+   "K13": "{\"sharedFormula\":\"K8\"}",
+   "O13": 0,
+   "P13": 0,
+   "Q13": 0,
+   "R13": 0,
+   "S13": 0,
+   "T13": 0,
+   "U13": 0,
+   "V13": 0,
+   "W13": 0,
+   "X13": 0,
+   "Y13": 0,
+   "Z13": 0,
+   "C14": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A14,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F14": "{\"sharedFormula\":\"F8\"}",
+   "G14": 0,
+   "H14": "{\"sharedFormula\":\"H8\"}",
+   "I14": 0,
+   "J14": 0,
+   "K14": "{\"sharedFormula\":\"K8\"}",
+   "O14": 0,
+   "P14": 0,
+   "Q14": 0,
+   "R14": 0,
+   "S14": 0,
+   "T14": 0,
+   "U14": 0,
+   "V14": 0,
+   "W14": 0,
+   "X14": 0,
+   "Y14": 0,
+   "Z14": 0,
+   "C15": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A15,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F15": "{\"sharedFormula\":\"F8\"}",
+   "G15": 0,
+   "H15": "{\"sharedFormula\":\"H8\"}",
+   "I15": 0,
+   "J15": 0,
+   "K15": "{\"sharedFormula\":\"K8\"}",
+   "O15": 0,
+   "P15": 0,
+   "Q15": 0,
+   "R15": 0,
+   "S15": 0,
+   "T15": 0,
+   "U15": 0,
+   "V15": 0,
+   "W15": 0,
+   "X15": 0,
+   "Y15": 0,
+   "Z15": 0,
+   "C16": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A16,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F16": "{\"sharedFormula\":\"F8\"}",
+   "G16": 0,
+   "H16": "{\"sharedFormula\":\"H8\"}",
+   "I16": 0,
+   "J16": 0,
+   "K16": "{\"sharedFormula\":\"K8\"}",
+   "O16": 0,
+   "P16": 0,
+   "Q16": 0,
+   "R16": 0,
+   "S16": 0,
+   "T16": 0,
+   "U16": 0,
+   "V16": 0,
+   "W16": 0,
+   "X16": 0,
+   "Y16": 0,
+   "Z16": 0,
+   "C17": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A17,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F17": "{\"sharedFormula\":\"F8\"}",
+   "G17": 0,
+   "H17": "{\"sharedFormula\":\"H8\"}",
+   "I17": 0,
+   "J17": 0,
+   "K17": "{\"sharedFormula\":\"K8\"}",
+   "O17": 0,
+   "P17": 0,
+   "Q17": 0,
+   "R17": 0,
+   "S17": 0,
+   "T17": 0,
+   "U17": 0,
+   "V17": 0,
+   "W17": 0,
+   "X17": 0,
+   "Y17": 0,
+   "Z17": 0,
+   "C18": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A18,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F18": "{\"sharedFormula\":\"F8\"}",
+   "G18": 0,
+   "H18": "{\"sharedFormula\":\"H8\"}",
+   "I18": 0,
+   "J18": 0,
+   "K18": "{\"sharedFormula\":\"K8\"}",
+   "O18": 0,
+   "P18": 0,
+   "Q18": 0,
+   "R18": 0,
+   "S18": 0,
+   "T18": 0,
+   "U18": 0,
+   "V18": 0,
+   "W18": 0,
+   "X18": 0,
+   "Y18": 0,
+   "Z18": 0,
+   "C19": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A19,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F19": "{\"sharedFormula\":\"F8\"}",
+   "G19": 0,
+   "H19": "{\"sharedFormula\":\"H8\"}",
+   "I19": 0,
+   "J19": 0,
+   "K19": "{\"sharedFormula\":\"K8\"}",
+   "O19": 0,
+   "P19": 0,
+   "Q19": 0,
+   "R19": 0,
+   "S19": 0,
+   "T19": 0,
+   "U19": 0,
+   "V19": 0,
+   "W19": 0,
+   "X19": 0,
+   "Y19": 0,
+   "Z19": 0,
+   "C20": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A20,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F20": "{\"sharedFormula\":\"F8\"}",
+   "G20": 0,
+   "H20": "{\"sharedFormula\":\"H8\"}",
+   "I20": 0,
+   "J20": 0,
+   "K20": "{\"sharedFormula\":\"K8\"}",
+   "O20": 0,
+   "P20": 0,
+   "Q20": 0,
+   "R20": 0,
+   "S20": 0,
+   "T20": 0,
+   "U20": 0,
+   "V20": 0,
+   "W20": 0,
+   "X20": 0,
+   "Y20": 0,
+   "Z20": 0,
+   "C21": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A21,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F21": "{\"sharedFormula\":\"F8\"}",
+   "G21": 0,
+   "H21": "{\"sharedFormula\":\"H8\"}",
+   "I21": 0,
+   "K21": "{\"sharedFormula\":\"K8\"}",
+   "O21": 0,
+   "P21": 0,
+   "Q21": 0,
+   "R21": 0,
+   "S21": 0,
+   "T21": 0,
+   "U21": 0,
+   "V21": 0,
+   "W21": 0,
+   "X21": 0,
+   "Y21": 0,
+   "Z21": 0,
+   "C22": {
+    "formula": "SUMIF(Gebäude!L$12:L$32,A22,Gebäude!M$12:M$32)",
+    "error": "no-cached-value"
+   },
+   "F22": "{\"sharedFormula\":\"F8\"}",
+   "G22": 0,
+   "H22": "{\"sharedFormula\":\"H8\"}",
+   "I22": 0,
+   "J22": 0,
+   "K22": "{\"sharedFormula\":\"K8\"}",
+   "O22": 0,
+   "P22": 0,
+   "Q22": 0,
+   "R22": 0,
+   "S22": 0,
+   "T22": 0,
+   "U22": 0,
+   "V22": 0,
+   "W22": 0,
+   "X22": 0,
+   "Y22": 0,
+   "Z22": 0
+  },
+  "Erzeugung": {
+   "A7": {
+    "formula": "IF(B7<>\"\",INDEX(Nutzungsgrad!$B$3:$C$8,MATCH(Erzeugung!B7,Nutzungsgrad!$C$3:$C$8,0),1),\"\")",
+    "value": "KE06"
+   },
+   "B7": "Direktkühlung Grundwasser",
+   "C7": "Direktkühlung Grundwasser",
+   "D7": {
+    "formula": "IF(B7<>\"\",VLOOKUP($B7,Nutzungsgrad!$C$3:$G$8,3,FALSE),0)",
+    "value": 15
+   },
+   "E7": 12,
+   "F7": 60,
+   "G7": 80,
+   "H7": 10,
+   "I7": 10,
+   "L7": {
+    "formula": "(Gebäude!Q$35+Lüftung!Q$23)*F7%*(100+IF($J7<>\"\",$J7,$H7))%",
+    "value": 111.6933575140329
+   },
+   "M7": {
+    "formula": "(Gebäude!R$35+Lüftung!R$23)*G7%*(100+IF($J7<>\"\",$J7,$H7))%",
+    "value": 11.62925883606476
+   },
+   "N7": {
+    "formula": "IF(L7=0,0,M7*1000/L7)",
+    "value": 104.11772996083215
+   },
+   "O7": {
+    "formula": "IF(L7=0,0,M7*1000/L7)",
+    "value": 104.11772996083215
+   },
+   "P7": {
+    "formula": "IF(D7=0,0,$L7/IF($E7<>\"\",$E7,$D7))",
+    "value": 9.307779792836074
+   },
+   "Q7": {
+    "formula": "IF(D7=0,0,$M7/IF($E7<>\"\",$E7,$D7))",
+    "value": 0.9691049030053968
+   },
+   "R7": {
+    "formula": "IF(D7=0,\"\",VLOOKUP($B7,Nutzungsgrad!$C$3:$G$8,4,FALSE))",
+    "value": "Elektrizität"
+   },
+   "A8": {
+    "formula": "IF(B8<>\"\",INDEX(Nutzungsgrad!$B$3:$C$8,MATCH(Erzeugung!B8,Nutzungsgrad!$C$3:$C$8,0),1),\"\")",
+    "value": "KE02"
+   },
+   "B8": "Kompaktkältemaschine 14°C",
+   "C8": "Kompaktkältemaschine 14°C",
+   "D8": {
+    "formula": "IF(B8<>\"\",VLOOKUP($B8,Nutzungsgrad!$C$3:$G$8,3,FALSE),0)",
+    "value": 4
+   },
+   "F8": 40,
+   "G8": 20,
+   "H8": 10,
+   "I8": 10,
+   "L8": {
+    "formula": "(Gebäude!Q$35+Lüftung!Q$23)*F8%*(100+IF($J8<>\"\",$J8,$H8))%",
+    "value": 74.46223834268861
+   },
+   "M8": {
+    "formula": "(Gebäude!R$35+Lüftung!R$23)*G8%*(100+IF($J8<>\"\",$J8,$H8))%",
+    "value": 2.90731470901619
+   },
+   "N8": {
+    "formula": "IF(L8=0,0,M8*1000/L8)",
+    "value": 39.044148735312056
+   },
+   "O8": {
+    "formula": "IF(L8=0,0,M8*1000/L8)",
+    "value": 39.044148735312056
+   },
+   "P8": {
+    "formula": "IF(D8=0,0,$L8/IF($E8<>\"\",$E8,$D8))",
+    "value": 18.615559585672152
+   },
+   "Q8": {
+    "formula": "IF(D8=0,0,$M8/IF($E8<>\"\",$E8,$D8))",
+    "value": 0.7268286772540475
+   },
+   "R8": {
+    "formula": "IF(D8=0,\"\",VLOOKUP($B8,Nutzungsgrad!$C$3:$G$8,4,FALSE))",
+    "value": "Elektrizität"
+   },
+   "A9": {
+    "formula": "IF(B9<>\"\",INDEX(Nutzungsgrad!$B$3:$C$8,MATCH(Erzeugung!B9,Nutzungsgrad!$C$3:$C$8,0),1),\"\")",
+    "error": "no-cached-value"
+   },
+   "D9": {
+    "formula": "IF(B9<>\"\",VLOOKUP($B9,Nutzungsgrad!$C$3:$G$8,3,FALSE),0)",
+    "error": "no-cached-value"
+   },
+   "H9": 10,
+   "I9": 10,
+   "L9": {
+    "formula": "(Gebäude!Q$35+Lüftung!Q$23)*F9%*(100+IF($J9<>\"\",$J9,$H9))%",
+    "error": "no-cached-value"
+   },
+   "M9": {
+    "formula": "(Gebäude!R$35+Lüftung!R$23)*G9%*(100+IF($J9<>\"\",$J9,$H9))%",
+    "error": "no-cached-value"
+   },
+   "N9": {
+    "formula": "IF(L9=0,0,M9*1000/L9)",
+    "error": "no-cached-value"
+   },
+   "O9": {
+    "formula": "IF(L9=0,0,M9*1000/L9)",
+    "error": "no-cached-value"
+   },
+   "P9": {
+    "formula": "IF(D9=0,0,$L9/IF($E9<>\"\",$E9,$D9))",
+    "error": "no-cached-value"
+   },
+   "Q9": {
+    "formula": "IF(D9=0,0,$M9/IF($E9<>\"\",$E9,$D9))",
+    "error": "no-cached-value"
+   },
+   "R9": {
+    "formula": "IF(D9=0,\"\",VLOOKUP($B9,Nutzungsgrad!$C$3:$G$8,4,FALSE))",
+    "error": "no-cached-value"
+   },
+   "B10": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "C10": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "F10": {
+    "formula": "SUM(F7:F9)",
+    "value": 100
+   },
+   "G10": {
+    "formula": "SUM(G7:G9)",
+    "value": 100
+   },
+   "L10": {
+    "formula": "SUM(L7:L9)",
+    "value": 186.1555958567215
+   },
+   "M10": {
+    "formula": "SUM(M7:M9)",
+    "value": 14.536573545080952
+   },
+   "N10": {
+    "formula": "M10*1000/L10",
+    "value": 78.08829747062411
+   },
+   "O10": {
+    "formula": "M10*1000/L10",
+    "value": 78.08829747062411
+   },
+   "P10": {
+    "formula": "SUM(P7:P9)",
+    "value": 27.923339378508224
+   },
+   "A13": {
+    "formula": "Begriffe!F173",
+    "value": "Wärmeerzeugung"
+   },
+   "D13": {
+    "formula": "Begriffe!$F$244",
+    "value": "Nutzungsgrad"
+   },
+   "F13": {
+    "formula": "Begriffe!$F$245",
+    "value": "Deckungsgrad"
+   },
+   "H13": {
+    "formula": "Begriffe!$F$246",
+    "value": "Speicher - und Verteilverluste"
+   },
+   "L13": {
+    "formula": "Begriffe!F253",
+    "value": "Wärme (inkl. Verluste)"
+   },
+   "P13": {
+    "formula": "Begriffe!$F$248",
+    "value": "Endenergie"
+   },
+   "A14": "Nr.",
+   "B14": {
+    "formula": "Begriffe!$F$243",
+    "value": "Erzeugertyp"
+   },
+   "D14": {
+    "formula": "Begriffe!$F$76",
+    "value": "Standard"
+   },
+   "E14": {
+    "formula": "Begriffe!$F$103",
+    "value": "Projekt"
+   },
+   "F14": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "G14": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "H14": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "I14": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "J14": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "K14": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "L14": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "M14": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "N14": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "O14": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "P14": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "Q14": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "R14": {
+    "formula": "Begriffe!$F$251",
+    "value": "Energieträger"
+   },
+   "D15": "-",
+   "F15": "%",
+   "G15": "%",
+   "H15": "%",
+   "I15": "%",
+   "J15": "%",
+   "K15": "%",
+   "L15": "kW",
+   "M15": "MWh",
+   "N15": "h",
+   "O15": "h",
+   "P15": "kW",
+   "Q15": "MWh",
+   "A16": {
+    "formula": "IF(B16<>\"\",INDEX(Nutzungsgrad!$B$11:$C$26,MATCH(Erzeugung!B16,Nutzungsgrad!$C$11:$C$26,0),1),\"\")",
+    "value": "WE15"
+   },
+   "B16": "Wärmepumpe Grundwasser 35°C",
+   "C16": "Wärmepumpe Grundwasser 35°C",
+   "D16": {
+    "formula": "IF(B16<>\"\",VLOOKUP($B16,Nutzungsgrad!$C$11:$G$27,3,FALSE),0)",
+    "value": 4.3
+   },
+   "E16": 5.5,
+   "F16": 70,
+   "G16": 80,
+   "H16": 10,
+   "I16": 10,
+   "L16": {
+    "formula": "(Gebäude!T$35+Lüftung!S$23)*F16%*(100+IF($J16<>\"\",$J16,$H16))%",
+    "value": 113.25176198708895
+   },
+   "M16": {
+    "formula": "(Gebäude!U$35+Lüftung!T$23)*G16%*(100+IF($J16<>\"\",$J16,$H16))%",
+    "value": 58.51768057170793
+   },
+   "N16": {
+    "formula": "IF(L16=0,0,M16*1000/L16)",
+    "value": 516.7043721437121
+   },
+   "O16": {
+    "formula": "IF(L16=0,0,M16*1000/L16)",
+    "value": 516.7043721437121
+   },
+   "P16": {
+    "formula": "IF(D16=0,0,$L16/IF($E16<>\"\",$E16,$D16))",
+    "value": 20.591229452197993
+   },
+   "Q16": {
+    "formula": "IF(D16=0,0,$M16/IF($E16<>\"\",$E16,$D16))",
+    "value": 10.639578285765078
+   },
+   "R16": {
+    "formula": "IF(D16=0,\"\",VLOOKUP($B16,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
+    "value": "Elektrizität"
+   },
+   "A17": {
+    "formula": "IF(B17<>\"\",INDEX(Nutzungsgrad!$B$11:$C$26,MATCH(Erzeugung!B17,Nutzungsgrad!$C$11:$C$26,0),1),\"\")",
+    "value": "WE05"
+   },
+   "B17": "Pelletfeuerung ",
+   "C17": "Pelletfeuerung ",
+   "D17": {
+    "formula": "IF(B17<>\"\",VLOOKUP($B17,Nutzungsgrad!$C$11:$G$27,3,FALSE),0)",
+    "value": 0.7
+   },
+   "F17": 30,
+   "G17": 20,
+   "H17": 10,
+   "I17": 10,
+   "L17": {
+    "formula": "(Gebäude!T$35+Lüftung!S$23)*F17%*(100+IF($J17<>\"\",$J17,$H17))%",
+    "value": 48.53646942303813
+   },
+   "M17": {
+    "formula": "(Gebäude!U$35+Lüftung!T$23)*G17%*(100+IF($J17<>\"\",$J17,$H17))%",
+    "value": 14.629420142926982
+   },
+   "N17": {
+    "formula": "IF(L17=0,0,M17*1000/L17)",
+    "value": 301.4108837504987
+   },
+   "O17": {
+    "formula": "IF(L17=0,0,M17*1000/L17)",
+    "value": 301.4108837504987
+   },
+   "P17": {
+    "formula": "IF(D17=0,0,$L17/IF($E17<>\"\",$E17,$D17))",
+    "value": 69.33781346148304
+   },
+   "Q17": {
+    "formula": "IF(D17=0,0,$M17/IF($E17<>\"\",$E17,$D17))",
+    "value": 20.899171632752832
+   },
+   "R17": {
+    "formula": "IF(D17=0,\"\",VLOOKUP($B17,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
+    "value": "Pellets"
+   },
+   "A18": {
+    "formula": "IF(B18<>\"\",INDEX(Nutzungsgrad!$B$11:$C$26,MATCH(Erzeugung!B18,Nutzungsgrad!$C$11:$C$26,0),1),\"\")",
+    "error": "no-cached-value"
+   },
+   "D18": {
+    "formula": "IF(B18<>\"\",VLOOKUP($B18,Nutzungsgrad!$C$11:$G$27,3,FALSE),0)",
+    "error": "no-cached-value"
+   },
+   "H18": 10,
+   "I18": 10,
+   "L18": {
+    "formula": "(Gebäude!T$35+Lüftung!S$23)*F18%*(100+IF($J18<>\"\",$J18,$H18))%",
+    "error": "no-cached-value"
+   },
+   "M18": {
+    "formula": "(Gebäude!U$35+Lüftung!T$23)*G18%*(100+IF($J18<>\"\",$J18,$H18))%",
+    "error": "no-cached-value"
+   },
+   "N18": {
+    "formula": "IF(L18=0,0,M18*1000/L18)",
+    "error": "no-cached-value"
+   },
+   "O18": {
+    "formula": "IF(L18=0,0,M18*1000/L18)",
+    "error": "no-cached-value"
+   },
+   "P18": {
+    "formula": "IF(D18=0,0,$L18/IF($E18<>\"\",$E18,$D18))",
+    "error": "no-cached-value"
+   },
+   "Q18": {
+    "formula": "IF(D18=0,0,$M18/IF($E18<>\"\",$E18,$D18))",
+    "error": "no-cached-value"
+   },
+   "R18": {
+    "formula": "IF(D18=0,\"\",VLOOKUP($B18,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
+    "error": "no-cached-value"
+   },
+   "B19": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "C19": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "F19": {
+    "formula": "SUM(F16:F18)",
+    "value": 100
+   },
+   "G19": {
+    "formula": "SUM(G16:G18)",
+    "value": 100
+   },
+   "L19": {
+    "formula": "SUM(L16:L18)",
+    "value": 161.78823141012708
+   },
+   "M19": {
+    "formula": "SUM(M16:M18)",
+    "value": 73.14710071463492
+   },
+   "N19": {
+    "formula": "M19*1000/L19",
+    "value": 452.1163256257482
+   },
+   "O19": {
+    "formula": "M19*1000/L19",
+    "value": 452.1163256257482
+   },
+   "P19": {
+    "formula": "SUM(P16:P18)",
+    "value": 89.92904291368103
+   },
+   "A22": {
+    "formula": "Begriffe!F191",
+    "value": "Warmwassererzeugung"
+   },
+   "D22": {
+    "formula": "Begriffe!$F$244",
+    "value": "Nutzungsgrad"
+   },
+   "F22": {
+    "formula": "Begriffe!$F$245",
+    "value": "Deckungsgrad"
+   },
+   "H22": {
+    "formula": "Begriffe!$F$246",
+    "value": "Speicher - und Verteilverluste"
+   },
+   "L22": {
+    "formula": "Begriffe!F253",
+    "value": "Wärme (inkl. Verluste)"
+   },
+   "P22": {
+    "formula": "Begriffe!$F$248",
+    "value": "Endenergie"
+   },
+   "A23": "Nr.",
+   "B23": {
+    "formula": "Begriffe!$F$243",
+    "value": "Erzeugertyp"
+   },
+   "D23": {
+    "formula": "Begriffe!$F$76",
+    "value": "Standard"
+   },
+   "E23": {
+    "formula": "Begriffe!$F$103",
+    "value": "Projekt"
+   },
+   "F23": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "G23": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "H23": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "I23": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "J23": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "K23": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "L23": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "M23": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "N23": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "O23": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "P23": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "Q23": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "R23": {
+    "formula": "Begriffe!$F$251",
+    "value": "Energieträger"
+   },
+   "D24": "-",
+   "F24": "%",
+   "G24": "%",
+   "H24": "%",
+   "I24": "%",
+   "J24": "%",
+   "K24": "%",
+   "L24": "kW",
+   "M24": "MWh",
+   "N24": "h",
+   "O24": "h",
+   "P24": "kW",
+   "Q24": "MWh",
+   "A25": {
+    "formula": "IF(B25<>\"\",INDEX(Nutzungsgrad!$B$29:$C$41,MATCH(Erzeugung!B25,Nutzungsgrad!$C$29:$C$41,0),1),\"\")",
+    "value": "W13"
+   },
+   "B25": "Wärmepumpe Grundwasser",
+   "C25": "Wärmepumpe Grundwasser",
+   "D25": {
+    "formula": "IF(B25<>\"\",VLOOKUP($B25,Nutzungsgrad!$C$29:$G$42,3,FALSE),0)",
+    "value": 1.9
+   },
+   "E25": 2.7,
+   "F25": 30,
+   "G25": 50,
+   "H25": 40,
+   "I25": 40,
+   "L25": {
+    "formula": "Gebäude!V$35*4.186/3.6*50/L$29/1000*F25%*(100+IF($J25<>\"\",$J25,$H25))%",
+    "value": 3.401124999999999
+   },
+   "M25": {
+    "formula": "(Gebäude!W$35*G25%)*(100+IF($J25<>\"\",$J25,$H25))%",
+    "value": 7.084584000000001
+   },
+   "N25": {
+    "formula": "IF(L25=0,0,M25*1000/L25)",
+    "value": 2083.011944577163
+   },
+   "O25": {
+    "formula": "IF(L25=0,0,M25*1000/L25)",
+    "value": 2083.011944577163
+   },
+   "P25": {
+    "formula": "IF(D25=0,0,$L25/IF($E25<>\"\",$E25,$D25))",
+    "value": 1.2596759259259256
+   },
+   "Q25": {
+    "formula": "IF(D25=0,0,$M25/IF($E25<>\"\",$E25,$D25))",
+    "value": 2.6239200000000005
+   },
+   "R25": {
+    "formula": "IF(D25=0,\"\",VLOOKUP($B25,Nutzungsgrad!$C$29:$G$42,4,FALSE))",
+    "value": "Elektrizität"
+   },
+   "A26": {
+    "formula": "IF(B26<>\"\",INDEX(Nutzungsgrad!$B$29:$C$41,MATCH(Erzeugung!B26,Nutzungsgrad!$C$29:$C$41,0),1),\"\")",
+    "value": "W05"
+   },
+   "B26": "Pelletfeuerung ",
+   "C26": "Pelletfeuerung ",
+   "D26": {
+    "formula": "IF(B26<>\"\",VLOOKUP($B26,Nutzungsgrad!$C$29:$G$42,3,FALSE),0)",
+    "value": 0.65
+   },
+   "F26": 70,
+   "G26": 20,
+   "H26": 40,
+   "I26": 40,
+   "L26": {
+    "formula": "Gebäude!V$35*4.186/3.6*50/L$29/1000*F26%*(100+IF($J26<>\"\",$J26,$H26))%",
+    "value": 7.935958333333331
+   },
+   "M26": {
+    "formula": "(Gebäude!W$35*G26%)*(100+IF($J26<>\"\",$J26,$H26))%",
+    "value": 2.8338336000000006
+   },
+   "N26": {
+    "formula": "IF(L26=0,0,M26*1000/L26)",
+    "value": 357.08776192751367
+   },
+   "O26": {
+    "formula": "IF(L26=0,0,M26*1000/L26)",
+    "value": 357.08776192751367
+   },
+   "P26": {
+    "formula": "IF(D26=0,0,$L26/IF($E26<>\"\",$E26,$D26))",
+    "value": 12.209166666666663
+   },
+   "Q26": {
+    "formula": "IF(D26=0,0,$M26/IF($E26<>\"\",$E26,$D26))",
+    "value": 4.359744000000001
+   },
+   "R26": {
+    "formula": "IF(D26=0,\"\",VLOOKUP($B26,Nutzungsgrad!$C$29:$G$42,4,FALSE))",
+    "value": "Pellets"
+   },
+   "A27": {
+    "formula": "IF(B27<>\"\",INDEX(Nutzungsgrad!$B$29:$C$41,MATCH(Erzeugung!B27,Nutzungsgrad!$C$29:$C$41,0),1),\"\")",
+    "value": "W09"
+   },
+   "B27": "Solarenergie thermisch",
+   "C27": "Solarenergie thermisch",
+   "D27": {
+    "formula": "IF(B27<>\"\",VLOOKUP($B27,Nutzungsgrad!$C$29:$G$42,3,FALSE),0)",
+    "error": "no-cached-value"
+   },
+   "F27": 0,
+   "G27": 30,
+   "H27": 40,
+   "I27": 40,
+   "L27": {
+    "formula": "Gebäude!V$35*4.186/3.6*50/L$29/1000*F27%*(100+IF($J27<>\"\",$J27,$H27))%",
+    "error": "no-cached-value"
+   },
+   "M27": {
+    "formula": "(Gebäude!W$35*G27%)*(100+IF($J27<>\"\",$J27,$H27))%",
+    "value": 4.2507504
+   },
+   "N27": {
+    "formula": "IF(L27=0,0,M27*1000/L27)",
+    "error": "no-cached-value"
+   },
+   "O27": {
+    "formula": "IF(L27=0,0,M27*1000/L27)",
+    "error": "no-cached-value"
+   },
+   "P27": {
+    "formula": "IF(D27=0,0,$L27/IF($E27<>\"\",$E27,$D27))",
+    "error": "no-cached-value"
+   },
+   "Q27": {
+    "formula": "IF(D27=0,0,$M27/IF($E27<>\"\",$E27,$D27))",
+    "error": "no-cached-value"
+   },
+   "R27": {
+    "formula": "IF(D27=0,\"\",VLOOKUP($B27,Nutzungsgrad!$C$29:$G$42,4,FALSE))",
+    "error": "no-cached-value"
+   }
+  }
+ },
+ "outputs": {
+  "Gebaeude_totals": {
+   "E33": "{\"result\":1,\"sharedFormula\":\"D33\"}",
+   "F33": "{\"result\":45.57,\"sharedFormula\":\"D33\"}",
+   "G33": "{\"result\":129.6861,\"sharedFormula\":\"D33\"}",
+   "H33": {
+    "formula": "SUM(H12:H32)",
+    "value": 3
+   },
+   "I33": {
+    "formula": "SUM(I12:I32)",
+    "value": 21.03
+   },
+   "J33": "{\"result\":41.375400641025635,\"sharedFormula\":\"D33\"}",
+   "K33": "{\"result\":59.901999762820516,\"sharedFormula\":\"D33\"}",
+   "M33": {
+    "formula": "SUM(M12:M32)",
+    "value": 13595.238095238097
+   },
+   "N33": {
+    "formula": "SUM(N12:N32)",
+    "value": 6.346880952380953
+   },
+   "O33": {
+    "formula": "SUM(O12:O32)",
+    "value": 21.38847904761905
+   },
+   "Q33": {
+    "formula": "SUM(Q12:Q32)",
+    "value": 132.79914293183944
+   },
+   "R33": {
+    "formula": "SUM(R12:R32)",
+    "value": 11.101711768846847
+   },
+   "T33": {
+    "formula": "SUM(T12:T32)",
+    "value": 123.48021018300655
+   },
+   "U33": {
+    "formula": "SUM(U12:U32)",
+    "value": 61.45527425376223
+   },
+   "V33": {
+    "formula": "SUM(V12:V32)",
+    "value": 835.7142857142857
+   },
+   "W33": {
+    "formula": "SUM(W12:W32)",
+    "value": 10.120834285714288
+   },
+   "F35": {
+    "formula": "IF(F34<>\"\",F34,F33)",
+    "value": 45.57
+   },
+   "G35": "{\"result\":129.6861,\"sharedFormula\":\"F35\"}",
+   "H35": "{\"result\":3,\"sharedFormula\":\"F35\"}",
+   "I35": "{\"result\":21.03,\"sharedFormula\":\"F35\"}",
+   "J35": "{\"result\":41.375400641025635,\"sharedFormula\":\"F35\"}",
+   "K35": "{\"result\":59.901999762820516,\"sharedFormula\":\"F35\"}",
+   "M35": {
+    "formula": "IF(M34<>\"\",M34,M33)",
+    "value": 13595.238095238097
+   },
+   "N35": {
+    "formula": "IF(N34<>\"\",N34,N33)",
+    "value": 6.346880952380953
+   },
+   "O35": {
+    "formula": "IF(O34<>\"\",O34,O33)",
+    "value": 21.38847904761905
+   },
+   "Q35": {
+    "formula": "IF(Q34<>\"\",Q34,Q33)",
+    "value": 132.79914293183944
+   },
+   "R35": {
+    "formula": "IF(R34<>\"\",R34,R33)",
+    "value": 11.101711768846847
+   },
+   "T35": {
+    "formula": "IF(T34<>\"\",T34,T33)",
+    "value": 123.48021018300655
+   },
+   "U35": {
+    "formula": "IF(U34<>\"\",U34,U33)",
+    "value": 61.45527425376223
+   },
+   "V35": {
+    "formula": "IF(V34<>\"\",V34,V33)",
+    "value": 835.7142857142857
+   },
+   "W35": {
+    "formula": "IF(W34<>\"\",W34,W33)",
+    "value": 10.120834285714288
+   }
+  },
+  "Resultate": {
+   "D6": "kW",
+   "E6": "MWh",
+   "F6": "kW",
+   "G6": "MWh",
+   "H6": "kW",
+   "I6": "MWh",
+   "J6": "kW",
+   "K6": "MWh",
+   "L6": "kW",
+   "M6": "MWh",
+   "N6": "kW",
+   "O6": "MWh",
+   "P6": "kW",
+   "Q6": "MWh",
+   "R6": "kW",
+   "S6": "MWh",
+   "T6": "kW",
+   "U6": "MWh",
+   "A7": "El",
+   "B7": {
+    "formula": "Begriffe!F257",
+    "value": "Elektrizität"
+   },
+   "D7": {
+    "formula": "Gebäude!L58",
+    "value": 55.82288812785388
+   },
+   "E7": {
+    "formula": "Gebäude!I58",
+    "value": 54.6442
+   },
+   "F7": {
+    "formula": "Gebäude!F35",
+    "value": 45.57
+   },
+   "G7": {
+    "formula": "Gebäude!G35",
+    "value": 129.6861
+   },
+   "H7": {
+    "formula": "Gebäude!H35",
+    "value": 3
+   },
+   "I7": {
+    "formula": "Gebäude!I35",
+    "value": 21.03
+   },
+   "J7": {
+    "formula": "Gebäude!J35",
+    "value": 41.375400641025635
+   },
+   "K7": {
+    "formula": "Gebäude!K35",
+    "value": 59.901999762820516
+   },
+   "L7": {
+    "formula": "Lüftung!H23",
+    "value": 9.207857142857144
+   },
+   "M7": {
+    "formula": "Lüftung!I23",
+    "value": 32.483389523809535
+   },
+   "N7": {
+    "formula": "Erzeugung!P10",
+    "value": 27.923339378508224
+   },
+   "O7": {
+    "formula": "SUMIF(Erzeugung!$R$7:$R$9,$B7,Erzeugung!$Q$7:$Q$9)",
+    "value": 1.6959335802594442
+   },
+   "P7": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$P$16:$P$18)",
+    "value": 20.591229452197993
+   },
+   "Q7": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B7,Erzeugung!$Q$16:$Q$18)",
+    "value": 10.639578285765078
+   },
+   "R7": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B7,Erzeugung!$P$25:$P$27)",
+    "value": 1.2596759259259256
+   },
+   "S7": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B7,Erzeugung!$Q$25:$Q$27)",
+    "value": 2.6239200000000005
+   },
+   "T7": {
+    "formula": "SUM(D7,F7,H7,J7,L7,N7,P7,R7)",
+    "value": 204.75039066836882
+   },
+   "U7": {
+    "formula": "E7+G7+I7+K7+M7+O7+Q7+S7",
+    "value": 312.7051211526546
+   },
+   "A8": "HEL",
+   "B8": {
+    "formula": "Begriffe!F258",
+    "value": "Heizöl EL"
+   },
+   "P8": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B8,Erzeugung!$P$16:$P$18)",
+    "error": "no-cached-value"
+   },
+   "Q8": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B8,Erzeugung!$Q$16:$Q$18)",
+    "error": "no-cached-value"
+   },
+   "R8": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B8,Erzeugung!$P$25:$P$27)",
+    "error": "no-cached-value"
+   },
+   "S8": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B8,Erzeugung!$Q$25:$Q$27)",
+    "error": "no-cached-value"
+   },
+   "T8": {
+    "formula": "SUM(D8,F8,H8,J8,L8,N8,P8,R8)",
+    "error": "no-cached-value"
+   },
+   "U8": {
+    "formula": "E8+G8+I8+K8+M8+O8+Q8+S8",
+    "error": "no-cached-value"
+   },
+   "A9": "Gas",
+   "B9": {
+    "formula": "Begriffe!F259",
+    "value": "Erdgas"
+   },
+   "P9": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B9,Erzeugung!$P$16:$P$18)",
+    "error": "no-cached-value"
+   },
+   "Q9": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B9,Erzeugung!$Q$16:$Q$18)",
+    "error": "no-cached-value"
+   },
+   "R9": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B9,Erzeugung!$P$25:$P$27)",
+    "error": "no-cached-value"
+   },
+   "S9": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B9,Erzeugung!$Q$25:$Q$27)",
+    "error": "no-cached-value"
+   },
+   "T9": {
+    "formula": "SUM(D9,F9,H9,J9,L9,N9,P9,R9)",
+    "error": "no-cached-value"
+   },
+   "U9": "{\"sharedFormula\":\"U8\"}",
+   "A10": "Pell",
+   "B10": {
+    "formula": "Begriffe!F260",
+    "value": "Pellets"
+   },
+   "P10": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B10,Erzeugung!$P$16:$P$18)",
+    "value": 69.33781346148304
+   },
+   "Q10": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B10,Erzeugung!$Q$16:$Q$18)",
+    "value": 20.899171632752832
+   },
+   "R10": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B10,Erzeugung!$P$25:$P$27)",
+    "value": 12.209166666666663
+   },
+   "S10": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B10,Erzeugung!$Q$25:$Q$27)",
+    "value": 4.359744000000001
+   },
+   "T10": "{\"result\":81.5469801281497,\"sharedFormula\":\"T9\"}",
+   "U10": "{\"result\":25.25891563275283,\"sharedFormula\":\"U8\"}",
+   "A11": "HSch",
+   "B11": {
+    "formula": "Begriffe!F262",
+    "value": "Holzschnitzel"
+   },
+   "P11": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B11,Erzeugung!$P$16:$P$18)",
+    "error": "no-cached-value"
+   },
+   "Q11": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B11,Erzeugung!$Q$16:$Q$18)",
+    "error": "no-cached-value"
+   },
+   "R11": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B11,Erzeugung!$P$25:$P$27)",
+    "error": "no-cached-value"
+   },
+   "S11": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B11,Erzeugung!$Q$25:$Q$27)",
+    "error": "no-cached-value"
+   },
+   "T11": "{\"sharedFormula\":\"T9\"}",
+   "U11": "{\"sharedFormula\":\"U8\"}",
+   "A12": "StH",
+   "B12": {
+    "formula": "Begriffe!F263",
+    "value": "Stückholz"
+   },
+   "P12": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B12,Erzeugung!$P$16:$P$18)",
+    "error": "no-cached-value"
+   },
+   "Q12": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B12,Erzeugung!$Q$16:$Q$18)",
+    "error": "no-cached-value"
+   },
+   "R12": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B12,Erzeugung!$P$25:$P$27)",
+    "error": "no-cached-value"
+   },
+   "S12": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B12,Erzeugung!$Q$25:$Q$27)",
+    "error": "no-cached-value"
+   },
+   "T12": "{\"sharedFormula\":\"T9\"}",
+   "U12": "{\"sharedFormula\":\"U8\"}",
+   "A13": "Bio",
+   "B13": {
+    "formula": "Begriffe!F264",
+    "value": "Biogas"
+   },
+   "P13": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B13,Erzeugung!$P$16:$P$18)",
+    "error": "no-cached-value"
+   },
+   "Q13": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B13,Erzeugung!$Q$16:$Q$18)",
+    "error": "no-cached-value"
+   },
+   "R13": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B13,Erzeugung!$P$25:$P$27)",
+    "error": "no-cached-value"
+   },
+   "S13": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B13,Erzeugung!$Q$25:$Q$27)",
+    "error": "no-cached-value"
+   },
+   "T13": "{\"sharedFormula\":\"T9\"}",
+   "U13": "{\"sharedFormula\":\"U8\"}",
+   "A14": "FW",
+   "B14": {
+    "formula": "Begriffe!F265",
+    "value": "Fernwärme"
+   },
+   "P14": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B14,Erzeugung!$P$16:$P$18)",
+    "error": "no-cached-value"
+   },
+   "Q14": {
+    "formula": "SUMIF(Erzeugung!$R$16:$R$18,$B14,Erzeugung!$Q$16:$Q$18)",
+    "error": "no-cached-value"
+   },
+   "R14": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B14,Erzeugung!$P$25:$P$27)",
+    "error": "no-cached-value"
+   },
+   "S14": {
+    "formula": "SUMIF(Erzeugung!$R$25:$R$27,$B14,Erzeugung!$Q$25:$Q$27)",
+    "error": "no-cached-value"
+   },
+   "T14": "{\"sharedFormula\":\"T9\"}",
+   "U14": "{\"sharedFormula\":\"U8\"}",
+   "B15": "Total",
+   "P15": {
+    "formula": "SUM(P7:P14)",
+    "value": 89.92904291368103
+   },
+   "Q15": "{\"result\":31.538749918517908,\"sharedFormula\":\"P15\"}",
+   "R15": "{\"result\":13.468842592592589,\"sharedFormula\":\"P15\"}",
+   "S15": "{\"result\":6.983664000000001,\"sharedFormula\":\"P15\"}",
+   "T15": {
+    "formula": "SUM(T7:T14)",
+    "value": 286.2973707965185
+   },
+   "U15": {
+    "formula": "SUM(U7:U14)",
+    "value": 337.9640367854074
+   },
+   "A18": {
+    "formula": "Begriffe!F254",
+    "value": "Gewichtete Energie"
+   },
+   "D18": {
+    "formula": "Begriffe!F240",
+    "value": "Allg. Gebäudetechnik"
+   },
+   "E18": {
+    "formula": "Begriffe!F240",
+    "value": "Allg. Gebäudetechnik"
+   },
+   "F18": {
+    "formula": "Begriffe!F69",
+    "value": "Geräte"
+   },
+   "G18": {
+    "formula": "Begriffe!F69",
+    "value": "Geräte"
+   },
+   "H18": {
+    "formula": "Begriffe!F241",
+    "value": "Prozessanlagen"
+   },
+   "I18": {
+    "formula": "Begriffe!F241",
+    "value": "Prozessanlagen"
+   },
+   "J18": {
+    "formula": "Begriffe!F71",
+    "value": "Beleuchtung"
+   },
+   "K18": {
+    "formula": "Begriffe!F71",
+    "value": "Beleuchtung"
+   },
+   "L18": {
+    "formula": "Begriffe!F72",
+    "value": "Lüftung"
+   },
+   "M18": {
+    "formula": "Begriffe!F72",
+    "value": "Lüftung"
+   },
+   "N18": {
+    "formula": "Begriffe!F73",
+    "value": "Raumkühlung"
+   },
+   "O18": {
+    "formula": "Begriffe!F73",
+    "value": "Raumkühlung"
+   },
+   "P18": {
+    "formula": "Begriffe!F74",
+    "value": "Raumheizung"
+   },
+   "Q18": {
+    "formula": "Begriffe!F74",
+    "value": "Raumheizung"
+   },
+   "R18": {
+    "formula": "Begriffe!F75",
+    "value": "Warmwasser"
+   },
+   "S18": {
+    "formula": "Begriffe!F75",
+    "value": "Warmwasser"
+   },
+   "T18": {
+    "formula": "Begriffe!F83",
+    "value": "Total"
+   },
+   "U18": {
+    "formula": "Begriffe!F83",
+    "value": "Total"
+   },
+   "D20": "kWh/m2",
+   "E20": "MWh",
+   "F20": "kWh/m2",
+   "G20": "MWh",
+   "H20": "kWh/m2",
+   "I20": "MWh",
+   "J20": "kWh/m2",
+   "K20": "MWh",
+   "L20": "kWh/m2",
+   "M20": "MWh",
+   "N20": "kWh/m2",
+   "O20": "MWh",
+   "P20": "kWh/m2",
+   "Q20": "MWh",
+   "R20": "kWh/m2",
+   "S20": "MWh",
+   "T20": "kWh/m2",
+   "U20": "MWh",
+   "A21": "EPCH",
+   "B21": {
+    "formula": "Begriffe!F230",
+    "value": "Nationale Energie-Kennzahl"
+   },
+   "D21": {
+    "formula": "E21*1000/Gebäude!$D$39",
+    "value": 16.782616707616704
+   },
+   "E21": {
+    "formula": "SUMPRODUCT(E$7:E$17*W7:W17)",
+    "value": 109.2884
+   },
+   "F21": {
+    "formula": "G21*1000/Gebäude!$D$39",
+    "value": 39.829883292383286
+   },
+   "G21": {
+    "formula": "SUMPRODUCT(G$7:G$17*W7:W17)",
+    "value": 259.3722
+   },
+   "H21": {
+    "formula": "I21*1000/Gebäude!$D$39",
+    "value": 0.44888974201474197
+   },
+   "I21": {
+    "formula": "SUMPRODUCT(I$7:I$17*Y7:Y17)",
+    "value": 2.9231700000000003
+   },
+   "J21": {
+    "formula": "K21*1000/Gebäude!$D$39",
+    "value": 18.397420074576324
+   },
+   "K21": {
+    "formula": "SUMPRODUCT(K$7:K$17*$W7:$W17)",
+    "value": 119.80399952564103
+   },
+   "L21": {
+    "formula": "M21*1000/Gebäude!$D$39",
+    "value": 9.976470983970986
+   },
+   "M21": {
+    "formula": "SUMPRODUCT(M$7:M$17*$W7:$W17)",
+    "value": 64.96677904761907
+   },
+   "N21": {
+    "formula": "O21*1000/Gebäude!$D$39",
+    "value": 0.5208641217013035
+   },
+   "O21": {
+    "formula": "SUMPRODUCT(O$7:O$17*$W7:$W17)",
+    "value": 3.3918671605188884
+   },
+   "P21": {
+    "formula": "Q21*1000/Gebäude!$D$39",
+    "value": 5.514216325930151
+   },
+   "Q21": {
+    "formula": "SUMPRODUCT(Q$7:Q$17*$W7:$W17)",
+    "value": 35.90857671445714
+   },
+   "R21": {
+    "formula": "S21*1000/Gebäude!$D$39",
+    "value": 1.2745179361179362
+   },
+   "S21": {
+    "formula": "SUMPRODUCT(S$7:S$17*$W7:$W17)",
+    "value": 8.299660800000002
+   },
+   "T21": {
+    "formula": "D21+F21+H21+J21+L21+N21+P21+R21",
+    "value": 92.74487918431143
+   },
+   "U21": {
+    "formula": "E21+G21+I21+K21+M21+O21+Q21+S21",
+    "value": 603.9546532482362
+   }
+  },
+  "Lueftung_results": {
+   "B23": "Total",
+   "C23": {
+    "formula": "SUM(C7:C22)",
+    "value": 13395.238095238097
+   },
+   "D23": {
+    "formula": "SUM(D7:D22)",
+    "value": 1340
+   },
+   "H23": {
+    "formula": "SUM(H7:H22)",
+    "value": 9.207857142857144
+   },
+   "I23": {
+    "formula": "SUM(I7:I22)",
+    "value": 32.483389523809535
+   },
+   "Q23": {
+    "formula": "SUM(Q7:Q22)",
+    "value": 36.433216937907375
+   },
+   "R23": {
+    "formula": "SUM(R7:R22)",
+    "value": 2.1133550903176506
+   },
+   "S23": "{\"result\":23.60000018983625,\"sharedFormula\":\"R23\"}",
+   "T23": "{\"result\":5.042090032269504,\"sharedFormula\":\"R23\"}",
+   "U23": "{\"sharedFormula\":\"R23\"}",
+   "V23": "{\"sharedFormula\":\"R23\"}",
+   "W23": {
+    "formula": "SUM(W7:W22)",
+    "error": "no-cached-value"
+   },
+   "X23": {
+    "formula": "SUM(X7:X22)",
+    "error": "no-cached-value"
+   },
+   "Y23": {
+    "formula": "SUM(Y7:Y22)",
+    "value": 6.040017398638598e-14
+   },
+   "Z23": {
+    "formula": "SUM(Z7:Z22)",
+    "value": 37.91012683202147
+   },
+   "A30": {
+    "formula": "Begriffe!F149",
+    "value": "Ergebnisse pro Lüftungsanlage"
+   },
+   "A32": "LA01",
+   "B32": {
+    "formula": "INDEX(B$7:B$22,MATCH($A$32,$A$7:$A$22,0))",
+    "value": "Einzel-, Gruppenbüro"
+   },
+   "C32": "{\"result\":8578.57142857143,\"sharedFormula\":\"B32\"}",
+   "D32": "{\"sharedFormula\":\"B32\"}",
+   "E32": "{\"sharedFormula\":\"B32\"}",
+   "F32": "{\"result\":8578.57142857143,\"sharedFormula\":\"B32\"}",
+   "G32": "{\"result\":0.8,\"sharedFormula\":\"B32\"}",
+   "H32": "{\"result\":6.862857142857144,\"sharedFormula\":\"B32\"}",
+   "I32": {
+    "formula": "'Berechnung LU'!H7",
+    "value": 26.765142857142866
+   },
+   "J32": {
+    "formula": "INDEX(J$7:J$22,MATCH($A$32,$A$7:$A$22,0))",
+    "value": "einstufig"
+   },
+   "K32": {
+    "formula": "'Berechnung LU'!J7",
+    "value": 3900
+   },
+   "L32": {
+    "formula": "INDEX(L$7:L$22,MATCH($A$32,$A$7:$A$22,0))",
+    "value": 80
+   },
+   "M32": {
+    "formula": "INDEX(M$7:M$22,MATCH($A$32,$A$7:$A$22,0))",
+    "value": 20
+   },
+   "N32": {
+    "formula": "INDEX(N$7:N$22,MATCH($A$32,$A$7:$A$22,0))",
+    "value": 21
+   },
+   "O32": {
+    "formula": "INDEX(O$7:O$22,MATCH($A$32,$A$7:$A$22,0))",
+    "error": "no-cached-value"
+   },
+   "P32": {
+    "formula": "INDEX(P$7:P$22,MATCH($A$32,$A$7:$A$22,0))",
+    "error": "no-cached-value"
+   },
+   "Q32": {
+    "formula": "'Berechnung LU'!P7",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "R32": {
+    "formula": "'Berechnung LU'!Q7",
+    "error": "no-cached-value"
+   },
+   "S32": {
+    "formula": "'Berechnung LU'!R7",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "T32": {
+    "formula": "'Berechnung LU'!S7",
+    "error": "no-cached-value"
+   },
+   "U32": {
+    "formula": "'Berechnung LU'!V7",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "V32": {
+    "formula": "'Berechnung LU'!W7",
+    "error": "no-cached-value"
+   },
+   "W32": {
+    "formula": "'Berechnung LU'!X7",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "X32": {
+    "formula": "'Berechnung LU'!Y7",
+    "error": "no-cached-value"
+   },
+   "Y32": {
+    "formula": "'Berechnung LU'!T7",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "Z32": {
+    "formula": "'Berechnung LU'!U7",
+    "error": "no-cached-value"
+   }
+  },
+  "Erzeugung_totals": {
+   "B10": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "C10": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "F10": {
+    "formula": "SUM(F7:F9)",
+    "value": 100
+   },
+   "G10": {
+    "formula": "SUM(G7:G9)",
+    "value": 100
+   },
+   "L10": {
+    "formula": "SUM(L7:L9)",
+    "value": 186.1555958567215
+   },
+   "M10": {
+    "formula": "SUM(M7:M9)",
+    "value": 14.536573545080952
+   },
+   "N10": {
+    "formula": "M10*1000/L10",
+    "value": 78.08829747062411
+   },
+   "O10": {
+    "formula": "M10*1000/L10",
+    "value": 78.08829747062411
+   },
+   "P10": {
+    "formula": "SUM(P7:P9)",
+    "value": 27.923339378508224
+   },
+   "A13": {
+    "formula": "Begriffe!F173",
+    "value": "Wärmeerzeugung"
+   },
+   "D13": {
+    "formula": "Begriffe!$F$244",
+    "value": "Nutzungsgrad"
+   },
+   "F13": {
+    "formula": "Begriffe!$F$245",
+    "value": "Deckungsgrad"
+   },
+   "H13": {
+    "formula": "Begriffe!$F$246",
+    "value": "Speicher - und Verteilverluste"
+   },
+   "L13": {
+    "formula": "Begriffe!F253",
+    "value": "Wärme (inkl. Verluste)"
+   },
+   "P13": {
+    "formula": "Begriffe!$F$248",
+    "value": "Endenergie"
+   },
+   "A14": "Nr.",
+   "B14": {
+    "formula": "Begriffe!$F$243",
+    "value": "Erzeugertyp"
+   },
+   "D14": {
+    "formula": "Begriffe!$F$76",
+    "value": "Standard"
+   },
+   "E14": {
+    "formula": "Begriffe!$F$103",
+    "value": "Projekt"
+   },
+   "F14": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "G14": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "H14": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "I14": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "J14": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "K14": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "L14": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "M14": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "N14": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "O14": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "P14": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "Q14": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "R14": {
+    "formula": "Begriffe!$F$251",
+    "value": "Energieträger"
+   },
+   "D15": "-",
+   "F15": "%",
+   "G15": "%",
+   "H15": "%",
+   "I15": "%",
+   "J15": "%",
+   "K15": "%",
+   "L15": "kW",
+   "M15": "MWh",
+   "N15": "h",
+   "O15": "h",
+   "P15": "kW",
+   "Q15": "MWh",
+   "A16": {
+    "formula": "IF(B16<>\"\",INDEX(Nutzungsgrad!$B$11:$C$26,MATCH(Erzeugung!B16,Nutzungsgrad!$C$11:$C$26,0),1),\"\")",
+    "value": "WE15"
+   },
+   "B16": "Wärmepumpe Grundwasser 35°C",
+   "C16": "Wärmepumpe Grundwasser 35°C",
+   "D16": {
+    "formula": "IF(B16<>\"\",VLOOKUP($B16,Nutzungsgrad!$C$11:$G$27,3,FALSE),0)",
+    "value": 4.3
+   },
+   "E16": 5.5,
+   "F16": 70,
+   "G16": 80,
+   "H16": 10,
+   "I16": 10,
+   "L16": {
+    "formula": "(Gebäude!T$35+Lüftung!S$23)*F16%*(100+IF($J16<>\"\",$J16,$H16))%",
+    "value": 113.25176198708895
+   },
+   "M16": {
+    "formula": "(Gebäude!U$35+Lüftung!T$23)*G16%*(100+IF($J16<>\"\",$J16,$H16))%",
+    "value": 58.51768057170793
+   },
+   "N16": {
+    "formula": "IF(L16=0,0,M16*1000/L16)",
+    "value": 516.7043721437121
+   },
+   "O16": {
+    "formula": "IF(L16=0,0,M16*1000/L16)",
+    "value": 516.7043721437121
+   },
+   "P16": {
+    "formula": "IF(D16=0,0,$L16/IF($E16<>\"\",$E16,$D16))",
+    "value": 20.591229452197993
+   },
+   "Q16": {
+    "formula": "IF(D16=0,0,$M16/IF($E16<>\"\",$E16,$D16))",
+    "value": 10.639578285765078
+   },
+   "R16": {
+    "formula": "IF(D16=0,\"\",VLOOKUP($B16,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
+    "value": "Elektrizität"
+   },
+   "A17": {
+    "formula": "IF(B17<>\"\",INDEX(Nutzungsgrad!$B$11:$C$26,MATCH(Erzeugung!B17,Nutzungsgrad!$C$11:$C$26,0),1),\"\")",
+    "value": "WE05"
+   },
+   "B17": "Pelletfeuerung ",
+   "C17": "Pelletfeuerung ",
+   "D17": {
+    "formula": "IF(B17<>\"\",VLOOKUP($B17,Nutzungsgrad!$C$11:$G$27,3,FALSE),0)",
+    "value": 0.7
+   },
+   "F17": 30,
+   "G17": 20,
+   "H17": 10,
+   "I17": 10,
+   "L17": {
+    "formula": "(Gebäude!T$35+Lüftung!S$23)*F17%*(100+IF($J17<>\"\",$J17,$H17))%",
+    "value": 48.53646942303813
+   },
+   "M17": {
+    "formula": "(Gebäude!U$35+Lüftung!T$23)*G17%*(100+IF($J17<>\"\",$J17,$H17))%",
+    "value": 14.629420142926982
+   },
+   "N17": {
+    "formula": "IF(L17=0,0,M17*1000/L17)",
+    "value": 301.4108837504987
+   },
+   "O17": {
+    "formula": "IF(L17=0,0,M17*1000/L17)",
+    "value": 301.4108837504987
+   },
+   "P17": {
+    "formula": "IF(D17=0,0,$L17/IF($E17<>\"\",$E17,$D17))",
+    "value": 69.33781346148304
+   },
+   "Q17": {
+    "formula": "IF(D17=0,0,$M17/IF($E17<>\"\",$E17,$D17))",
+    "value": 20.899171632752832
+   },
+   "R17": {
+    "formula": "IF(D17=0,\"\",VLOOKUP($B17,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
+    "value": "Pellets"
+   },
+   "A18": {
+    "formula": "IF(B18<>\"\",INDEX(Nutzungsgrad!$B$11:$C$26,MATCH(Erzeugung!B18,Nutzungsgrad!$C$11:$C$26,0),1),\"\")",
+    "error": "no-cached-value"
+   },
+   "D18": {
+    "formula": "IF(B18<>\"\",VLOOKUP($B18,Nutzungsgrad!$C$11:$G$27,3,FALSE),0)",
+    "error": "no-cached-value"
+   },
+   "H18": 10,
+   "I18": 10,
+   "L18": {
+    "formula": "(Gebäude!T$35+Lüftung!S$23)*F18%*(100+IF($J18<>\"\",$J18,$H18))%",
+    "error": "no-cached-value"
+   },
+   "M18": {
+    "formula": "(Gebäude!U$35+Lüftung!T$23)*G18%*(100+IF($J18<>\"\",$J18,$H18))%",
+    "error": "no-cached-value"
+   },
+   "N18": {
+    "formula": "IF(L18=0,0,M18*1000/L18)",
+    "error": "no-cached-value"
+   },
+   "O18": {
+    "formula": "IF(L18=0,0,M18*1000/L18)",
+    "error": "no-cached-value"
+   },
+   "P18": {
+    "formula": "IF(D18=0,0,$L18/IF($E18<>\"\",$E18,$D18))",
+    "error": "no-cached-value"
+   },
+   "Q18": {
+    "formula": "IF(D18=0,0,$M18/IF($E18<>\"\",$E18,$D18))",
+    "error": "no-cached-value"
+   },
+   "R18": {
+    "formula": "IF(D18=0,\"\",VLOOKUP($B18,Nutzungsgrad!$C$11:$G$27,4,FALSE))",
+    "error": "no-cached-value"
+   },
+   "B19": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "C19": {
+    "formula": "Begriffe!$F$83",
+    "value": "Total"
+   },
+   "F19": {
+    "formula": "SUM(F16:F18)",
+    "value": 100
+   },
+   "G19": {
+    "formula": "SUM(G16:G18)",
+    "value": 100
+   },
+   "L19": {
+    "formula": "SUM(L16:L18)",
+    "value": 161.78823141012708
+   },
+   "M19": {
+    "formula": "SUM(M16:M18)",
+    "value": 73.14710071463492
+   },
+   "N19": {
+    "formula": "M19*1000/L19",
+    "value": 452.1163256257482
+   },
+   "O19": {
+    "formula": "M19*1000/L19",
+    "value": 452.1163256257482
+   },
+   "P19": {
+    "formula": "SUM(P16:P18)",
+    "value": 89.92904291368103
+   },
+   "A22": {
+    "formula": "Begriffe!F191",
+    "value": "Warmwassererzeugung"
+   },
+   "D22": {
+    "formula": "Begriffe!$F$244",
+    "value": "Nutzungsgrad"
+   },
+   "F22": {
+    "formula": "Begriffe!$F$245",
+    "value": "Deckungsgrad"
+   },
+   "H22": {
+    "formula": "Begriffe!$F$246",
+    "value": "Speicher - und Verteilverluste"
+   },
+   "L22": {
+    "formula": "Begriffe!F253",
+    "value": "Wärme (inkl. Verluste)"
+   },
+   "P22": {
+    "formula": "Begriffe!$F$248",
+    "value": "Endenergie"
+   },
+   "A23": "Nr.",
+   "B23": {
+    "formula": "Begriffe!$F$243",
+    "value": "Erzeugertyp"
+   },
+   "D23": {
+    "formula": "Begriffe!$F$76",
+    "value": "Standard"
+   },
+   "E23": {
+    "formula": "Begriffe!$F$103",
+    "value": "Projekt"
+   },
+   "F23": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "G23": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "H23": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "I23": {
+    "formula": "Begriffe!$F$80",
+    "value": "Standardwert"
+   },
+   "J23": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "K23": {
+    "formula": "Begriffe!$F$79",
+    "value": "Projektwert"
+   },
+   "L23": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "M23": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "N23": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "O23": {
+    "formula": "Begriffe!$F$250",
+    "value": "Volllaststunden"
+   },
+   "P23": {
+    "formula": "Begriffe!$F$100",
+    "value": "Leistung"
+   },
+   "Q23": {
+    "formula": "Begriffe!$F$101",
+    "value": "Energie"
+   },
+   "R23": {
+    "formula": "Begriffe!$F$251",
+    "value": "Energieträger"
+   },
+   "D24": "-",
+   "F24": "%",
+   "G24": "%",
+   "H24": "%",
+   "I24": "%",
+   "J24": "%",
+   "K24": "%",
+   "L24": "kW",
+   "M24": "MWh",
+   "N24": "h",
+   "O24": "h",
+   "P24": "kW",
+   "Q24": "MWh",
+   "A25": {
+    "formula": "IF(B25<>\"\",INDEX(Nutzungsgrad!$B$29:$C$41,MATCH(Erzeugung!B25,Nutzungsgrad!$C$29:$C$41,0),1),\"\")",
+    "value": "W13"
+   },
+   "B25": "Wärmepumpe Grundwasser",
+   "C25": "Wärmepumpe Grundwasser",
+   "D25": {
+    "formula": "IF(B25<>\"\",VLOOKUP($B25,Nutzungsgrad!$C$29:$G$42,3,FALSE),0)",
+    "value": 1.9
+   },
+   "E25": 2.7,
+   "F25": 30,
+   "G25": 50,
+   "H25": 40,
+   "I25": 40,
+   "L25": {
+    "formula": "Gebäude!V$35*4.186/3.6*50/L$29/1000*F25%*(100+IF($J25<>\"\",$J25,$H25))%",
+    "value": 3.401124999999999
+   },
+   "M25": {
+    "formula": "(Gebäude!W$35*G25%)*(100+IF($J25<>\"\",$J25,$H25))%",
+    "value": 7.084584000000001
+   },
+   "N25": {
+    "formula": "IF(L25=0,0,M25*1000/L25)",
+    "value": 2083.011944577163
+   },
+   "O25": {
+    "formula": "IF(L25=0,0,M25*1000/L25)",
+    "value": 2083.011944577163
+   },
+   "P25": {
+    "formula": "IF(D25=0,0,$L25/IF($E25<>\"\",$E25,$D25))",
+    "value": 1.2596759259259256
+   },
+   "Q25": {
+    "formula": "IF(D25=0,0,$M25/IF($E25<>\"\",$E25,$D25))",
+    "value": 2.6239200000000005
+   },
+   "R25": {
+    "formula": "IF(D25=0,\"\",VLOOKUP($B25,Nutzungsgrad!$C$29:$G$42,4,FALSE))",
+    "value": "Elektrizität"
+   },
+   "A26": {
+    "formula": "IF(B26<>\"\",INDEX(Nutzungsgrad!$B$29:$C$41,MATCH(Erzeugung!B26,Nutzungsgrad!$C$29:$C$41,0),1),\"\")",
+    "value": "W05"
+   },
+   "B26": "Pelletfeuerung ",
+   "C26": "Pelletfeuerung ",
+   "D26": {
+    "formula": "IF(B26<>\"\",VLOOKUP($B26,Nutzungsgrad!$C$29:$G$42,3,FALSE),0)",
+    "value": 0.65
+   },
+   "F26": 70,
+   "G26": 20,
+   "H26": 40,
+   "I26": 40,
+   "L26": {
+    "formula": "Gebäude!V$35*4.186/3.6*50/L$29/1000*F26%*(100+IF($J26<>\"\",$J26,$H26))%",
+    "value": 7.935958333333331
+   },
+   "M26": {
+    "formula": "(Gebäude!W$35*G26%)*(100+IF($J26<>\"\",$J26,$H26))%",
+    "value": 2.8338336000000006
+   },
+   "N26": {
+    "formula": "IF(L26=0,0,M26*1000/L26)",
+    "value": 357.08776192751367
+   },
+   "O26": {
+    "formula": "IF(L26=0,0,M26*1000/L26)",
+    "value": 357.08776192751367
+   },
+   "P26": {
+    "formula": "IF(D26=0,0,$L26/IF($E26<>\"\",$E26,$D26))",
+    "value": 12.209166666666663
+   },
+   "Q26": {
+    "formula": "IF(D26=0,0,$M26/IF($E26<>\"\",$E26,$D26))",
+    "value": 4.359744000000001
+   },
+   "R26": {
+    "formula": "IF(D26=0,\"\",VLOOKUP($B26,Nutzungsgrad!$C$29:$G$42,4,FALSE))",
+    "value": "Pellets"
+   },
+   "A27": {
+    "formula": "IF(B27<>\"\",INDEX(Nutzungsgrad!$B$29:$C$41,MATCH(Erzeugung!B27,Nutzungsgrad!$C$29:$C$41,0),1),\"\")",
+    "value": "W09"
+   },
+   "B27": "Solarenergie thermisch",
+   "C27": "Solarenergie thermisch",
+   "D27": {
+    "formula": "IF(B27<>\"\",VLOOKUP($B27,Nutzungsgrad!$C$29:$G$42,3,FALSE),0)",
+    "error": "no-cached-value"
+   },
+   "F27": 0,
+   "G27": 30,
+   "H27": 40,
+   "I27": 40,
+   "L27": {
+    "formula": "Gebäude!V$35*4.186/3.6*50/L$29/1000*F27%*(100+IF($J27<>\"\",$J27,$H27))%",
+    "error": "no-cached-value"
+   },
+   "M27": {
+    "formula": "(Gebäude!W$35*G27%)*(100+IF($J27<>\"\",$J27,$H27))%",
+    "value": 4.2507504
+   },
+   "N27": {
+    "formula": "IF(L27=0,0,M27*1000/L27)",
+    "error": "no-cached-value"
+   },
+   "O27": {
+    "formula": "IF(L27=0,0,M27*1000/L27)",
+    "error": "no-cached-value"
+   },
+   "P27": {
+    "formula": "IF(D27=0,0,$L27/IF($E27<>\"\",$E27,$D27))",
+    "error": "no-cached-value"
+   },
+   "Q27": {
+    "formula": "IF(D27=0,0,$M27/IF($E27<>\"\",$E27,$D27))",
+    "error": "no-cached-value"
+   },
+   "R27": {
+    "formula": "IF(D27=0,\"\",VLOOKUP($B27,Nutzungsgrad!$C$29:$G$42,4,FALSE))",
+    "error": "no-cached-value"
+   }
+  },
+  "BerechnungLU": {
+   "A251": "Energieverbrauch ",
+   "C251": "IST",
+   "E251": "SOLL",
+   "H251": "Abluft",
+   "I251": "Raumluft",
+   "J251": "Raumluft",
+   "C252": "Nutzenergie",
+   "D252": "Leistung",
+   "E252": "Nutzenergie",
+   "F252": "Kosten",
+   "H252": "tABL ",
+   "I252": "rFRaum ",
+   "J252": "xRaum ",
+   "B253": "Energiebedarf pro Aussentemp., kWh",
+   "C253": "[kWh]",
+   "D253": "[kW]",
+   "E253": "[kWh]",
+   "F253": "[CHF/a]",
+   "H253": {
+    "formula": "LOOKUP(B88,$DA$122:$DA$181,$BU$122:$BU$181)",
+    "value": 22
+   },
+   "I253": {
+    "formula": "LOOKUP(B88,$DA$122:$DA$181,$BS$122:$BS$181)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J253": {
+    "formula": "AbsFeuchte(D88,I253,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "A254": "Luftkühlung",
+   "C254": {
+    "formula": "IFERROR(CJ182*1000,0)",
+    "error": "no-cached-value"
+   },
+   "D254": {
+    "formula": "BZ183",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "E254": {
+    "formula": "IFERROR(CJ250*1000,0)",
+    "error": "no-cached-value"
+   },
+   "F254": {
+    "formula": "IFERROR(E254*J28/100,0)",
+    "error": "no-cached-value"
+   },
+   "H254": {
+    "formula": "LOOKUP(B89,$DA$122:$DA$181,$BU$122:$BU$181)",
+    "value": 24
+   },
+   "I254": {
+    "formula": "LOOKUP(B89,$DA$122:$DA$181,$BS$122:$BS$181)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J254": {
+    "formula": "AbsFeuchte(D89,I254,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "A255": "Lufterwärmung",
+   "C255": {
+    "formula": "IFERROR(CK182*1000,0)",
+    "error": "no-cached-value"
+   },
+   "D255": {
+    "formula": "CC183",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "E255": {
+    "formula": "IFERROR(CK250*1000,0)",
+    "error": "no-cached-value"
+   },
+   "F255": {
+    "formula": "IFERROR(E255*J27/100,0)",
+    "error": "no-cached-value"
+   },
+   "H255": {
+    "formula": "LOOKUP(B90,$DA$122:$DA$181,$BU$122:$BU$181)",
+    "value": 25
+   },
+   "I255": {
+    "formula": "LOOKUP(B90,$DA$122:$DA$181,$BS$122:$BS$181)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J255": {
+    "formula": "AbsFeuchte(D90,I255,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "A256": "Erwärmung Bef.",
+   "C256": {
+    "formula": "IFERROR(CM182*1000,0)",
+    "error": "no-cached-value"
+   },
+   "D256": {
+    "formula": "CD183",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "E256": {
+    "formula": "IFERROR(CM250*1000,0)",
+    "error": "no-cached-value"
+   },
+   "F256": {
+    "formula": "IFERROR(E256*J27/100,0)",
+    "error": "no-cached-value"
+   },
+   "H256": {
+    "formula": "LOOKUP(B91,$DA$122:$DA$181,$BU$122:$BU$181)",
+    "value": 25
+   },
+   "I256": {
+    "formula": "LOOKUP(B91,$DA$122:$DA$181,$BS$122:$BS$181)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J256": {
+    "formula": "AbsFeuchte(D91,I256,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "A257": "Entfeuchtung",
+   "B257": "Kühlung Entf.",
+   "C257": {
+    "formula": "IFERROR(CE182*1000,0)",
+    "error": "no-cached-value"
+   },
+   "D257": {
+    "formula": "CA183",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "E257": {
+    "formula": "IFERROR(CE250*1000,0)",
+    "error": "no-cached-value"
+   },
+   "F257": {
+    "formula": "IFERROR(E257*J28/100,0)",
+    "error": "no-cached-value"
+   },
+   "H257": "Abluft",
+   "I257": "Raumluft",
+   "J257": "Raumluft",
+   "B258": "Erwärmung Entf.",
+   "C258": {
+    "formula": "IFERROR(CF182*1000,0)",
+    "error": "no-cached-value"
+   },
+   "D258": {
+    "formula": "CB183",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "E258": {
+    "formula": "IFERROR(CF250*1000,0)",
+    "error": "no-cached-value"
+   },
+   "F258": {
+    "formula": "IFERROR(E258*J27/100,0)",
+    "error": "no-cached-value"
+   },
+   "H258": "tABL ",
+   "I258": "rFRaum ",
+   "J258": "xRaum ",
+   "A259": "Luftumwälzung",
+   "B259": "Ventilator",
+   "C259": {
+    "formula": "IFERROR(CT182*1000,0)",
+    "value": 26765.142857142866
+   },
+   "D259": {
+    "formula": "G6",
+    "value": 6.862857142857144
+   },
+   "E259": {
+    "formula": "IFERROR(CT250*1000,0)",
+    "error": "no-cached-value"
+   },
+   "F259": {
+    "formula": "IFERROR(E259*J26/100,0)",
+    "error": "no-cached-value"
+   },
+   "H259": {
+    "formula": "LOOKUP(B94,$DA$190:$DA$249,$BU$190:$BU$249)",
+    "value": 24
+   },
+   "I259": {
+    "formula": "LOOKUP(B94,$DA$190:$DA$249,$BS$190:$BS$249)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J259": {
+    "formula": "AbsFeuchte(D94,I259,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "A260": "Total",
+   "C260": {
+    "formula": "SUM(C254:C259)",
+    "value": 26765.142857142866
+   },
+   "D260": {
+    "formula": "SUM(D254:D259)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "E260": {
+    "formula": "SUM(E254:E259)",
+    "error": "no-cached-value"
+   },
+   "F260": {
+    "formula": "SUM(F254:F259)",
+    "error": "no-cached-value"
+   },
+   "H260": {
+    "formula": "LOOKUP(B95,$DA$190:$DA$249,$BU$190:$BU$249)",
+    "value": 24
+   },
+   "I260": {
+    "formula": "LOOKUP(B95,$DA$190:$DA$249,$BS$190:$BS$249)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J260": {
+    "formula": "AbsFeuchte(D95,I260,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "C261": "Liter/a",
+   "D261": "[CHF/a]",
+   "E261": "Liter/a",
+   "F261": "[CHF/a]",
+   "H261": {
+    "formula": "LOOKUP(B96,$DA$190:$DA$249,$BU$190:$BU$249)",
+    "value": 26
+   },
+   "I261": {
+    "formula": "LOOKUP(B96,$DA$190:$DA$249,$BS$190:$BS$249)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J261": {
+    "formula": "AbsFeuchte(D96,I261,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "A262": "Wasser Bef.",
+   "C262": {
+    "formula": "IFERROR(CH182,0)",
+    "error": "no-cached-value"
+   },
+   "D262": {
+    "formula": "IFERROR(C262/1000*I29/100,0)",
+    "error": "no-cached-value"
+   },
+   "E262": {
+    "formula": "IFERROR(CH250,0)",
+    "error": "no-cached-value"
+   },
+   "F262": {
+    "formula": "IFERROR(E262/1000*J29/100,0)",
+    "error": "no-cached-value"
+   },
+   "H262": {
+    "formula": "LOOKUP(B97,$DA$190:$DA$249,$BU$190:$BU$249)",
+    "value": 26
+   },
+   "I262": {
+    "formula": "LOOKUP(B97,$DA$190:$DA$249,$BS$190:$BS$249)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "J262": {
+    "formula": "AbsFeuchte(D97,I262,$N$19)",
+    "value": {
+     "error": "#NAME?"
+    }
+   },
+   "A263": "Entfeuchtung",
+   "C263": {
+    "formula": "IFERROR(CL182,0)",
+    "error": "no-cached-value"
+   },
+   "D263": 0,
+   "E263": {
+    "formula": "IFERROR(CL250,0)",
+    "error": "no-cached-value"
+   },
+   "F263": 0
+  }
+ }
+}
