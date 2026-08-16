@@ -12,7 +12,7 @@ import re
 from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any
+from typing import Any, ClassVar
 
 from energytools.common.errors import (
     TableLookupError,
@@ -1283,7 +1283,7 @@ class QhcTable:
     station_ids: frozenset[int] | None = field(default=None, repr=False, compare=False)
     release_id: str = field(default="?", repr=False, compare=False)
 
-    _METRICS = {
+    _METRICS: ClassVar[dict[str, str]] = {
         "cooling_energy": "rows",
         "cooling_power": "cooling_power",
         "heating_load": "heating_load",
@@ -1416,8 +1416,8 @@ class Dataset:
     _room_use_by_nutzid: dict[int, RoomUse] = field(init=False, repr=False, compare=False)
     _room_use_by_code: dict[str, RoomUse] = field(init=False, repr=False, compare=False)
     _stations: set[int] = field(init=False, repr=False, compare=False)
-    _room_use_catalog: "RoomUseCatalog" = field(init=False, repr=False, compare=False)
-    _parameter_catalog: "ParameterCatalog" = field(init=False, repr=False, compare=False)
+    _room_use_catalog: RoomUseCatalog = field(init=False, repr=False, compare=False)
+    _parameter_catalog: ParameterCatalog = field(init=False, repr=False, compare=False)
 
     def __init__(
         self,
@@ -1571,7 +1571,7 @@ class Dataset:
         return room_use
 
     @property
-    def room_uses(self) -> "RoomUseCatalog":
+    def room_uses(self) -> RoomUseCatalog:
         """All 45 room uses with attribute access: ``ds.room_uses.group_office``.
 
         Also callable for compatibility: ``ds.room_uses()`` returns the tuple.
@@ -1590,7 +1590,7 @@ class Dataset:
         return parameter
 
     @property
-    def parameters(self) -> "ParameterCatalog":
+    def parameters(self) -> ParameterCatalog:
         """The parameter catalog with attribute access: ``ds.parameters.personnel_area``.
 
         Also callable for compatibility: ``ds.parameters()`` returns the tuple.

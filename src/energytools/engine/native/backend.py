@@ -25,7 +25,7 @@ from __future__ import annotations
 
 import dataclasses
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -134,7 +134,7 @@ class NativeBackend(EngineBase):
         if dataset:
             try:
                 self._dataset(dataset)
-            except Exception as exc:  # DatasetNotFoundError / validation errors
+            except Exception as exc:  # noqa: BLE001 - any load failure becomes a validation error
                 errors.append(f"dataset release {dataset!r} unavailable: {exc}")
         if input_.climate_station_id != KPI_DEFAULT_CLIMATE_STATION:
             warnings.append(
@@ -334,7 +334,7 @@ class NativeBackend(EngineBase):
             assumptions=assumptions,
             warnings=tuple(warnings),
             overridden_values=(),
-            computed_at=datetime.now(timezone.utc),
+            computed_at=datetime.now(UTC),
             trace=trace,
         )
 
@@ -400,7 +400,7 @@ class NativeBackend(EngineBase):
                     full_load_hours = ds.full_load_hours().hours(
                         nutzid, system.regulation or "1-stufig"
                     )
-                except Exception:
+                except Exception:  # noqa: BLE001 - missing table entry -> default below
                     full_load_hours = None
             if full_load_hours is None:
                 full_load_hours = 3900.0
@@ -584,24 +584,36 @@ class NativeBackend(EngineBase):
     def _assumptions(input_: BuildingInput, ahu_assumptions: list[str]) -> tuple[str, ...]:
         """The native-engine assumptions (dataset + model defaults)."""
         return (
-            "Native backend: psychrometrics (FeuchteLuft_Formeln.bas), the AHU "
-            "temperature-bin engine (Berechnung LU), the building aggregation "
-            "(KZ_Raum_2024/Lüftung/Erzeugung/Resultate) and the Nutzungsgrad "
-            "generation catalogue are the ported workbook model.",
-            "The Klimakälte/Heizwärme KPI columns of the dataset carry the "
-            f"{KPI_DEFAULT_CLIMATE_STATION} (Zürich-MeteoSchweiz) default of the "
-            "Qhc_Klimastat reference; other climate stations use these values "
-            "for the room Raumkühlung/Raumheizung intensities.",
-            "The AHU fan full-load hours on an electricity basis (K69) default "
-            "to the air-volume full-load hours (K68) — exact for einstufig "
-            "regulation, an approximation for zweistufig/stufenlos.",
-            "AhuInput IST-block parameters (temperature curves, coils, "
-            "humidification, motor classes, fresh-air ratios) use the example "
-            "system LA01 (Zürich-MeteoSchweiz) defaults documented in AhuInput.",
-            "GenerationSystem.coverage applies to both the Leistungs- and the "
-            "Energie-Deckungsgrad; GenerationSystem.losses is the standard "
-            "Speicher-/Verteilverluste (no project overrides E/J).",
-            "Allg. Gebäudetechnik (AG01–AG10) is 0 — the input model has no AG "
-            "block; construction factor 10 % and Aufheizzeit 6 h/d are the "
-            "aggregation defaults.",
+            (
+                "Native backend: psychrometrics (FeuchteLuft_Formeln.bas), the AHU "
+                "temperature-bin engine (Berechnung LU), the building aggregation "
+                "(KZ_Raum_2024/Lüftung/Erzeugung/Resultate) and the Nutzungsgrad "
+                "generation catalogue are the ported workbook model."
+            ),
+            (
+                "The Klimakälte/Heizwärme KPI columns of the dataset carry the "
+                f"{KPI_DEFAULT_CLIMATE_STATION} (Zürich-MeteoSchweiz) default of the "
+                "Qhc_Klimastat reference; other climate stations use these values "
+                "for the room Raumkühlung/Raumheizung intensities."
+            ),
+            (
+                "The AHU fan full-load hours on an electricity basis (K69) default "
+                "to the air-volume full-load hours (K68) — exact for einstufig "
+                "regulation, an approximation for zweistufig/stufenlos."
+            ),
+            (
+                "AhuInput IST-block parameters (temperature curves, coils, "
+                "humidification, motor classes, fresh-air ratios) use the example "
+                "system LA01 (Zürich-MeteoSchweiz) defaults documented in AhuInput."
+            ),
+            (
+                "GenerationSystem.coverage applies to both the Leistungs- and the "
+                "Energie-Deckungsgrad; GenerationSystem.losses is the standard "
+                "Speicher-/Verteilverluste (no project overrides E/J)."
+            ),
+            (
+                "Allg. Gebäudetechnik (AG01–AG10) is 0 — the input model has no AG "
+                "block; construction factor 10 % and Aufheizzeit 6 h/d are the "
+                "aggregation defaults."
+            ),
         ) + tuple(ahu_assumptions)

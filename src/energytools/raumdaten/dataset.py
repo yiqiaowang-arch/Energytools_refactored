@@ -979,7 +979,7 @@ class DatasetExtractor:
         schedules = []
         for nutzid in sorted(by_nutzid):
             row = matrix[nutzid - 1]
-            person = tuple(_schedule_cell(row[col]) for col in range(0, 24))
+            person = tuple(_schedule_cell(row[col]) for col in range(24))
             device = tuple(_schedule_cell(row[col]) for col in range(24, 48))
             monthly = tuple(_schedule_cell(row[col]) for col in range(49, 61))
             rest_days = _schedule_cell(row[61])  # FY

@@ -1278,7 +1278,7 @@ def _weighted_rows(
 
 def _room_generation_division(
     rooms: tuple[RoomResult, ...],
-    building_rooms: tuple[Any, ...],
+    building_rooms: tuple[object, ...],
     catalog: GenerationCatalog,
 ) -> tuple[tuple[RoomGenerationResult, ...], dict[str, tuple[float, float]]]:
     """Room-level generators: their covered demand and end energy per kind.

@@ -85,6 +85,7 @@ nav:
       - MCP Layer: architecture+api-reference/07-mcp-layer.md
   - API Reference (auto):
       - Overview: api-reference/index.md
+      - building: api-reference/building.md
       - raumdaten: api-reference/raumdaten.md
       - engine: api-reference/engine.md
       - native: api-reference/native.md

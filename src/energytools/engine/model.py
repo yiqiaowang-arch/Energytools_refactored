@@ -227,7 +227,9 @@ class RoomRow:
             ("warmwasser", self.warmwasser),
         ):
             if not isinstance(value, bool):
-                raise ValueError(f"room {self.name!r}: flag {flag!r} must be a bool")
+                raise ValueError(  # noqa: TRY004 - "must be a bool" is an input error, not a type contract
+                    f"room {self.name!r}: flag {flag!r} must be a bool"
+                )
         if self.ngf < 0:
             raise ValueError(f"room {self.name!r}: negative NGF {self.ngf}")
         if self.share is not None and self.share < 0:
@@ -332,7 +334,7 @@ class VentilationSystem:
             setpoints = dict(self.humidity_setpoints)
             for key, value in setpoints.items():
                 if isinstance(value, bool) or not isinstance(value, (int, float)):
-                    raise ValueError(
+                    raise ValueError(  # noqa: TRY004 - input validation error
                         f"system {self.id!r}: humidity setpoint {key!r} must be numeric"
                     )
             object.__setattr__(self, "humidity_setpoints", setpoints)
@@ -486,7 +488,9 @@ class BuildingInput:
         if isinstance(self.climate_station_id, bool) or not isinstance(
             self.climate_station_id, int
         ):
-            raise ValueError("climate_station_id must be an int (1–40)")
+            raise ValueError(  # noqa: TRY004 - input validation error
+                "climate_station_id must be an int (1–40)"
+            )
 
     # -- validation ---------------------------------------------------------
 

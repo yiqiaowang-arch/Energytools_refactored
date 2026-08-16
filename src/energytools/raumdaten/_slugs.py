@@ -10,10 +10,10 @@ from __future__ import annotations
 import re
 
 __all__ = [
-    "ROOM_USE_SLUGS",
     "PARAMETER_ALIASES",
-    "slugify_label",
+    "ROOM_USE_SLUGS",
     "parameter_slug",
+    "slugify_label",
 ]
 
 # ---------------------------------------------------------------------------

@@ -17,23 +17,23 @@ from __future__ import annotations
 from typing import Any
 
 __all__ = [
-    "EnergyToolsError",
+    "BackendError",
+    "CalculationError",
+    "CalculationInputError",
     "DatasetNotFoundError",
     "DatasetValidationError",
-    "UnknownRoomUseError",
-    "UnknownParameterError",
-    "UnknownClimateStationError",
-    "UnknownLanguageError",
-    "UnknownValueKindError",
-    "CalculationInputError",
-    "CalculationError",
-    "ModelVersionMismatchError",
-    "BackendError",
+    "EnergyToolsError",
     "ExcelBackendError",
     "ExportError",
-    "UnitError",
+    "ModelVersionMismatchError",
     "PsychrometricError",
     "TableLookupError",
+    "UnitError",
+    "UnknownClimateStationError",
+    "UnknownLanguageError",
+    "UnknownParameterError",
+    "UnknownRoomUseError",
+    "UnknownValueKindError",
 ]
 
 
@@ -319,4 +319,3 @@ class TableLookupError(EnergyToolsError, KeyError):
 
     def __str__(self) -> str:
         return self.message
-        super().__init__(message, details)

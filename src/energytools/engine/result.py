@@ -9,7 +9,7 @@ the workbook are kept verbatim (Resultate, Endenergie, Energieträger, ...).
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from energytools.engine.model import BuildingInput, VersionInfo
@@ -108,7 +108,7 @@ class Results:
     assumptions: tuple[str, ...] = ()
     warnings: tuple[str, ...] = ()
     overridden_values: tuple[dict[str, Any], ...] = ()
-    computed_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    computed_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     trace: CalculationTrace | None = None
 
     @property
@@ -158,7 +158,7 @@ class Results:
             warnings=tuple(data["warnings"]),
             overridden_values=tuple(dict(value) for value in data["overridden_values"]),
             computed_at=datetime.fromisoformat(
-                data["computed_at"].replace("Z", "+00:00")
+                data["computed_at"].replace("Z", "+00:00")  # noqa: FURB162 - ISO-8601 Zulu -> offset
             ),
             trace=CalculationTrace.from_dict(data["trace"])
             if data.get("trace") is not None

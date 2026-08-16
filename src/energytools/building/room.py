@@ -8,11 +8,10 @@ mutable; changing anything invalidates the building's lazy load.
 
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 from energytools.building.generation import Generation
 from energytools.building.roomtype import RoomType
-from energytools.building.schedules import Schedules
 from energytools.building.ventilation import Ventilation
 
 

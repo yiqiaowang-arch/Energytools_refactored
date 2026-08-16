@@ -17,7 +17,7 @@ from typing import Any
 
 from energytools.common.errors import UnitError
 
-__all__ = ["Unit", "Quantity", "register_unit"]
+__all__ = ["Quantity", "Unit", "register_unit"]
 
 #: Registry of known unit symbols: normalized symbol ->
 #: (dimension, factor to SI base, offset from SI base, default SI hint).
@@ -275,7 +275,7 @@ class Unit:
         object.__setattr__(self, "_factor", factor)
         object.__setattr__(self, "_offset", offset)
 
-    def convert_to(self, value: float, target: "Unit") -> float:
+    def convert_to(self, value: float, target: Unit) -> float:
         """Convert ``value`` expressed in this unit to ``target``.
 
         Args:
@@ -322,11 +322,11 @@ class Quantity:
     value: float | int | None
     unit: Unit
 
-    def __init__(self, value: float | int | None, unit: Unit | str) -> None:
+    def __init__(self, value: float | None, unit: Unit | str) -> None:
         object.__setattr__(self, "value", value)
         object.__setattr__(self, "unit", unit if isinstance(unit, Unit) else Unit(unit))
 
-    def to(self, unit: Unit | str) -> "Quantity":
+    def to(self, unit: Unit | str) -> Quantity:
         """Return a copy of this quantity converted to ``unit``.
 
         Args:

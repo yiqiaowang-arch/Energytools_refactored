@@ -24,7 +24,8 @@ Slug sources, in priority order:
 
 from __future__ import annotations
 
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from energytools.common.errors import UnknownRoomUseError
 from energytools.common.valuekind import ValueKind
@@ -37,13 +38,13 @@ from energytools.raumdaten._slugs import (
 )
 
 __all__ = [
-    "ROOM_USE_SLUGS",
     "PARAMETER_ALIASES",
-    "RoomUseCatalog",
-    "ParameterCatalog",
+    "ROOM_USE_SLUGS",
     "ParameterAccessor",
-    "slugify_label",
+    "ParameterCatalog",
+    "RoomUseCatalog",
     "parameter_slug",
+    "slugify_label",
 ]
 
 _SLUG_TO_CODE: dict[str, str] = {v: k for k, v in ROOM_USE_SLUGS.items()}

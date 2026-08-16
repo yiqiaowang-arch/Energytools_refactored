@@ -37,7 +37,7 @@ class RoomType:
     # -- factory ------------------------------------------------------------
 
     @classmethod
-    def from_dataset(cls, dataset: Any, room_use: str | int) -> "RoomType":
+    def from_dataset(cls, dataset: Any, room_use: str | int) -> RoomType:
         """Look up a type by SIA code (``"5.02"``) or nutzid (``15``)."""
         room = dataset.room_use(room_use)
         return cls(code=room.code, name=room.name.de, nutzid=room.nutzid, dataset=dataset)
@@ -47,13 +47,13 @@ class RoomType:
     def parameter(self, parameter_id: str, kind: str = "standard") -> float | None:
         """One parameter value (e.g. ``1.1.2.9`` Personenfläche), or ``None``.
 
-        Raises:
-            UnknownParameterError: for an unknown parameter id.
+        ``None`` covers parameters that do not apply to this room use (no
+        persons, no hot water, ...); an unknown parameter id raises.
         """
         profile = self._dataset.profile(self.nutzid)
         try:
             value = profile.value(parameter_id, kind)
-        except Exception:
+        except (KeyError, TypeError, ValueError):
             return None
         return value.value if value is not None else None
 

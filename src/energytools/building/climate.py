@@ -25,7 +25,7 @@ class Climate:
         self._dataset = dataset
 
     @classmethod
-    def from_dataset(cls, dataset: Any, station_id: int) -> "Climate":
+    def from_dataset(cls, dataset: Any, station_id: int) -> Climate:
         """Look up a station by id (1-40)."""
         station = dataset.climate().station(station_id)
         return cls(station_id=station.id, name=station.name.de, dataset=dataset)

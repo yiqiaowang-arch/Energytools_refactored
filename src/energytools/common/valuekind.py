@@ -32,7 +32,7 @@ class ValueKind(enum.Enum):
     BESTAND = "bestand"
 
     @classmethod
-    def parse(cls, value: str) -> "ValueKind":
+    def parse(cls, value: str) -> ValueKind:
         """Parse a value kind from its canonical name or an alias.
 
         Case-insensitive; accepts ``"standard"``, ``"zielwert"``,

@@ -14,7 +14,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-__all__ = ["SourceRef", "Provenance"]
+__all__ = ["Provenance", "SourceRef"]
 
 
 @dataclass(frozen=True)

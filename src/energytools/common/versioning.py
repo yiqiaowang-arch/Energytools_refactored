@@ -16,18 +16,18 @@ from __future__ import annotations
 import json
 import re
 from collections.abc import Mapping
-from datetime import date
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Any
 
 from energytools.common.errors import DatasetNotFoundError
 
 __all__ = [
+    "ChangelogEntry",
     "DatasetRelease",
     "ModelRelease",
     "VersionInfo",
-    "ChangelogEntry",
     "VersionResolver",
 ]
 
@@ -279,7 +279,7 @@ class VersionResolver:
         dataset_dir: str | Path,
         model_dir: str | Path,
         implementation_version: str | None = None,
-    ) -> "VersionResolver":
+    ) -> VersionResolver:
         """Build a resolver from release manifest files on disk.
 
         Each ``*.json`` file in ``dataset_dir`` / ``model_dir`` is parsed as

@@ -14,7 +14,8 @@ class Ventilation:
         regulation: ``"1-stufig" | "2-stufig" | "stufenlos"``.
         full_load_hours: Annual full-load hours (h/a).
         wrg: Heat-recovery efficiency 0-1.
-        kuehlfall_t / heizfall_t: Supply-air setpoints (°C).
+        kuehlfall_t: Supply-air setpoint, cooling case (°C).
+        heizfall_t: Supply-air setpoint, heating case (°C).
     """
 
     def __init__(

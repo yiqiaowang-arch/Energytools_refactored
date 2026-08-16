@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import dataclasses
 from datetime import date
-from typing import Any
 
 import energytools
 from energytools.engine.backends import EngineBase, StubBackend
@@ -26,7 +25,7 @@ from energytools.engine.model import BuildingInput, ModelRelease, ValidationRepo
 from energytools.engine.result import CalculationTrace, Results
 from energytools.engine.store import CalculationStore
 
-__all__ = ["CalculationEngine", "DEFAULT_MODEL", "Engine"]
+__all__ = ["DEFAULT_MODEL", "CalculationEngine", "Engine"]
 
 #: The model release installed with this milestone: model 1.0.0 is compatible
 #: with the V221 dataset release and the MeteoSchweiz 2024 climate data.
@@ -105,7 +104,7 @@ class Engine:
                 },
             )
         climate = (
-            sorted(model.compatible_climate_versions)[0]
+            min(model.compatible_climate_versions)
             if model.compatible_climate_versions
             else "unknown"
         )

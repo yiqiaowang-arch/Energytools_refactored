@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import uuid
 from abc import ABC, abstractmethod
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 import energytools
@@ -112,8 +112,10 @@ class StubBackend(EngineBase):
         """
         report = input_.validate()
         warnings = report.warnings + (
-            "stub backend: structural validation only; no workbook-range "
-            "capability check (ExcelBackend arrives in a later milestone)",
+            (
+                "stub backend: structural validation only; no workbook-range "
+                "capability check (ExcelBackend arrives in a later milestone)"
+            ),
         )
         return ValidationReport(errors=report.errors, warnings=warnings)
 
@@ -147,13 +149,19 @@ class StubBackend(EngineBase):
         }
 
         assumptions = (
-            "Stub backend: structural aggregation only — no psychrometric "
-            "calculation (FeuchteLuft_Formeln.bas) and no AHU temperature-bin "
-            "engine (Berechnung LU).",
-            "Energieträger 'el' (Elektrizität) carries installed electric "
-            "power in kW, not Endenergie in kWh/a.",
-            "Volllaststunden are not applied; per_system values are "
-            "design-point values of the Lüftung sheet.",
+            (
+                "Stub backend: structural aggregation only — no psychrometric "
+                "calculation (FeuchteLuft_Formeln.bas) and no AHU temperature-bin "
+                "engine (Berechnung LU)."
+            ),
+            (
+                "Energieträger 'el' (Elektrizität) carries installed electric "
+                "power in kW, not Endenergie in kWh/a."
+            ),
+            (
+                "Volllaststunden are not applied; per_system values are "
+                "design-point values of the Lüftung sheet."
+            ),
         )
         warnings = report.warnings + (
             "stub backend: energy values are placeholders (structural values only).",
@@ -255,7 +263,7 @@ class StubBackend(EngineBase):
             assumptions=assumptions,
             warnings=warnings,
             overridden_values=(),
-            computed_at=datetime.now(timezone.utc),
+            computed_at=datetime.now(UTC),
             trace=trace,
         )
 

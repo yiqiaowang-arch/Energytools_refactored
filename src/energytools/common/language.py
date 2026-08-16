@@ -33,7 +33,7 @@ class Language(enum.Enum):
     IT = "it"
 
     @classmethod
-    def parse(cls, value: str) -> "Language":
+    def parse(cls, value: str) -> Language:
         """Parse a language from its code or the workbook index.
 
         Accepts ``"de"``/``"fr"``/``"it"`` (case-insensitive) and the

@@ -20,6 +20,7 @@ from energytools.raumdaten._slugs import (  # noqa: E402
     PARAMETER_ALIASES,
     ROOM_USE_SLUGS,
     parameter_slug,
+    slugify_label,
 )
 
 REPO = Path(__file__).resolve().parents[1]
@@ -52,7 +53,7 @@ def main() -> None:
     lines.append("")
     lines.append("from __future__ import annotations")
     lines.append("")
-    lines.append("from typing import Any  # noqa: F401")
+    lines.append("from typing import Any")
     lines.append("")
     lines.append("")
     lines.append("class RoomUseProperties:")
@@ -74,6 +75,25 @@ def main() -> None:
     lines.append("class ParameterProperties:")
     lines.append('    """Generated ``@property`` accessors for the parameter catalog."""')
     lines.append("")
+    used_slugs: set[str] = set()
+
+    def reserve(slug: str, label_de: str) -> str | None:
+        """Reserve a property name; on collision fall back to the label slug,
+        then to a numbered suffix — a duplicate would silently shadow the
+        first parameter (e.g. symbol ``hR`` of Raumhöhe vs Raumwirkungsgrad).
+        """
+        if slug in used_slugs:
+            label_slug = slugify_label(label_de)
+            if label_slug and label_slug not in used_slugs:
+                slug = label_slug
+            else:
+                counter = 2
+                while f"{slug}_{counter}" in used_slugs:
+                    counter += 1
+                slug = f"{slug}_{counter}"
+        used_slugs.add(slug)
+        return slug
+
     for p in parameters:
         pid = p["id"]
         if pid in ("Symbol",):
@@ -82,6 +102,7 @@ def main() -> None:
         slug = parameter_slug(pid, p.get("symbol", ""), label_de)
         if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", slug) or slug in RESERVED:
             continue
+        slug = reserve(slug, label_de)
         lines.append("    @property")
         lines.append(f"    def {slug}(self) -> Any:")
         doc = label_de or p.get("symbol") or pid

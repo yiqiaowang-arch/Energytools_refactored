@@ -6,7 +6,7 @@ Regenerate with: pixi run -e dev python tools/generate_accessors.py
 
 from __future__ import annotations
 
-from typing import Any  # noqa: F401
+from typing import Any
 
 
 class RoomUseProperties:
@@ -683,9 +683,9 @@ class ParameterProperties:
         return self._parameter_by_slug("lamp_efficacy")
 
     @property
-    def hR(self) -> Any:
+    def raumwirkungsgrad(self) -> Any:
         """Raumwirkungsgrad [1.1.4.7]."""
-        return self._parameter_by_slug("hR")
+        return self._parameter_by_slug("raumwirkungsgrad")
 
     @property
     def volllaststunden_pro_tag_fuer_eine_nutungszeit_von_11_h(self) -> Any:
@@ -993,9 +993,9 @@ class ParameterProperties:
         return self._parameter_by_slug("notwendigkeit_einer_kuehlung_mit_unterstuetzender_fensterlueftung_bei_belegung")
 
     @property
-    def notwendigkeit_einer_kuehlung_ohne_fensterlueftung(self) -> Any:
+    def notwendigkeit_einer_kuehlung_ohne_fensterlueftung_2(self) -> Any:
         """Notwendigkeit einer Kühlung (Ohne Fensterlüftung) [notwendigkeit-einer-k-hlung-ohne-fensterl-ftung-2]."""
-        return self._parameter_by_slug("notwendigkeit_einer_kuehlung_ohne_fensterlueftung")
+        return self._parameter_by_slug("notwendigkeit_einer_kuehlung_ohne_fensterlueftung_2")
 
     @property
     def FC(self) -> Any:
@@ -1003,14 +1003,14 @@ class ParameterProperties:
         return self._parameter_by_slug("FC")
 
     @property
-    def FC(self) -> Any:
+    def klimakaelteleistungsbedarf(self) -> Any:
         """Klimakälteleistungsbedarf [1.1.6.5-2]."""
-        return self._parameter_by_slug("FC")
+        return self._parameter_by_slug("klimakaelteleistungsbedarf")
 
     @property
-    def FC(self) -> Any:
+    def FC_2(self) -> Any:
         """Klimakälteleistungsbedarf [1.1.6.5-3]."""
-        return self._parameter_by_slug("FC")
+        return self._parameter_by_slug("FC_2")
 
     @property
     def tC(self) -> Any:
@@ -1023,9 +1023,9 @@ class ParameterProperties:
         return self._parameter_by_slug("QC")
 
     @property
-    def QC(self) -> Any:
+    def jaehrlicher_klimakaeltebedarf(self) -> Any:
         """Jährlicher Klimakältebedarf [1.1.6.7-2]."""
-        return self._parameter_by_slug("QC")
+        return self._parameter_by_slug("jaehrlicher_klimakaeltebedarf")
 
     @property
     def row_162(self) -> Any:
