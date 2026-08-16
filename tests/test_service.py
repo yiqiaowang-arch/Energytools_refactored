@@ -117,8 +117,16 @@ class TestProfilesAndTables:
         data = service.get_full_load_hours("V221", 1, "2-stufig", "prSIA 2024-C1:2024")
         assert data["hours"] == 7540.0
         assert data["unit"] == "h/a"
+        assert data["default_standard_version"] == "prSIA 2024-C1:2024"
         with pytest.raises(UnknownRoomUseError):
             service.get_full_load_hours("V221", 99, "2-stufig", "prSIA 2024-C1:2024")
+
+    def test_get_full_load_hours_default_version(self, service) -> None:
+        # standard_version omitted -> the final (default) version is used
+        data = service.get_full_load_hours("V221", 1, "2-stufig")
+        assert data["hours"] == 7540.0
+        assert data["standard_version"] == "prSIA 2024-C1:2024"
+        assert data["default_standard_version"] == "prSIA 2024-C1:2024"
 
     def test_get_qhc(self, service) -> None:
         data = service.get_qhc("V221", 4, 1)

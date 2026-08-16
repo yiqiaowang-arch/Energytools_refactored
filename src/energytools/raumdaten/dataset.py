@@ -940,6 +940,7 @@ class DatasetExtractor:
             rows=rows,
             standard_versions=frozenset({self.standard_version}),
             regulations=frozenset(regulations),
+            default_standard_version=self.standard_version,
             provenance=Provenance(
                 sources=(
                     SourceRef(

@@ -278,23 +278,38 @@ class RaumdatenService:
     # -- tables -------------------------------------------------------------
 
     def get_full_load_hours(
-        self, release_id: str, room_use_id: int | str, regulation: str, standard_version: str
+        self,
+        release_id: str,
+        room_use_id: int | str,
+        regulation: str,
+        standard_version: str | None = None,
     ) -> dict:
         """Ventilation full-load hours for one use x regulation x standard version.
+
+        ``standard_version=None`` resolves to the release's default (final)
+        standard version -- ``full_load_hours.default_standard_version`` (for
+        packages without the field, the single installed version).  The
+        response echoes the resolved version in ``standard_version`` and the
+        configured default in ``default_standard_version``.
 
         Raises:
             DatasetNotFoundError, UnknownRoomUseError, TableLookupError.
         """
         dataset = self._dataset(release_id)
         room_use = dataset.room_use(room_use_id)
-        hours = dataset.full_load_hours().hours(room_use.nutzid, regulation, standard_version)
+        table = dataset.full_load_hours()
+        hours = table.hours(room_use.nutzid, regulation, standard_version)
+        resolved_version = standard_version or table.default_standard_version
+        if resolved_version is None and len(table.standard_versions) == 1:
+            resolved_version = next(iter(table.standard_versions))
         return {
             "room_use_id": room_use.nutzid,
             "regulation": regulation,
-            "standard_version": standard_version,
+            "standard_version": resolved_version,
+            "default_standard_version": table.default_standard_version,
             "hours": hours,
             "unit": "h/a",
-            "provenance": _provenance_dict(dataset.full_load_hours().provenance),
+            "provenance": _provenance_dict(table.provenance),
         }
 
     def get_qhc(

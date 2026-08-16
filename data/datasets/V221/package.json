@@ -5,7 +5,7 @@
     "id": "V221",
     "edition": "SIA 2024",
     "publication_date": "2024-11-17",
-    "checksum_sha256": "3bc3551aa68a68b845c09c159e3def6b9acbf73192f0675cab081931a7ac7c2e",
+    "checksum_sha256": "1267a9aaa9a024a5446ef585531b760a8f1b71201ecc0623b47ea7d1c6f689e1",
     "source_workbook": "2024_Raumdatenblätter_dfi_V221.xlsm",
     "extraction_tool_version": "0.1.0",
     "supersedes": null,
@@ -45213,6 +45213,7 @@
       "2-stufig",
       "stufenlos"
     ],
+    "default_standard_version": "prSIA 2024-C1:2024",
     "rows": {
       "1|1-stufig|prSIA 2024-C1:2024": 8760.0,
       "1|2-stufig|prSIA 2024-C1:2024": 7540.0,

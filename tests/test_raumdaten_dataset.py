@@ -7,8 +7,9 @@ from pathlib import Path
 
 import pytest
 
-from energytools.common.errors import DatasetNotFoundError, DatasetValidationError
+from energytools.common.errors import DatasetNotFoundError, DatasetValidationError, TableLookupError
 from energytools.raumdaten.dataset import DatasetStore, load_dataset
+from energytools.raumdaten.model import Dataset, FullLoadHoursTable
 
 
 class TestLoadDataset:
@@ -85,6 +86,54 @@ class TestDatasetStore:
         store.refresh()
         second = store.get("V221")
         assert first is not second  # re-loaded after refresh
+
+
+class TestFullLoadHoursDefaultVersion:
+    """'Final version wins' -- default standard-version semantics of the FLH table."""
+
+    def test_installed_package_declares_default_version(self, dataset) -> None:
+        table = dataset.full_load_hours()
+        assert table.default_standard_version == "prSIA 2024-C1:2024"
+        # standard_version omitted -> the default (final) version is used
+        assert table.hours(1, "2-stufig") == 7540.0
+        assert table.hours(1, "2-stufig") == table.hours(1, "2-stufig", "prSIA 2024-C1:2024")
+
+    def test_single_version_fallback_without_default_key(self) -> None:
+        # a package without the default key resolves the single installed version
+        table = FullLoadHoursTable(
+            rows={(1, "2-stufig", "prSIA 2024-C1:2024"): 7540.0},
+            standard_versions=frozenset({"prSIA 2024-C1:2024"}),
+            regulations=frozenset({"1-stufig", "2-stufig", "stufenlos"}),
+        )
+        assert table.default_standard_version is None
+        assert table.hours(1, "2-stufig") == 7540.0
+
+    def test_multiple_versions_require_explicit_standard_version(self) -> None:
+        table = FullLoadHoursTable(
+            rows={(1, "2-stufig", "prSIA 2024-C1:2024"): 7540.0},
+            standard_versions=frozenset({"SIA 2024:2015", "prSIA 2024-C1:2024"}),
+            regulations=frozenset({"2-stufig"}),
+        )
+        with pytest.raises(TableLookupError, match="standard_version"):
+            table.hours(1, "2-stufig")
+
+    def test_package_dict_round_trip_preserves_default_version(self, dataset) -> None:
+        package = dataset.to_package_dict()
+        assert package["full_load_hours"]["default_standard_version"] == "prSIA 2024-C1:2024"
+        reloaded = Dataset.from_package_dict(package)
+        table = reloaded.full_load_hours()
+        assert table.default_standard_version == "prSIA 2024-C1:2024"
+        assert table.hours(1, "2-stufig") == 7540.0
+
+    def test_package_dict_without_default_key_falls_back_to_single_version(self, dataset) -> None:
+        # an old package (no default key) still loads; the single installed
+        # version becomes the default (final-version semantics)
+        package = dataset.to_package_dict()
+        del package["full_load_hours"]["default_standard_version"]
+        reloaded = Dataset.from_package_dict(package)
+        table = reloaded.full_load_hours()
+        assert table.default_standard_version == "prSIA 2024-C1:2024"
+        assert table.hours(1, "2-stufig") == 7540.0
 
 
 def _tampered(dataset, store):

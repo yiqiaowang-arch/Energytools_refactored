@@ -638,10 +638,19 @@ class FullLoadHoursTable:
     The versioned ``Volll_Lüft`` table (assessment 1.2, 5.1); the version axis
     is the model for the whole dataset's evolution.
 
+    Queries default to the release's **final** standard version: when
+    ``standard_version`` is omitted, :meth:`hours` resolves
+    ``default_standard_version`` (falling back to the single installed version
+    for packages that predate the field).
+
     Args:
         rows: ``(nutzid, regulation, standard_version)`` -> hours.
         standard_versions: Installed standard versions (e.g. ``"prSIA 2024-C1:2024"``).
         regulations: Regulation types (e.g. ``{"1-stufig", "2-stufig", "stufenlos"}``).
+        default_standard_version: The default (final/latest) standard version
+            used when :meth:`hours` is called without one; ``None`` falls back
+            to the single installed version, else an explicit version is
+            required.
         provenance: Optional provenance.
         room_use_ids: Optional set of valid nutzids (passed by :class:`Dataset`);
             enables ``UnknownRoomUseError`` in :meth:`hours`.
@@ -650,21 +659,41 @@ class FullLoadHoursTable:
     rows: Mapping[tuple[int, str, str], float]
     standard_versions: frozenset[str]
     regulations: frozenset[str]
+    default_standard_version: str | None = None
     provenance: Provenance | None = None
     room_use_ids: frozenset[int] | None = field(default=None, repr=False, compare=False)
     release_id: str = field(default="?", repr=False, compare=False)
 
-    def hours(self, room_use_id: int, regulation: str, standard_version: str) -> float:
+    def hours(
+        self, room_use_id: int, regulation: str, standard_version: str | None = None
+    ) -> float:
         """Look up full-load hours.
+
+        ``standard_version=None`` resolves to the default (final/latest)
+        standard version: ``default_standard_version`` when set, otherwise the
+        single installed version; when neither applies an explicit
+        ``standard_version`` is required.
 
         Raises:
             UnknownRoomUseError: for an unknown ``room_use_id`` (validated
                 against the release when the table is part of a :class:`Dataset`).
-            TableLookupError: when the combination is absent (a KeyError-compatible
+            TableLookupError: when no standard version can be resolved or the
+                combination is absent (a KeyError-compatible
                 :class:`EnergyToolsError`).
         """
         if self.room_use_ids is not None and room_use_id not in self.room_use_ids:
             raise UnknownRoomUseError(room_use_id, self.release_id)
+        if standard_version is None:
+            standard_version = self.default_standard_version
+            if standard_version is None and len(self.standard_versions) == 1:
+                standard_version = next(iter(self.standard_versions))
+            if standard_version is None:
+                raise TableLookupError(
+                    f"no standard version given and the full-load-hours table of release "
+                    f"'{self.release_id}' has no default standard version "
+                    f"(installed: {sorted(self.standard_versions)}); "
+                    f"pass standard_version explicitly"
+                )
         try:
             return self.rows[(room_use_id, regulation, standard_version)]
         except KeyError:
@@ -678,6 +707,7 @@ class FullLoadHoursTable:
         return {
             "standard_versions": sorted(self.standard_versions),
             "regulations": sorted(self.regulations),
+            "default_standard_version": self.default_standard_version,
             "rows": {
                 f"{nutzid}|{regulation}|{standard_version}": hours
                 for (nutzid, regulation, standard_version), hours in self.rows.items()
@@ -961,6 +991,7 @@ class Dataset:
                 rows=self._full_load_hours.rows,
                 standard_versions=self._full_load_hours.standard_versions,
                 regulations=self._full_load_hours.regulations,
+                default_standard_version=self._full_load_hours.default_standard_version,
                 provenance=self._full_load_hours.provenance,
                 room_use_ids=frozenset(room_use_by_nutzid),
                 release_id=self.release.id,
@@ -1330,14 +1361,23 @@ class Dataset:
         )
 
         flh_data = data["full_load_hours"]
+        flh_versions = frozenset(flh_data["standard_versions"])
+        # Absent key -> fall back to the single installed version (final-version
+        # semantics for packages that predate the field); a present key (even
+        # null) is honored as-is so as_dict/from_package_dict round-trips
+        # preserve the table exactly.
+        flh_default = flh_data.get("default_standard_version")
+        if flh_default is None and "default_standard_version" not in flh_data and len(flh_versions) == 1:
+            flh_default = next(iter(flh_versions))
         full_load_hours = FullLoadHoursTable(
             rows={
                 (int(nutzid), regulation, standard_version): float(value)
                 for key, value in flh_data["rows"].items()
                 for nutzid, regulation, standard_version in [_parse_row_key(key, 3)]
             },
-            standard_versions=frozenset(flh_data["standard_versions"]),
+            standard_versions=flh_versions,
             regulations=frozenset(flh_data["regulations"]),
+            default_standard_version=flh_default,
             provenance=_provenance_from_dict(flh_data.get("provenance")),
         )
 

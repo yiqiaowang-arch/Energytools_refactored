@@ -223,6 +223,9 @@ _full_load_hours = {
     "properties": {
         "standard_versions": {"type": "array", "items": {"type": "string"}, "minItems": 1},
         "regulations": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        # Default (final/latest) standard version; optional so packages that
+        # predate the field stay valid (their single version is used instead).
+        "default_standard_version": {"type": "string"},
         "rows": {"type": "object", "additionalProperties": {"type": "number", "minimum": 0}},
         "provenance": _provenance,
     },

@@ -929,6 +929,9 @@
           },
           "minItems": 1
         },
+        "default_standard_version": {
+          "type": "string"
+        },
         "rows": {
           "type": "object",
           "additionalProperties": {
