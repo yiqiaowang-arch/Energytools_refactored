@@ -1,4 +1,4 @@
-"""Zürich three-storey house — a fully annotated real-calculation example.
+"""Zürich three-storey house — the object-oriented way.
 
 Building: 600 m² over three storeys in Zürich (climate station 40 =
 Zürich-MeteoSchweiz, the dataset default).
@@ -16,144 +16,100 @@ Run:  pixi run -e dev python examples/zurich_house.py
 
 from __future__ import annotations
 
-from energytools.engine import Engine, NativeBackend
-from energytools.engine.model import (
-    BuildingInput,
-    GenerationSystem,
-    RoomRow,
-    ValueKind,
-    VentilationSystem,
+from energytools.building import (
+    Building,
+    Climate,
+    Generation,
+    Room,
+    RoomType,
+    Ventilation,
 )
 from energytools.raumdaten import load_dataset
 
 # ---------------------------------------------------------------------------
-# 1. Dataset — one frozen release, everything below comes from it
+# 1. The library: dataset release -> room-type classes + climate class
 # ---------------------------------------------------------------------------
+# 45 SIA 2024 room uses are the *classes*; 40 climate stations are the
+# *climate classes*.  The library itself is immutable — buildings and rooms
+# copy from it and may diverge.
 ds = load_dataset("V221")
+shop = RoomType.from_dataset(ds, "5.02")   # Fachgeschäft
+flat = RoomType.from_dataset(ds, "1.01")   # Wohnen MFH
+garage = RoomType.from_dataset(ds, "12.09")  # Parkhaus
+zurich = Climate.from_dataset(ds, 40)      # Zürich-MeteoSchweiz
+
+# Where the type parameters come from (dataset lookups, annotated):
+#   5.02: 1.1.2.9 Personenfläche 8 m²/Person · 1.1.3.3 Geräte 2 W/m² ·
+#         1.1.4.1 Beleuchtung 300 lx · 1.1.8.4 Warmwasser 1.5 l/(P·d) ·
+#         hygienic fresh air 1.1.5.2 = 3.625 m³/(h·m²)
+#   1.01: 35 m²/Person · 10 W/m² · 150 lx · 35 l/(P·d)
+#   12.09: 1 W/m² · no persons, no hot water, no fresh air
 
 # ---------------------------------------------------------------------------
-# 2. Rooms — your 600 m², mapped onto SIA 2024 room uses
+# 2. The building and its rooms (your 600 m², mapped onto SIA 2024 uses)
 # ---------------------------------------------------------------------------
-# Each RoomRow needs: the SIA 2024 room-use code, the net floor area (ngf)
-# and whether the room is part of the heated envelope (ebf).  All other
-# intensities are looked up from the dataset, not typed in.
-rooms = (
-    # commercial part (ground floor)
-    RoomRow(
-        name="Laden (Fachgeschäft)",
-        room_use_id="5.02",
-        ebf=True,          # heated
-        ngf=200.0,         # m² — your 200 m² commercial
-        lueftung_system="LA01",
-        gekuehlt=False,
-        beheizt=True,
-    ),
-    # residential part (upper floors), split into your rooms; SIA 2024
-    # uses one Wohnen MFH profile for all of them
-    RoomRow(name="Schlafzimmer", room_use_id="1.01", ebf=True, ngf=200.0, beheizt=True),
-    RoomRow(name="Wohnzimmer", room_use_id="1.01", ebf=True, ngf=100.0, beheizt=True),
-    RoomRow(name="Bad", room_use_id="1.01", ebf=True, ngf=30.0, beheizt=True),
-    RoomRow(name="Küche", room_use_id="1.01", ebf=True, ngf=20.0, beheizt=True),
-    # garage — SIA 2024 has no private-garage use; Parkhaus 12.09 is the
-    # closest; unheated, no persons
-    RoomRow(name="Garage", room_use_id="12.09", ebf=False, ngf=50.0, beheizt=False),
+b = Building(name="Mein Haus", climate=zurich, standard="standard")  # standard|zielwert|bestand
+b.add_room(Room("Laden", type=shop, area=200, ebf=True))             # 商业 200
+b.add_room(Room("Schlaf", type=flat, area=200))                      # 客房 200
+b.add_room(Room("Wohnen", type=flat, area=100))                      # 起居 100
+b.add_room(Room("Bad", type=flat, area=30))                          # 卫浴 30
+b.add_room(Room("Küche", type=flat, area=20))                        # 厨房 20
+b.add_room(Room("Garage", type=garage, area=50, ebf=False, heated=False))  # 车库 50
+
+# ---------------------------------------------------------------------------
+# 3. Editable schedules — per room, copied from the type (dataset defaults)
+# ---------------------------------------------------------------------------
+# 5.02 weekday curve: closed at 18:00 -> the shop stays open a bit longer
+b.room("Laden").schedules.occupancy[18] *= 0.8
+# 1.01 curve: everyone is home at night -> the bathroom is used at 07:00
+b.room("Bad").schedules.occupancy[7] = 1.0
+
+# ---------------------------------------------------------------------------
+# 4. Ventilation on the room, generation on the building (and rooms)
+# ---------------------------------------------------------------------------
+# Shop ventilation sized from the dataset: 200 m² × 3.625 m³/(h·m²) = 725 m³/h,
+# fan 725 × SFP 0.8 = 0.58 kW, full-load hours 6260 h/a (Volll_Lüft 5.02).
+b.room("Laden").ventilation = Ventilation(
+    volume_flow=725.0, sfp=0.8, full_load_hours=6260.0, wrg=0.8
 )
+# Building-level generation: gas boiler (WE02) + electric hot water (W13)
+b.add_generation(Generation("WE02", coverage=1.0, losses=0.1))
+b.add_generation(Generation("W13", coverage=1.0, losses=0.4))
+# Room-level generation example: the bathroom heats itself electrically
+# (WE08 "Elektro direkt", η = 1.0), so its heating never reaches the boiler.
+b.room("Bad").add_generation(Generation("WE08", coverage=1.0, losses=0.0))
 
 # ---------------------------------------------------------------------------
-# 3. Where the room numbers come from (dataset lookups)
+# 5. Lazy results — computed on first access, invalidated automatically
 # ---------------------------------------------------------------------------
-def show_room_data() -> None:
-    for code in ("5.02", "1.01", "12.09"):
-        ru = ds.room_use(code)
-        p = ds.profile(ru.nutzid)
-        s = ds.schedules[ru.nutzid]
-        vals = {
-            pid: {k.value: v.value for k, v in byk.items()}
-            for pid, byk in p.values.items()
-            if pid
-            in (
-                "1.1.2.9",  # Personenfläche (m²/Person) → occupancy density
-                "1.1.3.3",  # Geräte (W/m²) → device power
-                "1.1.4.1",  # Beleuchtungsstärke (lx) → lighting level
-                "1.1.8.4",  # Warmwasser (l/Person·d) → WW demand
-            )
-        }
-        print(f"  {code} {ru.name.de}:")
-        for pid, byk in vals.items():
-            print(f"    parameter {pid}: {byk}")
-        print(
-            f"    schedule person 24h: {[round(x, 2) for x in s.person_fraction]}"
-        )
-        print(
-            f"    schedule weekly (Sat first): {[round(x, 2) for x in s.weekly_fraction]}"
-            f"  rest days: {s.rest_days_per_week}"
-        )
+print(f"=== {b.name} ({zurich}) ===")
+print(f"area:  {b.area}")
 
-print("=== where the intensities come from ===")
-show_room_data()
+load = b.load
+print("\n--- annual loads (MWh/a) ---")
+for kind in ("heating", "cooling", "ww", "electricity"):
+    category = getattr(load, kind)
+    print(f"{kind:12s} {category.total:8.2f}  " + ", ".join(
+        f"{room}: {value:.2f}" for room, value in category.annually.items()
+    ))
 
-# ---------------------------------------------------------------------------
-# 4. Ventilation — one system for the shop; the residential part is
-#    naturally ventilated (no system).  Sized from the dataset itself:
-#    hygienic fresh air 5.02 = 3.625 m³/(h·m²)  ->  200 m² -> 725 m³/h,
-#    fan power = 725 × SFP 0.8 W/(m³/h) = 0.58 kW,
-#    full-load hours from the Volll_Lüft table (5.02, 1-stufig = 6260 h/a).
-# ---------------------------------------------------------------------------
-ventilation = (
-    VentilationSystem(
-        id="LA01",
-        room_use="5.02",
-        volume_flow_standard=725.0,   # m³/h = 200 m² × 1.1.5.2 (3.625)
-        sfp=0.8,                      # W/(m³/h) — SFP value
-        fan_power=0.58,               # kW = 725 × 0.8 / 1000
-        regulation="1-stufig",
-        full_load_hours=6260.0,       # h/a — Volll_Lüft 5.02 1-stufig
-        wrg=0.8,                      # heat recovery efficiency
-        kuehlfall_t=20.0,             # supply temp cooling case
-        heizfall_t=21.0,              # supply temp heating case
-    ),
-)
+print("\n--- hourly (8760 h, kW) ---")
+schlaf_heating = load.heating.hourly["Schlaf"]
+print(f"Schlaf heating: 8760 values, sum = {sum(schlaf_heating):.2f} MWh "
+      f"(== annually {load.heating.annually['Schlaf']:.2f})")
+print(f"Schlaf heating Jan 1 00:00..05:00: "
+      f"{[round(v, 3) for v in schlaf_heating[:6]]}")
 
-# ---------------------------------------------------------------------------
-# 5. Generation — gas boiler for heating, electric for hot water
-# ---------------------------------------------------------------------------
-generation = (
-    GenerationSystem(id="WE1", kind="heating", catalog_code="WE02", coverage=1.0, losses=0.1),
-    GenerationSystem(id="WW1", kind="ww", catalog_code="W13", coverage=1.0, losses=0.4),
-)
+print("\n--- final end energy per carrier (MWh/a) ---")
+print({carrier: round(value, 2) for carrier, value in load.totals.items()})
+print("end energy per kind:", {k: round(v, 2) for k, v in load.end_energy.items()})
 
-# ---------------------------------------------------------------------------
-# 6. Calculate — NativeBackend consumes the real dataset (station 40 Zürich)
-# ---------------------------------------------------------------------------
-building = BuildingInput(
-    name="Zürich Dreifamilienhaus (600 m²)",
-    rooms=rooms,
-    ventilation=ventilation,
-    generation=generation,
-    value_kind=ValueKind.STANDARD,
-    climate_station_id=40,  # Zürich-MeteoSchweiz
-)
-
-result = Engine().calculate(
-    building, "V221", "1.0.0", backend=NativeBackend()
-)
-
-print("\n=== result ===")
-for key, value in result.totals.items():
-    print(f"  {key:32s} {value:12.3f}")
-print("  per carrier:", {k: round(v, 2) for k, v in result.per_carrier.items()})
-print("  trace:", [step.id for step in result.trace.steps])
-
-# ---------------------------------------------------------------------------
-# 7. Climate the engine used (station 40 = Zürich-MeteoSchweiz)
-# ---------------------------------------------------------------------------
-station = ds.climate().station(40)
-print("\n=== climate (station 40) ===")
-print(f"  {station.name.de}, canton {station.canton}, "
-      f"elevation {station.winter_design['elevation'].value} m")
-print(f"  winter design: t_a = {station.winter_design['t_a'].value} °C, "
-      f"HDD = {station.hdd.value} K·d")
-print(f"  summer design days: "
-      f"{[(d.month, len(d.temperature)) for d in station.design_days]}")
-print(f"  AHU bins: {len(station.temperature_bins)} temperature bins, "
-      f"{len(station.bin_humidity_ratio)} humidity ratios")
+# Lazy invalidation: edit a schedule, the next access recomputes the
+# hourly distribution (the annual KPI totals stay — schedules decide *when*
+# the verified annual demand occurs, not its size).
+b.room("Laden").schedules.occupancy[19] = 0.0  # close at 19:00 now
+laden_elec_before = load.electricity.hourly["Laden"]
+laden_elec_after = b.load.electricity.hourly["Laden"]
+print("\n--- after closing the shop at 19:00 ---")
+print(f"Laden electricity at 19:00: {laden_elec_before[19]:.4f} kW "
+      f"-> {laden_elec_after[19]:.4f} kW (recomputed on access)")

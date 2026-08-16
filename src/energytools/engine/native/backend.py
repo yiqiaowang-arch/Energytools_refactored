@@ -186,7 +186,7 @@ class NativeBackend(EngineBase):
         # -- results assembly ------------------------------------------------
         per_room = {r.name: dataclasses.asdict(r) for r in result.rooms}
         per_system = {s.id: dataclasses.asdict(s) for s in result.ventilation}
-        per_carrier = self._per_carrier(result)
+        per_carrier = self._per_carrier(result, result.room_generation)
         totals = self._totals(result, input_)
 
         assumptions = self._assumptions(input_, ahu_assumptions)
@@ -515,12 +515,13 @@ class NativeBackend(EngineBase):
     # -- results helpers -----------------------------------------------------
 
     @staticmethod
-    def _per_carrier(result: Any) -> dict[str, float]:
+    def _per_carrier(result: Any, room_generation: tuple[Any, ...] = ()) -> dict[str, float]:
         """Total Endenergie per :class:`EnergyCarrier` from the Resultate rows.
 
         The Resultate matrix rows (``El``/``HEL``/…/``FW``) merge into the
         carrier codes (Pell + HSch + StH → ``holz``); the energy of the
-        carrier-total row is used.
+        carrier-total row is used.  Room-level generators add their end
+        energy on the catalogue carrier.
         """
         merged: dict[str, float] = {}
         for row in result.resultate.energy["total"]:
@@ -530,6 +531,9 @@ class NativeBackend(EngineBase):
             merged[carrier.value] = merged.get(carrier.value, 0.0) + result.resultate.energy[
                 "total"
             ][row]
+        for share in room_generation:
+            carrier = EnergyCarrier.parse(share.carrier)
+            merged[carrier.value] = merged.get(carrier.value, 0.0) + share.end_energy_mwh
         return {key: round(value, 6) for key, value in merged.items()}
 
     def _totals(self, result: Any, input_: BuildingInput) -> dict[str, float]:
@@ -539,6 +543,9 @@ class NativeBackend(EngineBase):
         generation_energy = {
             group.kind: group.total_end_energy_mwh for group in result.generation
         }
+        room_energy = {"heating": 0.0, "cooling": 0.0, "ww": 0.0}
+        for share in result.room_generation:
+            room_energy[share.kind] += share.end_energy_mwh
         return {
             "ngf_m2": rt.ngf_m2,
             "ebf_m2": rt.ebf_m2,
@@ -564,10 +571,13 @@ class NativeBackend(EngineBase):
             "luftkuehlung_mwh": vt.luftkuehlung_mwh,
             "lufterwaermung_kw": vt.lufterwaermung_kw,
             "lufterwaermung_mwh": vt.lufterwaermung_mwh,
-            "kuehlung_endenergie_mwh": generation_energy.get("cooling", 0.0),
-            "heizung_endenergie_mwh": generation_energy.get("heating", 0.0),
-            "warmwasser_endenergie_mwh": generation_energy.get("ww", 0.0),
-            "endenergie_total_mwh": result.resultate.energy["total"]["Total"],
+            "kuehlung_endenergie_mwh": generation_energy.get("cooling", 0.0)
+            + room_energy["cooling"],
+            "heizung_endenergie_mwh": generation_energy.get("heating", 0.0)
+            + room_energy["heating"],
+            "warmwasser_endenergie_mwh": generation_energy.get("ww", 0.0) + room_energy["ww"],
+            "endenergie_total_mwh": result.resultate.energy["total"]["Total"]
+            + sum(room_energy.values()),
         }
 
     @staticmethod

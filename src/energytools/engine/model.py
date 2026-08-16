@@ -215,6 +215,7 @@ class RoomRow:
     gekuehlt: bool = False
     beheizt: bool = True
     warmwasser: bool = False
+    generations: tuple[GenerationSystem, ...] = ()
 
     def __post_init__(self) -> None:
         if not self.name.strip():
@@ -242,6 +243,7 @@ class RoomRow:
             raise ValueError(
                 f"room {self.name!r}: negative lueftung_volume_flow {self.lueftung_volume_flow}"
             )
+        object.__setattr__(self, "generations", tuple(self.generations))
 
     def effective_area(self) -> float:
         """The area that counts: ``share × ngf`` when a share is set, else ``ngf`` (m²)."""
@@ -265,12 +267,16 @@ class RoomRow:
             "gekuehlt": self.gekuehlt,
             "beheizt": self.beheizt,
             "warmwasser": self.warmwasser,
+            "generations": [generation.as_dict() for generation in self.generations],
         }
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> RoomRow:
         """Reconstruct from :meth:`as_dict` output."""
-        return cls(**data)
+        generations = tuple(
+            GenerationSystem.from_dict(item) for item in data.get("generations", [])
+        )
+        return cls(**{key: value for key, value in data.items() if key != "generations"}, generations=generations)
 
 
 @dataclass(frozen=True)

@@ -690,6 +690,31 @@ class ResultateWeighted:
 
 
 @dataclass(frozen=True)
+class RoomGenerationResult:
+    """One room-level generator's share: the room demand it covers and its
+    final (end) energy after catalogue efficiency and losses.
+
+    Room-level generators (e.g. a bathroom electric heater, a room air
+    conditioner) take their share of the *room's* heating/cooling/ww demand
+    before the building-level generation groups see it; the remaining demand
+    flows into the building groups.  The workbook has no room-level
+    Erzeugung — this is an engine extension (the catalogue and the losses
+    semantics are identical to the building-level path).
+    """
+
+    room: str  #: room name
+    kind: str  #: heating | cooling | ww
+    code: str  #: catalogue code (KE../WE../WW..)
+    carrier: str  #: Energieträger label of the catalogue entry
+    eta: float  #: catalogue efficiency (COP for chillers/heat pumps)
+    coverage: float  #: 0..1 share of the room demand
+    covered_power_kw: float  #: demand share incl. storage/distribution losses
+    covered_energy_mwh: float
+    end_power_kw: float  #: final power after eta
+    end_energy_mwh: float
+
+
+@dataclass(frozen=True)
 class AggregationResult:
     """The complete aggregation: rooms, ventilation, generation, Resultate."""
 
@@ -700,6 +725,7 @@ class AggregationResult:
     generation: tuple[GenerationGroupResult, ...]
     resultate: ResultateMatrix
     resultate_weighted: ResultateWeighted
+    room_generation: tuple[RoomGenerationResult, ...] = ()
 
     def as_dict(self) -> dict:
         """JSON-ready representation (nested dicts, German field names)."""
@@ -709,6 +735,7 @@ class AggregationResult:
             "ventilation": [r.__dict__ for r in self.ventilation],
             "ventilation_totals": self.ventilation_totals.__dict__,
             "generation": [g.__dict__ for g in self.generation],
+            "room_generation": [g.__dict__ for g in self.room_generation],
             "resultate": {
                 "power": {u: dict(c) for u, c in self.resultate.power.items()},
                 "energy": {u: dict(c) for u, c in self.resultate.energy.items()},
@@ -1249,6 +1276,57 @@ def _weighted_rows(
 # ---------------------------------------------------------------------------
 
 
+def _room_generation_division(
+    rooms: tuple[RoomResult, ...],
+    building_rooms: tuple[Any, ...],
+    catalog: GenerationCatalog,
+) -> tuple[tuple[RoomGenerationResult, ...], dict[str, tuple[float, float]]]:
+    """Room-level generators: their covered demand and end energy per kind.
+
+    Returns the per-generator results and, per kind, the total covered
+    ``(power_kw, energy_mwh)`` that the building-level generation groups
+    must not see again (their demand is reduced by it).
+    """
+    shares: list[RoomGenerationResult] = []
+    covered: dict[str, list[float]] = {}
+    for building_room, room in zip(building_rooms, rooms):
+        for gen in getattr(building_room, "generations", ()):
+            if gen.kind not in ("heating", "cooling", "ww"):
+                continue
+            if gen.kind == "heating":
+                power, energy = room.heizung_kw, room.heizung_mwh
+            elif gen.kind == "cooling":
+                power, energy = room.kuehlung_kw, room.kuehlung_mwh
+            else:
+                power, energy = 0.0, room.warmwasser_mwh
+            spec = catalog.lookup(gen.kind, gen.catalog_code)
+            loss_factor = 1.0 + gen.losses
+            covered_power = power * gen.coverage * loss_factor
+            covered_energy = energy * gen.coverage * loss_factor
+            eta = spec.eta_standard
+            shares.append(
+                RoomGenerationResult(
+                    room=room.name,
+                    kind=gen.kind,
+                    code=spec.code,
+                    carrier=spec.energy_carrier,
+                    eta=eta,
+                    coverage=gen.coverage,
+                    covered_power_kw=covered_power,
+                    covered_energy_mwh=covered_energy,
+                    end_power_kw=covered_power / eta if eta else 0.0,
+                    end_energy_mwh=covered_energy / eta if eta else 0.0,
+                )
+            )
+            covered.setdefault(gen.kind, [0.0, 0.0])
+            covered[gen.kind][0] += covered_power
+            covered[gen.kind][1] += covered_energy
+    return (
+        tuple(shares),
+        {kind: (values[0], values[1]) for kind, values in covered.items()},
+    )
+
+
 def aggregate(inp: AggregationInput) -> AggregationResult:
     """Run the full aggregation chain (rooms → ventilation → generation → Resultate).
 
@@ -1261,11 +1339,15 @@ def aggregate(inp: AggregationInput) -> AggregationResult:
         inp.building, inp.kpi_lookup, rooms, inp.ahu_results
     )
 
+    room_generation: tuple[RoomGenerationResult, ...] = ()
     generation: list[GenerationGroupResult] = []
     if inp.generation_groups:
         catalog = inp.generation_catalog
         if catalog is None:
             raise ValueError("generation_catalog is required when generation groups are given")
+        room_generation, room_covered = _room_generation_division(
+            rooms, inp.building.rooms, catalog
+        )
         for group in inp.generation_groups:
             if group.kind == "cooling":
                 demand_power = room_totals.kuehlung_kw + vent_totals.luftkuehlung_kw
@@ -1281,12 +1363,13 @@ def aggregate(inp: AggregationInput) -> AggregationResult:
                 ww_l_d = room_totals.warmwasser_l_d
             else:  # pragma: no cover - validated by the caller
                 raise ValueError(f"unknown generation group kind {group.kind!r}")
+            covered_power, covered_energy = room_covered.get(group.kind, (0.0, 0.0))
             generation.append(
                 _generation_group(
                     group,
                     catalog,
-                    demand_power,
-                    demand_energy,
+                    demand_power - covered_power,
+                    demand_energy - covered_energy,
                     ww_demand_l_d=ww_l_d,
                     aufheizzeit_h=inp.aufheizzeit_h,
                 )
@@ -1307,6 +1390,7 @@ def aggregate(inp: AggregationInput) -> AggregationResult:
         ventilation=ventilation,
         ventilation_totals=vent_totals,
         generation=tuple(generation),
+        room_generation=room_generation,
         resultate=matrix,
         resultate_weighted=weighted,
     )
