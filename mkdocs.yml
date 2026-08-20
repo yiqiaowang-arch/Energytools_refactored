@@ -59,6 +59,8 @@ repo_url: https://github.com/yiqiaowang-arch/Energytools_refactored
 # All paths are relative to docs_dir (default: docs/).
 nav:
   - Home: README.md
+  - Quickstart: quickstart.md
+  - Excel Equivalence: excel-equivalence.md
   - Workbook Assessment: 01-workbook-assessment.md
   - Architecture:
       - Introduction: architecture+api-reference/README.md
