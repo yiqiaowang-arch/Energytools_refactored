@@ -44,6 +44,7 @@ from energytools.raumdaten.model import (
     RoomUseInputs,
     RoomUseProfile,
     RoomUseSchedule,
+    Sia2028Monthly,
     Sia3801Coefficients,
     Sia3801Result,
     ValueKind,
@@ -588,6 +589,7 @@ class DatasetExtractor:
         )
         schedules = self._extract_schedules(wb_values["Eingabedaten"], by_nutzid)
         room_use_inputs = self._extract_room_use_inputs(wb_values["Eingabedaten"], by_nutzid)
+        sia2028_monthly = self._extract_sia2028(wb_values["Profile"])
         climate = self._extract_climate(
             wb_values["Winter_Auslegung"], wb_values["Monatswerte"], wb_values["Aug_Auslegung"]
         )
@@ -647,6 +649,9 @@ class DatasetExtractor:
             ],
             "room_use_schedules": [schedule.as_dict() for schedule in schedules],
             "room_use_inputs": [inputs.as_dict() for inputs in room_use_inputs],
+            "sia2028_monthly": (
+                None if sia2028_monthly is None else sia2028_monthly.as_dict()
+            ),
             "hourly_profiles": [profile.as_dict() for profile in hourly_profiles],
             "monthly_profiles": [
                 profile.as_dict()
@@ -1068,6 +1073,43 @@ class DatasetExtractor:
                 continue
             inputs.append(RoomUseInputs(room_use_id=nutzid, **values))
         return inputs
+
+    def _extract_sia2028(self, ws_profile: Any) -> Sia2028Monthly | None:
+        """``Profile!AS278:BD282``: the SIA 2028 monthly outdoor reference.
+
+        Rows 279 (temperature °C) and 282 (relative humidity %) of the
+        embedded 12-month table; the saturation-pressure rows 280/281 are
+        derived (Magnus) and not stored.
+        """
+        matrix = _read_matrix(ws_profile, 278, 282, 45, 56)  # AS..BD
+        if len(matrix) < 3:
+            return None
+        temperature = [
+            float(value)
+            for value in matrix[1][:12]
+            if isinstance(value, (int, float))
+        ]
+        humidity = [
+            float(value)
+            for value in matrix[4][:12]
+            if isinstance(value, (int, float))
+        ]
+        if len(temperature) != 12 or len(humidity) != 12:
+            return None
+        return Sia2028Monthly(
+            temperature=tuple(temperature),
+            relative_humidity=tuple(humidity),
+            provenance=Provenance(
+                sources=(
+                    SourceRef(
+                        workbook=os.path.basename(self.workbook_path),
+                        sheet="Profile",
+                        range="AS278:BD282",
+                    ),
+                ),
+                note="SIA 2028 Monatswerte (Aussentemperatur, relative Feuchte)",
+            ),
+        )
 
     @staticmethod
     def _match_parameter(

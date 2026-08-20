@@ -459,6 +459,26 @@ PACKAGE_SCHEMA: dict = {
         "profiles": {"type": "array", "items": _profile, "minItems": 1},
         "room_use_schedules": {"type": "array", "items": _room_use_schedule},
         "room_use_inputs": {"type": "array", "items": _room_use_inputs},
+        "sia2028_monthly": {
+            "type": ["object", "null"],
+            "properties": {
+                "temperature": {
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 12,
+                    "maxItems": 12,
+                },
+                "relative_humidity": {
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 12,
+                    "maxItems": 12,
+                },
+                "provenance": _provenance,
+            },
+            "required": ["temperature", "relative_humidity"],
+            "additionalProperties": False,
+        },
         "hourly_profiles": {"type": "array", "items": _hourly_profile},
         "monthly_profiles": {"type": "array", "items": _monthly_profile},
         "weekly_profiles": {"type": "array", "items": _weekly_profile},

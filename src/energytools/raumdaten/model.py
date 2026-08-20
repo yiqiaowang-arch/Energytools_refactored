@@ -831,6 +831,41 @@ def _design_day_from_dict(data: dict) -> DesignDaySeries:
 
 
 @dataclass(frozen=True)
+class Sia2028Monthly:
+    """The SIA 2028 monthly outdoor reference (``Profile!AS278:BD282``).
+
+    Twelve monthly values of the outdoor temperature (°C) and relative
+    humidity (%) used by the Stoffbilanz (moisture balance) of the
+    workbook — the same table the sheet embeds next to the balance.
+    """
+
+    temperature: tuple[float, ...]  # 12 months, °C
+    relative_humidity: tuple[float, ...]  # 12 months, %
+    provenance: Provenance | None = None
+
+    def __post_init__(self) -> None:
+        if len(self.temperature) != 12 or len(self.relative_humidity) != 12:
+            raise ValueError("SIA 2028 monthly table must have 12 values per series")
+
+    def as_dict(self) -> dict:
+        """JSON-ready dict."""
+        return {
+            "temperature": list(self.temperature),
+            "relative_humidity": list(self.relative_humidity),
+            "provenance": _provenance_dict(self.provenance),
+        }
+
+
+def _sia2028_from_dict(data: dict) -> Sia2028Monthly:
+    """Rebuild a :class:`Sia2028Monthly` from its package dict."""
+    return Sia2028Monthly(
+        temperature=tuple(float(value) for value in data["temperature"]),
+        relative_humidity=tuple(float(value) for value in data["relative_humidity"]),
+        provenance=_provenance_from_dict(data.get("provenance")),
+    )
+
+
+@dataclass(frozen=True)
 class ClimateStation:
     """One of the 40 climate stations (assessment 1.2).
 
@@ -1394,6 +1429,7 @@ class Dataset:
     profiles: Mapping[int, RoomUseProfile]
     schedules: Mapping[int, RoomUseSchedule]
     inputs: Mapping[int, RoomUseInputs]
+    sia2028_monthly: Sia2028Monthly | None = None
     hourly_profiles: tuple[HourlyProfile, ...]
     monthly_profiles: tuple[MonthlyProfile, ...]
     weekly_profiles: tuple[WeeklyProfile, ...]
@@ -1427,6 +1463,7 @@ class Dataset:
         profiles: Mapping[int, RoomUseProfile],
         schedules: Mapping[int, RoomUseSchedule] | None = None,
         inputs: Mapping[int, RoomUseInputs] | None = None,
+        sia2028_monthly: Sia2028Monthly | None = None,
         hourly_profiles: tuple[HourlyProfile, ...] = (),
         monthly_profiles: tuple[MonthlyProfile, ...] = (),
         weekly_profiles: tuple[WeeklyProfile, ...] = (),
@@ -1447,6 +1484,7 @@ class Dataset:
         object.__setattr__(self, "profiles", profiles)
         object.__setattr__(self, "schedules", dict(schedules or {}))
         object.__setattr__(self, "inputs", dict(inputs or {}))
+        object.__setattr__(self, "sia2028_monthly", sia2028_monthly)
         object.__setattr__(self, "hourly_profiles", tuple(hourly_profiles))
         object.__setattr__(self, "monthly_profiles", tuple(monthly_profiles))
         object.__setattr__(self, "weekly_profiles", tuple(weekly_profiles))
@@ -1833,6 +1871,9 @@ class Dataset:
                 self.schedules[nutzid].as_dict() for nutzid in sorted(self.schedules)
             ],
             "room_use_inputs": [self.inputs[nutzid].as_dict() for nutzid in sorted(self.inputs)],
+            "sia2028_monthly": (
+                None if self.sia2028_monthly is None else self.sia2028_monthly.as_dict()
+            ),
             "hourly_profiles": [profile.as_dict() for profile in self.hourly_profiles],
             "monthly_profiles": [profile.as_dict() for profile in self.monthly_profiles],
             "weekly_profiles": [profile.as_dict() for profile in self.weekly_profiles],
@@ -1969,6 +2010,11 @@ class Dataset:
                 int(item["room_use_id"]): _inputs_from_dict(item)
                 for item in data.get("room_use_inputs", [])
             },
+            sia2028_monthly=(
+                None
+                if data.get("sia2028_monthly") is None
+                else _sia2028_from_dict(data["sia2028_monthly"])
+            ),
             hourly_profiles=tuple(
                 HourlyProfile(
                     id=item["id"],

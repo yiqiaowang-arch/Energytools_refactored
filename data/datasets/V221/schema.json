@@ -618,6 +618,94 @@
         "additionalProperties": false
       }
     },
+    "sia2028_monthly": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "temperature": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 12,
+          "maxItems": 12
+        },
+        "relative_humidity": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 12,
+          "maxItems": 12
+        },
+        "provenance": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "workbook": {
+                    "type": "string"
+                  },
+                  "sheet": {
+                    "type": "string"
+                  },
+                  "range": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "formula": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "cached_value": {
+                    "type": [
+                      "number",
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "extraction_hash": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "workbook",
+                  "sheet"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "temperature",
+        "relative_humidity"
+      ],
+      "additionalProperties": false
+    },
     "hourly_profiles": {
       "type": "array",
       "items": {
