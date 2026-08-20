@@ -335,6 +335,17 @@ class Building:
         lighting = next(
             p.values for p in self._dataset.hourly_profiles if p.id == "beleuchtung_sommer"
         )
+        # the ventilation stage curve follows the 1.1.5.5 control mode
+        # (IDA-C3 -> einstufig, IDA-C4 -> zweistufig, else stufenlos)
+        mode = self._balance_inputs(room).get("ventilation_mode") or "einstufig"
+        stage_curve = {
+            "einstufig": "lueftung_einstufig",
+            "zweistufig": "lueftung_zweistufig",
+            "stufenlos": "lueftung_stufenlos",
+        }[mode]
+        ventilation_curve = next(
+            p.values for p in self._dataset.hourly_profiles if p.id == stage_curve
+        )
         return summer_balance_24h(
             person_wm2=inputs["person_wm2"],
             device_wm2=inputs["device_wm2"],
@@ -352,7 +363,7 @@ class Building:
             occupancy=tuple(room.schedules.occupancy),
             device_curve=tuple(room.schedules.device),
             lighting_curve=tuple(lighting),
-            ventilation_curve=(1.0,) * 24,
+            ventilation_curve=tuple(ventilation_curve),
             radiation=tuple(design.radiation),
             outdoor_temp=tuple(design.temperature),
         )
@@ -404,36 +415,52 @@ class Building:
         The mapping mirrors the workbook's Datenblatt cell chain: gains per
         m² from the type parameters, the Glasflächenzahl from Glasanteil /
         Abminderungsfaktor × hR/dR and the transmission coefficient from
-        the U-values and the window fraction (Datenblatt M95/M173).
+        the U-values and the window fraction (Datenblatt M95/M173).  All
+        parameters are read in the building's value kind
+        (standard/zielwert/bestand), like the workbook's M/N/O columns.
         """
         type_ = room.type
+        kind = self.standard
         p = type_.parameter
+
+        def pv(pid: str) -> float | None:
+            """Value of the kind, falling back to Standard like the workbook's
+            N = M cell references (e.g. N133 = M133)."""
+            return p(pid, kind) if p(pid, kind) is not None else p(pid, "standard")
+
         inputs = self._dataset.inputs[type_.nutzid]
-        person_area = p("1.1.2.9") or 0.0
+        person_area = pv("1.1.2.9") or 0.0
         ngf = room.area
         return {
             "person_wm2": (
                 (inputs.sensible_waerme_kuehlfall or 0.0) / person_area
                 if person_area else 0.0
             ),
-            "device_wm2": p("1.1.3.6") or 0.0,
+            "device_wm2": pv("1.1.3.6") or 0.0,
             "process_wm2": 0.0,
-            "lighting_wm2": p("1.1.4.10") or 0.0,
-            "g_value": p("g") or 0.0,
-            "g_total": p("gtot") or 0.0,
-            "glasflaechenzahl": (p("1.1.1.3") or 0.0) / 0.85
+            "lighting_wm2": pv("1.1.4.10") or 0.0,
+            "g_value": pv("g") or 0.0,
+            "g_total": pv("gtot") or 0.0,
+            "glasflaechenzahl": (pv("1.1.1.3") or 0.0) / 100.0 / 0.85
             * (p("hR") or 0.0) / (p("dR") or 1.0),
-            "room_temp": p("1.1.1.12.C") or 26.0,
-            "air_volume": p("1.1.5.2") or 0.0,
-            "infiltration": p("1.1.5.4") or 0.0,
-            "supply_coeff": p("1.1.5.6") or 0.0,
-            "transmission_coeff": self._transmission_coeff(type_, p, ngf),
+            "room_temp": pv("1.1.1.12.C") or 26.0,
+            "air_volume": pv("1.1.5.2") or 0.0,
+            "infiltration": pv("1.1.5.4") or 0.0,
+            # The Bestand block reads the WRG temperature change from the
+            # Bestand matrix (M196 = O139); an absent Bestand value is 0,
+            # not a Standard fallback (the workbook has no N = M style
+            # reference here).
+            "supply_coeff": (
+                pv("1.1.5.6") if self.standard != "bestand" else (p("1.1.5.6", "bestand") or 0.0)
+            ),
+            "ventilation_mode": self._ventilation_mode(p, kind),
+            "transmission_coeff": self._transmission_coeff(type_, p, ngf, kind),
             "person_area": person_area,
             "ngf": ngf,
-            "room_height": p("hR") or 2.5,
+            "room_height": pv("hR") or 2.5,
             "co2_rate": 1.2,
             "person_moisture": 66.0,
-            "other_moisture": p("1.1.2.15") or 0.0,
+            "other_moisture": pv("1.1.2.15") or 0.0,
             "air_pressure": self._air_pressure(),
             "start_co2": 400.0,
             "start_moisture": 5.619444929725641,
@@ -445,12 +472,29 @@ class Building:
         return float(pressure.value) if pressure is not None else 950.0
 
     @staticmethod
-    def _transmission_coeff(type_, p, ngf: float) -> float:
-        """(A − gf·NGF/0.75)·Uop + gf·NGF/0.75·Uw, ×1.1 cold bridges, /NGF."""
-        hull = p("1.1.1.2") or 0.0
-        u_op = p("Uop") or 0.0
-        u_w = p("Uw") or 0.0
-        glas = (p("1.1.1.3") or 0.0) / 100.0 / 0.85 * (p("hR") or 0.0) / (p("dR") or 1.0)
+    def _ventilation_mode(p, kind: str) -> str:
+        """The ventilation control mode of the value kind (``1.1.5.5``):
+        IDA-C3 -> einstufig, IDA-C4 -> zweistufig, else stufenlos."""
+        mode = p("1.1.5.5", kind)
+        if mode == "IDA-C3":
+            return "einstufig"
+        if mode == "IDA-C4":
+            return "zweistufig"
+        return "stufenlos"
+
+    @staticmethod
+    def _transmission_coeff(type_, p, ngf: float, kind: str = "standard") -> float:
+        """(A − gf·NGF/0.75)·Uop + gf·NGF/0.75·Uw, ×1.1 cold bridges, /NGF.
+
+        The U-values are read in the value kind (the workbook's N173 uses
+        the Zielwert U-values, e.g. Uop 0.1 / Uw 0.8 for 1.01); values the
+        kind does not carry fall back to Standard like the N = M columns.
+        """
+        pv = lambda pid: p(pid, kind) if p(pid, kind) is not None else p(pid, "standard")
+        hull = pv("1.1.1.2") or 0.0
+        u_op = pv("Uop") or 0.0
+        u_w = pv("Uw") or 0.0
+        glas = (pv("1.1.1.3") or 0.0) / 100.0 / 0.85 * (pv("hR") or 0.0) / (pv("dR") or 1.0)
         window_area = glas * ngf / 0.75
         return ((hull - window_area) * u_op + window_area * u_w) * 1.1 / ngf
 

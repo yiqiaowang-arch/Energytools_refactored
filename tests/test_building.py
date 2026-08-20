@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pytest
 
 from energytools.building import (
@@ -193,3 +195,60 @@ class TestDesignDayBalances:
         assert rows[0].co2_concentration == pytest.approx(626.9731917520139, rel=1e-9)
         assert rows[0].room_rh == pytest.approx(35.45786495353908, rel=1e-9)
         assert rows[0].persons == pytest.approx(20.0 / 35.0)
+
+
+class TestDesignDayVariants:
+    """The Wärmebilanz value-kind variants (Standard/Zielwert/Bestand) must
+    reproduce the workbook's three cached blocks exactly."""
+
+    _COLUMN_TO_ATTR: ClassVar[dict[str, str]] = {
+        "C": "persons",
+        "D": "devices",
+        "E": "process",
+        "F": "lighting",
+        "J": "solar",
+        "K": "air_volume",
+        "O": "ventilation",
+        "P": "transmission",
+        "Q": "balance_with_process",
+        "R": "balance_without_process",
+        "U": "cooling_power",
+        "V": "outdoor_temp",
+        "W": "room_temp",
+        "X": "delta_temp",
+    }
+
+    @pytest.mark.parametrize(
+        "standard, golden_name",
+        [
+            ("standard", "summer-balance-101.json"),
+            ("zielwert", "summer-balance-101-zielwert.json"),
+            ("bestand", "summer-balance-101-bestand.json"),
+        ],
+    )
+    def test_variant_matches_workbook_cache(self, dataset, standard: str, golden_name: str) -> None:
+        import json
+        from pathlib import Path
+
+        golden = Path(__file__).resolve().parents[1] / "data" / "golden" / golden_name
+        if not golden.exists():
+            pytest.skip("golden file not present")
+        data = json.loads(golden.read_text(encoding="utf-8"))
+        building = Building(
+            name="Balance",
+            climate=Climate.from_dataset(dataset, 40),
+            standard=standard,
+        )
+        building.add_room(Room("Schlaf", type=RoomType.from_dataset(dataset, "1.01"), area=20))
+        rows = building.design_day(building.room("Schlaf"))
+        assert len(rows) == 24
+        for hour, row in enumerate(rows):
+            values = row.as_dict()
+            cached = data["rows"][hour]
+            for column, attr in self._COLUMN_TO_ATTR.items():
+                engine_value = values[attr]
+                cached_value = cached[column]
+                assert engine_value == pytest.approx(cached_value, rel=1e-9, abs=1e-9), (
+                    f"{standard} hour {hour} {column} ({attr}): engine {engine_value!r} "
+                    f"vs workbook {cached_value!r}"
+                )

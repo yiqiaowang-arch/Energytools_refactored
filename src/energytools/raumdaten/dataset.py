@@ -926,6 +926,18 @@ class DatasetExtractor:
                 kinds = (ValueKind.STANDARD, ValueKind.ZIELWERT, ValueKind.BESTAND)
                 col += 3
                 sub_kind = None
+            elif (
+                kind_text == "Standard, Zielwert"
+                and col + 1 <= max_col
+                and col + 1 not in name_by_col
+            ):
+                # Two-column group: the first column carries the shared
+                # Standard/Zielwert value, the second the Bestand value
+                # (e.g. 1.1.5.4 Aussenluft-Volumenstrom durch Infiltration).
+                group = [col, col, col + 1]
+                kinds = (ValueKind.STANDARD, ValueKind.ZIELWERT, ValueKind.BESTAND)
+                col += 2
+                sub_kind = None
             else:
                 group = [col]
                 kinds = (ValueKind.STANDARD,)
