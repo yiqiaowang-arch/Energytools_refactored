@@ -310,6 +310,150 @@ class Building:
 
         return os.environ.get("ENERGYTOOLS_DATASET_DIR", default_dataset_dir())
 
+    # -- design-day balances (Wärmebilanz / Stoffbilanz) --------------------
+
+    def design_day(self, room: Room, month: int = 8) -> Any:
+        """The 24 h summer design-day heat balance of a room.
+
+        Reproduces the workbook's ``Wärmebilanz - Sommertag`` block
+        (:func:`energytools.engine.native.summer_balance.summer_balance_24h`)
+        from the dataset: the room's type parameters (persons/devices/
+        process/lighting gains, g/gtot, Glasflächenzahl, Raumtemperatur,
+        hygienic fresh air, infiltration, WRG temperature change), the
+        room's editable schedules and the station's August design day.
+
+        Args:
+            room: The room.
+            month: Design-day month (6 or 8; 8 = the workbook's cooling
+                design day).
+        """
+        from energytools.engine.native.summer_balance import summer_balance_24h
+
+        inputs = self._balance_inputs(room)
+        station = self.climate._dataset.climate().station(self.climate.station_id)
+        design = next(d for d in station.design_days if d.month == month)
+        lighting = next(
+            p.values for p in self._dataset.hourly_profiles if p.id == "beleuchtung_sommer"
+        )
+        return summer_balance_24h(
+            person_wm2=inputs["person_wm2"],
+            device_wm2=inputs["device_wm2"],
+            process_wm2=inputs["process_wm2"],
+            lighting_wm2=inputs["lighting_wm2"],
+            g_value=inputs["g_value"],
+            g_total=inputs["g_total"],
+            glasflaechenzahl=inputs["glasflaechenzahl"],
+            room_temp=inputs["room_temp"],
+            air_volume=inputs["air_volume"],
+            infiltration=inputs["infiltration"],
+            supply_temp=None,
+            supply_coeff=inputs["supply_coeff"],
+            transmission_coeff=inputs["transmission_coeff"],
+            occupancy=tuple(room.schedules.occupancy),
+            device_curve=tuple(room.schedules.device),
+            lighting_curve=tuple(lighting),
+            ventilation_curve=(1.0,) * 24,
+            radiation=tuple(design.radiation),
+            outdoor_temp=tuple(design.temperature),
+        )
+
+    def air_quality(self, room: Room, month: int = 2) -> Any:
+        """The 24 h CO₂/moisture balance of a room (Stoffbilanz-Arbeitstag).
+
+        Reproduces the workbook's ``Stoffbilanz`` block
+        (:func:`energytools.engine.native.stoffbilanz.stoffbilanz_24h`) from
+        the dataset: the room's type parameters (person area, NGF, room
+        height, CO₂ rate, moisture sources), the SIA 2028 monthly reference
+        and the ventilation flow of the design-day balance.
+
+        Args:
+            room: The room.
+            month: SIA 2028 month index 0-11 (2 = March, the workbook's
+                current month cell).
+        """
+        from energytools.engine.native.stoffbilanz import stoffbilanz_24h
+
+        inputs = self._balance_inputs(room)
+        sia = self._dataset.sia2028_monthly
+        if sia is None:
+            raise ValueError("dataset has no SIA 2028 monthly reference")
+        flow = [
+            row.air_volume + row.infiltration for row in self.design_day(room)
+        ]
+        return stoffbilanz_24h(
+            person_area=inputs["person_area"],
+            ngf=inputs["ngf"],
+            room_height=inputs["room_height"],
+            co2_rate=inputs["co2_rate"],
+            person_moisture=inputs["person_moisture"],
+            other_moisture=inputs["other_moisture"],
+            air_pressure=inputs["air_pressure"],
+            monthly_temperature=tuple(sia.temperature),
+            monthly_humidity=tuple(sia.relative_humidity),
+            monthly_room_temp=tuple(sia.room_temperature),
+            month_index=month,
+            occupancy=tuple(room.schedules.occupancy),
+            ventilation_flow=tuple(flow),
+            start_co2=inputs["start_co2"],
+            start_moisture=inputs["start_moisture"],
+        )
+
+    def _balance_inputs(self, room: Room) -> dict:
+        """The dataset parameter values behind the design-day balances.
+
+        The mapping mirrors the workbook's Datenblatt cell chain: gains per
+        m² from the type parameters, the Glasflächenzahl from Glasanteil /
+        Abminderungsfaktor × hR/dR and the transmission coefficient from
+        the U-values and the window fraction (Datenblatt M95/M173).
+        """
+        type_ = room.type
+        p = type_.parameter
+        inputs = self._dataset.inputs[type_.nutzid]
+        person_area = p("1.1.2.9") or 0.0
+        ngf = room.area
+        return {
+            "person_wm2": (
+                (inputs.sensible_waerme_kuehlfall or 0.0) / person_area
+                if person_area else 0.0
+            ),
+            "device_wm2": p("1.1.3.6") or 0.0,
+            "process_wm2": 0.0,
+            "lighting_wm2": p("1.1.4.10") or 0.0,
+            "g_value": p("g") or 0.0,
+            "g_total": p("gtot") or 0.0,
+            "glasflaechenzahl": (p("1.1.1.3") or 0.0) / 0.85
+            * (p("hR") or 0.0) / (p("dR") or 1.0),
+            "room_temp": p("1.1.1.12.C") or 26.0,
+            "air_volume": p("1.1.5.2") or 0.0,
+            "infiltration": p("1.1.5.4") or 0.0,
+            "supply_coeff": p("1.1.5.6") or 0.0,
+            "transmission_coeff": self._transmission_coeff(type_, p, ngf),
+            "person_area": person_area,
+            "ngf": ngf,
+            "room_height": p("hR") or 2.5,
+            "co2_rate": 1.2,
+            "person_moisture": 66.0,
+            "other_moisture": p("1.1.2.15") or 0.0,
+            "air_pressure": self._air_pressure(),
+            "start_co2": 400.0,
+            "start_moisture": 5.619444929725641,
+        }
+
+    def _air_pressure(self) -> float:
+        """The station's winter-design air pressure (hPa)."""
+        pressure = self.climate.winter_design().get("pressure")
+        return float(pressure.value) if pressure is not None else 950.0
+
+    @staticmethod
+    def _transmission_coeff(type_, p, ngf: float) -> float:
+        """(A − gf·NGF/0.75)·Uop + gf·NGF/0.75·Uw, ×1.1 cold bridges, /NGF."""
+        hull = p("1.1.1.2") or 0.0
+        u_op = p("Uop") or 0.0
+        u_w = p("Uw") or 0.0
+        glas = (p("1.1.1.3") or 0.0) / 100.0 / 0.85 * (p("hR") or 0.0) / (p("dR") or 1.0)
+        window_area = glas * ngf / 0.75
+        return ((hull - window_area) * u_op + window_area * u_w) * 1.1 / ngf
+
 
 def _catalog_kind(code: str) -> str:
     for prefix, kind in _CATALOG_KIND.items():
@@ -371,8 +515,7 @@ def _combined_hourly(
     series = [0.0] * 8760
     for annual, schedule in (
         (geraete, occupancy),
-        (beleuchtung, lighting),
-        (lueftung, occupancy),
+        (beleuchtung, lighting),        (lueftung, occupancy),
     ):
         hourly = _hourly_series(annual, schedule)
         for index in range(8760):

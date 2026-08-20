@@ -14,7 +14,6 @@ import pytest
 from energytools.common.errors import UnitError
 from energytools.common.units import Quantity, Unit
 
-
 # ---------------------------------------------------------------------------
 # Unit construction and registry
 # ---------------------------------------------------------------------------

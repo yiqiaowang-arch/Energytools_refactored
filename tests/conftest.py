@@ -6,10 +6,9 @@ import sys
 from pathlib import Path
 
 import pytest
+from helpers import make_building_input
 
 from energytools.engine.model import BuildingInput
-
-from helpers import make_building_input
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC = REPO_ROOT / "src"

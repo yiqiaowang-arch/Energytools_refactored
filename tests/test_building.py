@@ -161,3 +161,35 @@ class TestBuilding:
         assert schedules.occupancy[10] == original * 2.0
         # the other room keeps the type default (1.01 day profile at 10:00)
         assert building.room("Schlaf").schedules.occupancy[10] == 0.0  # type: ignore[attr-defined]
+
+
+class TestDesignDayBalances:
+    def _fresh_building(self, dataset) -> Building:
+        building = Building(
+            name="Balance",
+            climate=Climate.from_dataset(dataset, 40),
+            standard="standard",
+        )
+        building.add_room(Room("Schlaf", type=RoomType.from_dataset(dataset, "1.01"), area=20))
+        return building
+
+    def test_design_day(self, dataset) -> None:
+        building = self._fresh_building(dataset)
+        rows = building.design_day(building.room("Schlaf"))
+        assert len(rows) == 24
+        # hour 0 of the August design day: night, occupied (2.4 W/m² persons)
+        assert rows[0].persons == pytest.approx(2.4)
+        assert rows[0].solar == 0.0
+        # peak cooling in the afternoon
+        peak = max(rows, key=lambda r: -r.cooling_power)
+        assert peak.cooling_power < 0.0
+        assert peak.hour in range(11, 18)
+
+    def test_air_quality(self, dataset) -> None:
+        building = self._fresh_building(dataset)
+        rows = building.air_quality(building.room("Schlaf"), month=2)
+        assert len(rows) == 24
+        # the golden values of room use 1.01 at 20 m² (verified vs the cache)
+        assert rows[0].co2_concentration == pytest.approx(626.9731917520139, rel=1e-9)
+        assert rows[0].room_rh == pytest.approx(35.45786495353908, rel=1e-9)
+        assert rows[0].persons == pytest.approx(20.0 / 35.0)

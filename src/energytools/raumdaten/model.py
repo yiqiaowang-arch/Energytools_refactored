@@ -832,26 +832,31 @@ def _design_day_from_dict(data: dict) -> DesignDaySeries:
 
 @dataclass(frozen=True)
 class Sia2028Monthly:
-    """The SIA 2028 monthly outdoor reference (``Profile!AS278:BD282``).
+    """The SIA 2028 monthly outdoor reference (``Profile!AS278:BD284``).
 
-    Twelve monthly values of the outdoor temperature (°C) and relative
-    humidity (%) used by the Stoffbilanz (moisture balance) of the
-    workbook — the same table the sheet embeds next to the balance.
+    Twelve monthly values of the outdoor temperature (°C), relative
+    humidity (%) and the room-temperature reference (°C) used by the
+    Stoffbilanz (moisture balance) of the workbook — the same table the
+    sheet embeds next to the balance.
     """
 
     temperature: tuple[float, ...]  # 12 months, °C
     relative_humidity: tuple[float, ...]  # 12 months, %
+    room_temperature: tuple[float, ...] = ()  # 12 months, °C
     provenance: Provenance | None = None
 
     def __post_init__(self) -> None:
         if len(self.temperature) != 12 or len(self.relative_humidity) != 12:
             raise ValueError("SIA 2028 monthly table must have 12 values per series")
+        if self.room_temperature and len(self.room_temperature) != 12:
+            raise ValueError("SIA 2028 room-temperature series must have 12 values")
 
     def as_dict(self) -> dict:
         """JSON-ready dict."""
         return {
             "temperature": list(self.temperature),
             "relative_humidity": list(self.relative_humidity),
+            "room_temperature": list(self.room_temperature),
             "provenance": _provenance_dict(self.provenance),
         }
 
@@ -861,6 +866,9 @@ def _sia2028_from_dict(data: dict) -> Sia2028Monthly:
     return Sia2028Monthly(
         temperature=tuple(float(value) for value in data["temperature"]),
         relative_humidity=tuple(float(value) for value in data["relative_humidity"]),
+        room_temperature=tuple(
+            float(value) for value in data.get("room_temperature", [])
+        ),
         provenance=_provenance_from_dict(data.get("provenance")),
     )
 

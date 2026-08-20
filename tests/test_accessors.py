@@ -4,13 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from energytools.raumdaten import load_dataset
 from energytools.raumdaten.accessors import (
     PARAMETER_ALIASES,
     ROOM_USE_SLUGS,
     ParameterAccessor,
-    ParameterCatalog,
-    RoomUseCatalog,
     parameter_slug,
     slugify_label,
 )
@@ -46,7 +43,7 @@ def test_room_use_catalog_callable_compat(dataset):
 
 def test_room_use_catalog_typo_message(dataset):
     with pytest.raises(AttributeError, match="group_office"):
-        dataset.room_uses.group_offce
+        dataset.room_uses.group_offce  # noqa: B018 - deliberate typo triggering AttributeError
 
 
 def test_parameter_slug_access(dataset):

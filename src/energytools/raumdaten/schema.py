@@ -474,6 +474,12 @@ PACKAGE_SCHEMA: dict = {
                     "minItems": 12,
                     "maxItems": 12,
                 },
+                "room_temperature": {
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "minItems": 12,
+                    "maxItems": 12,
+                },
                 "provenance": _provenance,
             },
             "required": ["temperature", "relative_humidity"],

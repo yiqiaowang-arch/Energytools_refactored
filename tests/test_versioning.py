@@ -97,7 +97,7 @@ def test_dataset_release_equality_and_ordering_on_id() -> None:
 
 def test_dataset_release_comparison_with_foreign_type_raises() -> None:
     with pytest.raises(TypeError):
-        _release("V221") < "V222"  # type: ignore[operator]
+        _release("V221") < "V222"  # type: ignore[operator]  # noqa: B015 - deliberate foreign comparison
 
 
 def test_changelog_entry_fields_and_defaults() -> None:

@@ -9,17 +9,17 @@ from energytools.raumdaten.model import Dataset, RoomUseSchedule, _schedule_from
 
 
 def _schedule(**overrides) -> RoomUseSchedule:
-    values = dict(
-        room_use_id=2,
-        person_fraction=(1.0,) * 24,
-        device_fraction=(0.1,) * 24,
-        weekly_fraction=(1.0,) * 7,
-        monthly_fraction=(0.8,) * 12,
-        monthly_previous_fraction=(0.6,) * 12,
-        rest_days_per_week=0.0,
-        working_days_per_year=365.0,
-        annual_simultaneity=0.6,
-    )
+    values = {
+        "room_use_id": 2,
+        "person_fraction": (1.0,) * 24,
+        "device_fraction": (0.1,) * 24,
+        "weekly_fraction": (1.0,) * 7,
+        "monthly_fraction": (0.8,) * 12,
+        "monthly_previous_fraction": (0.6,) * 12,
+        "rest_days_per_week": 0.0,
+        "working_days_per_year": 365.0,
+        "annual_simultaneity": 0.6,
+    }
     values.update(overrides)
     return RoomUseSchedule(**values)
 

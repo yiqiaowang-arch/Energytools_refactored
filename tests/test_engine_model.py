@@ -7,6 +7,7 @@ import json
 from datetime import date
 
 import pytest
+from helpers import make_building_input
 
 from energytools.engine.errors import UnknownValueKindError
 from energytools.engine.model import (
@@ -21,9 +22,6 @@ from energytools.engine.model import (
     VentilationSystem,
     VersionInfo,
 )
-
-from helpers import make_building_input
-
 
 # ---------------------------------------------------------------------------
 # Enums: German workbook labels (德语源术语) + codes

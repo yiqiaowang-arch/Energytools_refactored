@@ -8,6 +8,7 @@ import uuid
 from pathlib import Path
 
 import pytest
+from helpers import make_building_input
 
 import energytools
 from energytools.engine import Engine, StubBackend
@@ -20,8 +21,6 @@ from energytools.engine.errors import (
 from energytools.engine.model import BuildingInput, ValidationReport, VersionInfo
 from energytools.engine.result import Results
 from energytools.engine.store import CalculationStore
-
-from helpers import make_building_input
 
 
 def _make_temp_directory() -> str:

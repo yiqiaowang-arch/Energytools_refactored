@@ -1075,13 +1075,14 @@ class DatasetExtractor:
         return inputs
 
     def _extract_sia2028(self, ws_profile: Any) -> Sia2028Monthly | None:
-        """``Profile!AS278:BD282``: the SIA 2028 monthly outdoor reference.
+        """``Profile!AS278:BD284``: the SIA 2028 monthly outdoor reference.
 
-        Rows 279 (temperature °C) and 282 (relative humidity %) of the
-        embedded 12-month table; the saturation-pressure rows 280/281 are
-        derived (Magnus) and not stored.
+        Rows 279 (temperature °C), 282 (relative humidity %) and 284
+        (room-temperature reference °C) of the embedded 12-month table;
+        the saturation-pressure rows 280/281 are derived (Magnus) and not
+        stored.
         """
-        matrix = _read_matrix(ws_profile, 278, 282, 45, 56)  # AS..BD
+        matrix = _read_matrix(ws_profile, 278, 284, 45, 56)  # AS..BD
         if len(matrix) < 3:
             return None
         temperature = [
@@ -1094,20 +1095,26 @@ class DatasetExtractor:
             for value in matrix[4][:12]
             if isinstance(value, (int, float))
         ]
+        room_temperature = [
+            float(value)
+            for value in matrix[6][:12]
+            if isinstance(value, (int, float))
+        ]
         if len(temperature) != 12 or len(humidity) != 12:
             return None
         return Sia2028Monthly(
             temperature=tuple(temperature),
             relative_humidity=tuple(humidity),
+            room_temperature=tuple(room_temperature),
             provenance=Provenance(
                 sources=(
                     SourceRef(
                         workbook=os.path.basename(self.workbook_path),
                         sheet="Profile",
-                        range="AS278:BD282",
+                        range="AS278:BD284",
                     ),
                 ),
-                note="SIA 2028 Monatswerte (Aussentemperatur, relative Feuchte)",
+                note="SIA 2028 Monatswerte (Aussentemperatur, relative Feuchte, Raumtemperatur)",
             ),
         )
 

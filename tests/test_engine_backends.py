@@ -6,12 +6,11 @@ from __future__ import annotations
 import uuid
 
 import pytest
+from helpers import make_building_input
 
 import energytools
 from energytools.engine.backends import EngineBase, StubBackend
 from energytools.engine.model import BuildingInput, ValidationReport
-
-from helpers import make_building_input
 
 
 def test_engine_base_is_abstract() -> None:
