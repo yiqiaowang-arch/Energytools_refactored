@@ -370,3 +370,31 @@ def test_full_generation_groups() -> None:
     energy = result.intermediates["resultate"]["energy"]
     assert energy["heizung"]["El"] > 0.0
     assert energy["heizung"]["Pell"] > 0.0
+
+
+@pytest.mark.skipif(not DATASET_PKG.exists(), reason="V221 package not present")
+def test_station_kpi_from_qhc() -> None:
+    """A non-Zürich building reads the Klimakälte/Heizwärme KPI from the
+    Qhc_Klimastat matrices of its station instead of the station-40 cache."""
+    backend = NativeBackend(dataset_dir=str(DATASET_DIR))
+    zurich = backend.calculate(make_two_room_building(climate_station_id=40), "V221", "1.0.0")
+    davos = backend.calculate(make_two_room_building(climate_station_id=8), "V221", "1.0.0")
+    # the stations differ (Qhc_Klimastat: station 8 Zielwert heating 7.47 vs
+    # station 40 9.81 kWh/m2 for 3.01) — the engine follows the matrix
+    assert davos.totals["heizung_mwh"] != zurich.totals["heizung_mwh"]
+    # Davos Zielwert cooling energy of 3.01 is 0 in the matrix
+    assert davos.per_room["Einzel-, Gruppenbüro"]["kuehlung_mwh"] == 0.0
+    # the per-room heating equals the qhc heating_energy matrix of station 8
+    from energytools.raumdaten import load_dataset
+    from energytools.raumdaten.model import ValueKind
+
+    ds = load_dataset("V221", path=str(DATASET_DIR))
+    nutzid = ds.room_use("3.01").nutzid
+    expected = (
+        ds.qhc().metric("heating_energy", nutzid, 8, ValueKind.ZIELWERT).value
+        * 2500.0
+        / 1000.0
+    )
+    assert davos.per_room["Einzel-, Gruppenbüro"]["heizung_mwh"] == pytest.approx(expected, rel=1e-9)
+    # the warning documents the remaining station-40 default (FV,i)
+    assert any("FV,i" in w for w in davos.warnings)

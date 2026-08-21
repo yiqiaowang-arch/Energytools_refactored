@@ -49,8 +49,11 @@ verification status.
 
 ## Known approximations (documented, not silent)
 
-- The station-dependent KPI columns (`1.1.6.7`/`1.1.7.9`/...) carry the
-  Zürich (station 40) default; the backend warns for other stations.
+- The Norm-Lüftungswärmeverlust ``FV,i`` has no per-station matrix and
+  carries the Zürich (station 40) default; the backend warns for other
+  stations.  (The Klimakälte/Heizwärme KPI ``1.1.6.5``/``1.1.6.7``/
+  ``1.1.7.9`` are read from the per-station Qhc_Klimastat matrices, so
+  non-Zürich buildings get their station's values.)
 - The fan full-load hours on an electricity basis default to the
   air-volume values (K69 ≈ K68).
 - The hourly load series distribute the verified annual values by the

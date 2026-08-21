@@ -304,7 +304,7 @@ class DatasetResLookup(KpiLookup):
     dataset name, SIA code or nutzid string.
     """
 
-    def __init__(self, package: Mapping) -> None:
+    def __init__(self, package: Mapping, qhc: Mapping | None = None, station_id: int = 40) -> None:
         room_uses = {u["nutzid"]: u["name"]["de"] for u in package["room_uses"]}
         self._name_by_nutzid = room_uses
         self._nutzid_by_name = {name: n for n, name in room_uses.items()}
@@ -314,6 +314,18 @@ class DatasetResLookup(KpiLookup):
             p["nutzid"]: p["values"] for p in package["profiles"]
         }
         self._params: dict[str, Mapping] = {p["id"]: p for p in package["parameters"]}
+        # The Klimakälte/Heizwärme KPI columns of the KZ_Raum_2024 matrix
+        # carry the workbook's selected-station (40) cache; the Qhc_Klimastat
+        # table has the full 40-station matrices, so a building at another
+        # station reads its KPI values from there instead.
+        self._qhc = qhc
+        self._station_id = station_id
+        #: parameter id -> Qhc metric table (all three value kinds available)
+        self._station_kpi: dict[str, str] = {
+            "1.1.6.5": "cooling_power",
+            "1.1.6.7": "cooling_energy",
+            "1.1.7.9": "heating_energy",
+        }
 
     def _resolve_nutzid(self, room_use: str | int) -> int:
         """Room use → nutzid: dataset name, SIA code, or nutzid string."""
@@ -337,6 +349,15 @@ class DatasetResLookup(KpiLookup):
 
     def _profile_value(self, room_use: str, param_id: str, value_kind: str) -> float:
         nutzid = self._resolve_nutzid(room_use)
+        # Station-dependent KPI: the building's station reads the Qhc
+        # matrices instead of the KZ_Raum_2024 station-40 cache.
+        metric = self._station_kpi.get(param_id)
+        if metric is not None and self._qhc is not None and self._station_id != 40:
+            table = self._qhc.get("rows") if metric == "cooling_energy" else self._qhc.get(metric)
+            if table:
+                cell = table.get(f"{nutzid}|{self._station_id}|{value_kind}")
+                if cell is not None and isinstance(cell, Mapping) and cell.get("value") is not None:
+                    return float(cell["value"])
         values = self._profiles.get(nutzid, {})
         entry = values.get(param_id)
         if entry is None or value_kind not in entry:

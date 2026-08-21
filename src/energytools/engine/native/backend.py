@@ -158,7 +158,11 @@ class NativeBackend(EngineBase):
         result_id = str(uuid.uuid4())
         ds = self._dataset(dataset)
         package = ds.to_package_dict()
-        lookup = DatasetResLookup(package)
+        lookup = DatasetResLookup(
+            package,
+            qhc=package.get("qhc"),
+            station_id=input_.climate_station_id,
+        )
         catalog = NutzungsgradCatalog()
 
         # -- per-system AHU (Lüftung → Berechnung LU) ------------------------
@@ -193,9 +197,10 @@ class NativeBackend(EngineBase):
         warnings = list(report.warnings)
         if input_.climate_station_id != KPI_DEFAULT_CLIMATE_STATION:
             warnings.append(
-                f"Klimakälte/Heizwärme KPI columns use the dataset's "
-                f"{KPI_DEFAULT_CLIMATE_STATION} (Zürich-MeteoSchweiz) default; "
-                f"the building uses station {input_.climate_station_id}"
+                f"Klimakälte/Heizwärme KPI (1.1.6.5/1.1.6.7/1.1.7.9) read from the "
+                f"Qhc_Klimastat matrices of station {input_.climate_station_id}; "
+                f"the Norm-Lüftungswärmeverlust FV,i still carries the "
+                f"{KPI_DEFAULT_CLIMATE_STATION} (Zürich-MeteoSchweiz) default"
             )
 
         intermediates = {
@@ -591,10 +596,13 @@ class NativeBackend(EngineBase):
                 "generation catalogue are the ported workbook model."
             ),
             (
-                "The Klimakälte/Heizwärme KPI columns of the dataset carry the "
-                f"{KPI_DEFAULT_CLIMATE_STATION} (Zürich-MeteoSchweiz) default of the "
-                "Qhc_Klimastat reference; other climate stations use these values "
-                "for the room Raumkühlung/Raumheizung intensities."
+                "The Klimakälte/Heizwärme KPI (1.1.6.5/1.1.6.7/1.1.7.9) are read "
+                "from the Qhc_Klimastat matrices of the building's climate "
+                "station; the KZ_Raum_2024 columns carry the "
+                f"{KPI_DEFAULT_CLIMATE_STATION} (Zürich-MeteoSchweiz) cache and "
+                "are only used for station 40.  The Norm-Lüftungswärmeverlust "
+                "FV,i has no per-station matrix and stays at the station-40 "
+                "default."
             ),
             (
                 "The AHU fan full-load hours on an electricity basis (K69) default "
